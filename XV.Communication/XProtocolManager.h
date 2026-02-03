@@ -161,7 +161,7 @@ public:
 
     bool checkConnected();
     bool executeCalibrationBefore();
-    bool executeSensorWorkModeSetup();
+    bool startExposure();
     bool checkSensorCalibrateFile();
     int checkSensorCalibrateFileCount();
 

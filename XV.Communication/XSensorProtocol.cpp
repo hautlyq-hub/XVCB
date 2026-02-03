@@ -934,9 +934,8 @@ bool XSensorProtocol::powerOff()
 // ==================================================================================
 // 🔧 修复关键函数2: setupWorkMode - 无修改，但调用了sendF5Config
 // ==================================================================================
-bool XSensorProtocol::setupWorkMode(bool callbackF5F5)
+bool XSensorProtocol::setupWorkMode(bool b)
 {
-    qDebug() << "=== setupWorkMode (simplified) ===";
 
     if (!isConnected()) {
         m_lastError = "Device not connected";
@@ -972,7 +971,6 @@ bool XSensorProtocol::setupWorkMode(bool callbackF5F5)
             QThread::msleep(1000);
         }
 
-        qDebug() << "Powering on device...";
         if (!powerOn()) {
             m_lastError = "Failed to power on device";
             qWarning() << m_lastError;

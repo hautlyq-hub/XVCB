@@ -383,7 +383,7 @@ void mvsystemsettings::StartExposure()
         return;
     }
 
-    int xy = mRBtnXChecked ? 0 : 1;
+    int xy = mRBtnXChecked ? 1 : 2;
 
     // 调用硬件设置
     bool success = mManager->setupWorkMode(true, xy); // 总是需要校准前设置
