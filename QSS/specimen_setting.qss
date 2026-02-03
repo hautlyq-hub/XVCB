@@ -1,0 +1,344 @@
+
+
+
+QWidget#mvSystemSettingsWidget QFrame#mFrmTopControlSysSettings
+{
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(0, 156, 255, 255), stop:1 rgba(30,81,241, 255));
+	Color:#000000;
+}
+
+
+
+QWidget#mvSystemSettingsWidget QPushButton#mBtnAccountSetPage,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnNetworkSetPage,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnInfoSetPage,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnStatisticsPage,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnAdvancedSetPage
+{
+	background-color: transparent;
+    border: 0px solid qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(249, 104, 174, 255), stop:1 rgba(30,81,241, 255));
+    color: #FFFFFF;
+    padding: 0px;
+    outline: none;
+	border-radius:0px;
+}
+QWidget#mvSystemSettingsWidget QPushButton#mBtnAccountSetPage:hover,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnNetworkSetPage:hover,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnInfoSetPage:hover,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnStatisticsPage:hover,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnAdvancedSetPage:hover,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnAccountSetPage:pressed,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnNetworkSetPage:pressed,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnInfoSetPage:pressed,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnStatisticsPage:pressed,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnAdvancedSetPage:pressed,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnAccountSetPage:checked,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnNetworkSetPage:checked,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnInfoSetPage:checked,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnStatisticsPage:checked,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnAdvancedSetPage:checked
+{
+	background-color: #143FC5;
+    border: 0px solid qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(249, 104, 174, 255), stop:1 rgba(30,81,241, 255));
+    color: #FFFFFF;
+    padding: 0px;
+    outline: none;
+}
+
+
+
+
+QWidget#mvSystemSettingsWidget QPushButton#mBtnSwitchStatistics:hover,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnSwitchStatistics
+{
+        border-image:url(:/Res/Image/common/144.png);
+	background-color: transparent;
+    border: 0px solid transparent;
+    color: #000000;
+    padding: 0px;
+    outline: none;
+	border-radius:0px;
+}
+QWidget#mvSystemSettingsWidget QPushButton#mBtnSwitchStatistics:pressed,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnSwitchStatistics:checked
+{
+        border-image:url(:/Res/Image/common/143.png);
+	background-color: transparent;
+    border: 0px solid transparent;
+    color: #FFFFFF;
+    padding: 0px;
+    outline: none;
+}
+
+
+QWidget#mvSystemSettingsWidget QPushButton#mBtnSwitchStatistics2:hover,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnSwitchStatistics2
+{
+        border-image:url(:/Res/Image/common/145.png);
+	background-color: transparent;
+    border: 0px solid transparent;
+    color: #000000;
+    padding: 0px;
+    outline: none;
+	border-radius:0px;
+}
+
+QWidget#mvSystemSettingsWidget QPushButton#mBtnSwitchStatistics2:pressed,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnSwitchStatistics2:checked
+{
+        border-image:url(:/Res/Image/common/146.png);
+	background-color: transparent;
+    border: 0px solid transparent;
+    color: #FFFFFF;
+    padding: 0px;
+    outline: none;
+}
+
+
+
+
+
+QWidget#mvSystemSettingsWidget QWidget#mYYIconStackedWidget1,
+QWidget#mvSystemSettingsWidget QWidget#mYYIconStackedWidget2
+{
+    background-color: #FFFFFF;
+	Color:#000000;
+}
+
+
+
+
+QWidget#mvSystemSettingsWidget QPushButton#mOpenYYICON,
+QWidget#mvSystemSettingsWidget QPushButton#mOpenYYICON:hover,
+QWidget#mvSystemSettingsWidget QPushButton#mOpenYYICON:pressed,
+QWidget#mvSystemSettingsWidget QPushButton#mOpenYYICON:checked,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnDeleteYYICON,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnDeleteYYICON:hover,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnDeleteYYICON:pressed,
+QWidget#mvSystemSettingsWidget QPushButton#mBtnDeleteYYICON:checked
+{
+	background-color: transparent;
+    border: 0px solid transparent;
+    color: #FFFFFF;
+    padding: 0px;
+    outline: none;
+}
+
+
+
+
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_221,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_222,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_211,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_212
+{
+	border: 0px solid transparent;
+	color: #000000;
+	background-color :#FFFFFF;
+}
+QWidget#mvSystemSettingsWidget QDateEdit#dateEdit_221:hover,
+QWidget#mvSystemSettingsWidget QDateEdit#dateEdit_222:hover,
+QWidget#mvSystemSettingsWidget QDateEdit#dateEdit_211:hover,
+QWidget#mvSystemSettingsWidget QDateEdit#dateEdit_212:hover
+{
+	border:2px solid qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(249, 104, 174, 255), stop:1 rgba(30,81,241, 255));
+}
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_211::down-arrow:hover,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_212::down-arrow:hover,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_221::down-arrow:hover,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_222::down-arrow:hover,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_221::down-arrow,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_222::down-arrow,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_211::down-arrow,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_212::down-arrow,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_221::down-arrow:disabled,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_222::down-arrow:disabled,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_211::down-arrow:disabled,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_212::down-arrow:disabled,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_221::drop-down,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_222::drop-down,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_211::drop-down,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_212::drop-down
+{
+	width:40px;
+	height:84px;
+        image:url(:/Res/Image/common/18.png);
+	border:0px solid transparent;
+	background-position:center;background-repeat:repeat;
+
+}
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_221:disabled,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_222:disabled,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_211:disabled,
+QWidget#mvSystemSettingsWidget  QDateEdit#dateEdit_212:disabled
+{
+    color:#D9D9D9;
+}
+
+
+
+
+QWidget#mvSystemSettingsWidget QTabBar::tab
+{
+    background-color: #F3F3F3;
+	Color: #000000;
+	border: 0px solid #F3F3F3;
+    border-bottom-color:transparent;
+    border-top-left-radius: 0px;
+    border-top-right-radius:0px;
+    width:100px;
+    min-height: 30px;
+    max-height: 30px;
+}
+QWidget#mvSystemSettingsWidget QTabWidget::tab-bar
+{
+    alignment: left;
+}
+QWidget#mvSystemSettingsWidget QTabBar::tab:hover 
+{
+    background-color: #F3F3F3;
+	border: 0px solid #143FC5;
+}
+QWidget#mvSystemSettingsWidget QTabBar::tab:selected
+{
+    background-color: #143FC5;
+    color: #FFFFFF;
+	border: 0px solid #143FC5;
+}
+QWidget#mvSystemSettingsWidget QTabBar::tab:!selected 
+{
+    background-color:#F3F3F3;
+    color:#000000;
+}
+QWidget#mvSystemSettingsWidget QTabBar::tab:disabled 
+{
+	width: 0; 
+	color: transparent;
+}
+
+
+
+QWidget#mvSystemSettingsWidget QWidget#scrollAreaWidgetContents
+{
+	background-color:#FFFFFF;
+}
+
+
+
+
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_18,
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_18:hover,
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_18:pressed ,
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_18:checked 
+{
+	background-color:#F3F3F3;
+	border:0px solid transparent;
+	border-radius:0px;
+}
+
+
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_19,
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_19:hover,
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_19:pressed ,
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_19:checked 
+{
+	background-color:#F3F3F3;
+	border:0px solid transparent;
+	border-radius:0px;
+}
+
+
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_38,
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_38:hover,
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_38:pressed ,
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_38:checked 
+{
+	background-color:#F3F3F3;
+	border:0px solid transparent;
+	border-radius:0px;
+}
+
+
+
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_24,
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_24:hover,
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_24:pressed ,
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_24:checked 
+{
+	background-color:#FFFFFF;
+	border:0px solid transparent;
+	border-radius:0px;
+}
+
+
+
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_50,
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_50:hover,
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_50:pressed ,
+QWidget#mvSystemSettingsWidget QPushButton#pushButton_50:checked 
+{
+	background-color:#FFFFFF;
+	border:0px solid transparent;
+	border-radius:0px;
+}
+
+
+
+QWidget#mvSystemSettingsWidget QLineEdit#lineEdit_77,
+QWidget#mvSystemSettingsWidget QLineEdit#lineEdit_78,
+QWidget#mvSystemSettingsWidget QLineEdit#lineEdit_79,
+QWidget#mvSystemSettingsWidget QLineEdit#mRegeditLineEdit
+{
+	background-color:#F3F3F3;
+	border:2px solid #F3F3F3;
+}
+
+
+
+
+QWidget#mvSystemSettingsWidget QComboBox#comboBox_9::drop-down,
+QWidget#mvSystemSettingsWidget QComboBox#comboBox_10::drop-down,
+QWidget#mvSystemSettingsWidget QComboBox#comboBox_11::drop-down,
+QWidget#mvSystemSettingsWidget QComboBox#comboBox_13::drop-down,
+QWidget#mvSystemSettingsWidget QComboBox#comboBox_14::drop-down,
+QWidget#mvSystemSettingsWidget QComboBox#comboBox_15::drop-down,
+QWidget#mvSystemSettingsWidget QComboBox#comboBox_16::drop-down,
+QWidget#mvSystemSettingsWidget QComboBox#comboBox_17::drop-down
+{
+	width:40px;
+	height:50px;
+        image:url(:/Res/Image/common/250.png);
+	border:0px solid qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(249, 104, 174, 255), stop:1 rgba(30,81,241, 255));
+	background-position:center;background-repeat:repeat;
+
+}
+
+
+
+
+
+
+QWidget#mvbackupdatadialog QLineEdit,
+QWidget#mvbackupdatadialog QLineEdit:hover
+{
+	padding-left:5px;
+    border:1px solid #FFFFFF;
+	background-color: #F3F3F3;
+	color:#000000;
+}
+QWidget#mvbackupdatadialog QLineEdit:disabled
+{
+   background-color: #F3F3F3;
+   color:#D9D9D9;
+}
+
+
+
+QWidget#mvbackupdatadialog QPushButton#mbtnopenlocation,
+QWidget#mvbackupdatadialog QPushButton#mbtnopenlocation:hover,
+QWidget#mvbackupdatadialog QPushButton#mbtnopenlocation:checked 
+{
+	background-color:#F3F3F3;
+	border:0px solid transparent;
+	border-radius:0px;
+}

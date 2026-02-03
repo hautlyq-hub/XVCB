@@ -1,0 +1,231 @@
+
+QWidget#mvPatientRecordWidget
+{
+	background-color:#F3F3F3;
+}
+
+
+QWidget#mvPatientRecordWidget QFrame#mQueryDateFrm,
+QWidget#mvPatientRecordWidget QGroupBox#mQueryFrm
+{
+	background-color:transparent;
+	margin:0px;
+	padding:0px;
+}
+
+
+
+QDialog#mNewPatientDialog QPushButton#radioButtonStandard,
+QDialog#mNewPatientDialog QPushButton#MaleradioButton,
+QDialog#mNewPatientDialog QPushButton#radioButtonTolerance,
+QDialog#mNewPatientDialog QPushButton#radioButtonStandard:hover,
+QDialog#mNewPatientDialog QPushButton#MaleradioButton:hover,
+QDialog#mNewPatientDialog QPushButton#radioButtonTolerance:hover
+{
+	background-color: transparent;
+    border: 1px solid qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(249, 104, 174, 255), stop:1 rgba(30,81,241, 255));
+    color: #000000;
+    padding: 0px;
+    outline: none;
+	border-radius:10px;
+}
+QDialog#mNewPatientDialog QPushButton#radioButtonStandard:pressed,
+QDialog#mNewPatientDialog QPushButton#MaleradioButton:pressed,
+QDialog#mNewPatientDialog QPushButton#radioButtonTolerance:pressed,
+QDialog#mNewPatientDialog QPushButton#radioButtonStandard:checked,
+QDialog#mNewPatientDialog QPushButton#MaleradioButton:checked,
+QDialog#mNewPatientDialog QPushButton#radioButtonTolerance:checked
+{
+	background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(0, 156, 255, 255), stop:1 rgba(30,81,241, 255));
+    border: 0px solid qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(249, 104, 174, 255), stop:1 rgba(30,81,241, 255));
+    color: #FFFFFF;
+    padding: 0px;
+    outline: none;
+}
+
+
+
+QWidget#mvPatientRecordWidget QPushButton#mBtnClose,
+QWidget#mvPatientRecordWidget QPushButton#mBtnClose:hover,
+QWidget#mvPatientRecordWidget QPushButton#mBtnClose:pressed,
+QWidget#mvPatientRecordWidget QPushButton#mBtnClose:checked
+{
+	background-color:transparent;
+	color:#000000;
+}
+
+
+
+QWidget#mvPatientRecordWidget QToolButton#DeletepatientpushButton,
+QWidget#mvPatientRecordWidget QToolButton#mExportImage,
+QWidget#mvPatientRecordWidget QToolButton#btnRecallPat,
+QWidget#mvPatientRecordWidget QToolButton#EditpatientpushButton,
+QWidget#mvPatientRecordWidget QToolButton#btnImportImage,
+QWidget#mvPatientRecordWidget QToolButton#btnArchiveImage,
+QWidget#mvPatientRecordWidget QToolButton#btnDICOMDIR
+{
+    background-color: transparent;
+	color: #000000;
+    border: 0px solid transparent;
+    margin: 2px;
+    padding: 2px;
+	border-radius:0px;
+}
+QWidget#mvPatientRecordWidget QToolButton#DeletepatientpushButton:hover,
+QWidget#mvPatientRecordWidget QToolButton#mExportImage:hover,
+QWidget#mvPatientRecordWidget QToolButton#btnRecallPat:hover,
+QWidget#mvPatientRecordWidget QToolButton#EditpatientpushButton:hover,
+QWidget#mvPatientRecordWidget QToolButton#btnImportImage:hover,
+QWidget#mvPatientRecordWidget QToolButton#btnArchiveImage:hover,
+QWidget#mvPatientRecordWidget QToolButton#btnDICOMDIR:hover,
+QWidget#mvPatientRecordWidget QToolButton#DeletepatientpushButton:pressed,
+QWidget#mvPatientRecordWidget QToolButton#mExportImage:pressed,
+QWidget#mvPatientRecordWidget QToolButton#btnRecallPat:pressed,
+QWidget#mvPatientRecordWidget QToolButton#EditpatientpushButton:pressed,
+QWidget#mvPatientRecordWidget QToolButton#btnImportImage:pressed,
+QWidget#mvPatientRecordWidget QToolButton#btnArchiveImage:pressed,
+QWidget#mvPatientRecordWidget QToolButton#btnDICOMDIR:pressed,
+QWidget#mvPatientRecordWidget QToolButton#DeletepatientpushButton:checked ,
+QWidget#mvPatientRecordWidget QToolButton#mExportImage:checked ,
+QWidget#mvPatientRecordWidget QToolButton#btnRecallPat:checked ,
+QWidget#mvPatientRecordWidget QToolButton#btnArchiveImage:checked,
+QWidget#mvPatientRecordWidget QToolButton#btnImportImage:checked,
+QWidget#mvPatientRecordWidget QToolButton#btnDICOMDIR:checked
+{
+	color: #000000;
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:0.0, y2:1.0, stop:0 rgba(255, 255, 255, 0), stop:1 rgba(249, 104, 174, 255));
+	border: 0px solid transparent;
+}
+
+
+QWidget#mvPatientRecordWidget QPushButton#mRemoteOrLocal:hover,
+QWidget#mvPatientRecordWidget QPushButton#mRemoteOrLocal
+{
+        border-image:url(:/Res/Image/common/99.png);
+	background-color: transparent;
+    border: 0px solid transparent;
+    color: #000000;
+    padding: 0px;
+    outline: none;
+	border-radius:0px;
+}
+
+QWidget#mvPatientRecordWidget QPushButton#mRemoteOrLocal:pressed,
+QWidget#mvPatientRecordWidget QPushButton#mRemoteOrLocal:checked
+{
+        border-image:url(:/Res/Image/common/98.png);
+	background-color: transparent;
+    border: 0px solid transparent;
+    color: #FFFFFF;
+    padding: 0px;
+    outline: none;
+}
+
+
+QWidget#mvPatientRecordWidget QPushButton#mRemoteOrLocal2:hover,
+QWidget#mvPatientRecordWidget QPushButton#mRemoteOrLocal2
+{
+        border-image:url(:/Res/Image/common/97.png);
+	background-color: transparent;
+    border: 0px solid transparent;
+    color: #000000;
+    padding: 0px;
+    outline: none;
+	border-radius:0px;
+}
+
+QWidget#mvPatientRecordWidget QPushButton#mRemoteOrLocal2:pressed,
+QWidget#mvPatientRecordWidget QPushButton#mRemoteOrLocal2:checked
+{
+        border-image:url(:/Res/Image/common/100.png);
+	background-color: transparent;
+    border: 0px solid transparent;
+    color: #FFFFFF;
+    padding: 0px;
+    outline: none;
+}
+
+
+
+QDateEdit#FromDateEdit_2,
+QDateEdit#ToDateEdit_2
+{
+        border: 1px solid transparent;
+	color: #000000;
+	background-color :#FFFFFF;
+}
+QDateEdit#FromDateEdit_2:hover,
+QDateEdit#ToDateEdit_2:hover
+{
+        border:1px solid qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(249, 104, 174, 255), stop:1 rgba(30,81,241, 255));
+}
+QDateEdit#FromDateEdit_2::down-arrow:hover,
+QDateEdit#ToDateEdit_2::down-arrow:hover,
+QDateEdit#FromDateEdit_2::down-arrow,
+QDateEdit#ToDateEdit_2::down-arrow,
+QDateEdit#FromDateEdit_2::down-arrow:disabled,
+QDateEdit#ToDateEdit_2::down-arrow:disabled,
+QDateEdit#FromDateEdit_2::drop-down,
+QDateEdit#ToDateEdit_2::drop-down
+{
+        width:35px;
+        height:35px;
+        image:url(:/Res/Image/common/18.png);
+	border:0px solid qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(249, 104, 174, 255), stop:1 rgba(30,81,241, 255));
+	background-position:center;background-repeat:repeat;
+
+}
+QDateEdit#FromDateEdit_2:disabled,
+QDateEdit#ToDateEdit_2:disabled
+{
+    color:#D9D9D9;
+}
+
+QWidget#lyCreateDICOMDIR QPushButton#m_buttonExamineDisk,
+QWidget#lyCreateDICOMDIR QPushButton#m_buttonExamineDisk:hover,
+QWidget#lyCreateDICOMDIR QPushButton#m_buttonExamineDisk:checked 
+{
+	background-color:#F3F3F3;
+	border:0px solid transparent;
+	border-radius:0px;
+}
+
+
+
+
+QWidget#lyCreateDICOMDIR QLineEdit,
+QWidget#lyCreateDICOMDIR QLineEdit:hover
+{
+	padding-left:5px;
+    border:1px solid #FFFFFF;
+	background-color: #F3F3F3;
+	color:#000000;
+}
+QWidget#lyCreateDICOMDIR QLineEdit:disabled
+{
+   background-color: #FFFFFF;
+   color:#D9D9D9;
+}
+
+
+QWidget#lyCreateDICOMDIR QToolButton:hover,
+QWidget#lyCreateDICOMDIR QToolButton
+{
+    background-color: transparent;
+	color: #000000;
+    border: 0px solid transparent;
+    margin: 2px;
+    padding: 2px;
+	border-radius:0px;
+}
+QWidget#lyCreateDICOMDIR QToolButton:pressed,
+QWidget#lyCreateDICOMDIR QToolButton:checked
+{
+	color: #000000;
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:0.0, y2:1.0, stop:0 rgba(255, 255, 255, 0), stop:1 rgba(249, 104, 174, 255));
+	border: 0px solid transparent;
+}
+QWidget#lyCreateDICOMDIR QToolButton:disabled
+{
+	color: #D3D3D3;
+}

@@ -1,0 +1,649 @@
+
+
+QWidget#mImageAcquisitWidget
+{
+        background-color:#F3F3F3;
+}
+
+QWidget#mImageAcquisitWidget QWidget#mVideoPlayWidget
+{
+        background-color:#FFFFFF;
+}
+
+QWidget#mImageAcquisitWidget QWidget#mStateShowStackWidget1,
+QWidget#mImageAcquisitWidget QWidget#mExposeFrame,
+QWidget#mImageAcquisitWidget QWidget#mCurveFrame
+
+{
+        background-color:#545454;
+}
+
+QWidget#mImageAcquisitWidget QPushButton#ResetpushButton,
+QWidget#mImageAcquisitWidget QPushButton#ResetpushButton:hover
+{
+        background-color:#6B6B6B;
+        color:#FFFFFF;
+        border:0px solid transparent;
+        border-radius:6px;
+}
+
+QWidget#mImageAcquisitWidget QPushButton#ResetpushButton:pressed,
+QWidget#mImageAcquisitWidget QPushButton#ResetpushButton:checked
+{
+        color: #FFFFFF;
+        border:0px solid transparent;
+        border-radius:6px;
+    background-color: #D9D9D9;
+}
+
+
+QWidget#mImageAcquisitWidget QToolButton#AddViewpushButton:hover,
+QWidget#mImageAcquisitWidget QToolButton#AddViewpushButton
+{
+    background-color: transparent;
+        color: #000000;
+        border:2px solid qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(249, 104, 174, 255), stop:1 rgba(30,81,241, 255));
+    margin: 2px;
+    padding: 2px;
+        border-radius:10px;
+}
+
+QWidget#mImageAcquisitWidget QToolButton#AddViewpushButton:pressed,
+QWidget#mImageAcquisitWidget QToolButton#AddViewpushButton:checked
+{
+        color: #000000;
+    background-color: transparent;
+}
+QWidget#mImageAcquisitWidget QToolButton#AddViewpushButton:disabled
+{
+    color:#D9D9D9;
+}
+
+
+QWidget#mImageAcquisitWidget QToolButton#mBtnConnective:hover,
+QWidget#mImageAcquisitWidget QToolButton#mBtnConnective
+{
+    background-color: transparent;
+        color: #3662EC;
+        border:2px solid #3662EC;
+    margin: 2px;
+    padding: 2px;
+        border-radius:10px;
+        /* qproperty-icon:url(:/Res/Image/image/28.png); */
+
+}
+QWidget#mImageAcquisitWidget QToolButton#mBtnCalcification:hover,
+QWidget#mImageAcquisitWidget QToolButton#mBtnCalcification
+{
+    background-color: transparent;
+        color: #3662EC;
+        border:2px solid #3662EC;
+    margin: 2px;
+    padding: 2px;
+        border-radius:10px;
+        /* qproperty-icon:url(:/Res/Image/image/25.png); */
+
+}
+QWidget#mImageAcquisitWidget QToolButton#mBtnSoftTissue:hover,
+QWidget#mImageAcquisitWidget QToolButton#mBtnSoftTissue
+{
+    background-color: transparent;
+        color: #3662EC;
+        border:2px solid #3662EC;
+    margin: 2px;
+    padding: 2px;
+        border-radius:10px;
+        /* qproperty-icon:url(:/Res/Image/image/31.png); */
+
+}
+QWidget#mImageAcquisitWidget QToolButton#mBtnOtherTissue:hover,
+QWidget#mImageAcquisitWidget QToolButton#mBtnOtherTissue
+{
+    background-color: transparent;
+        color: #3662EC;
+        border:2px solid #3662EC;
+    margin: 2px;
+    padding: 2px;
+        border-radius:10px;
+        /* qproperty-icon:url(:/Res/Image/image/25.png); */
+
+}
+
+QWidget#mImageAcquisitWidget QToolButton#mBtnConnective:pressed,
+QWidget#mImageAcquisitWidget QToolButton#mBtnConnective:checked
+{
+        color: #FFFFFF;
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(0, 156, 255, 255), stop:1 rgba(30,81,241, 255));
+        /* qproperty-icon:url(:/Res/Image/image/27.png); */
+}
+QWidget#mImageAcquisitWidget QToolButton#mBtnCalcification:pressed,
+QWidget#mImageAcquisitWidget QToolButton#mBtnCalcification:checked
+{
+        color: #FFFFFF;
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(0, 156, 255, 255), stop:1 rgba(30,81,241, 255));
+        /* qproperty-icon:url(:/Res/Image/image/30.png); */
+}
+QWidget#mImageAcquisitWidget QToolButton#mBtnSoftTissue:pressed,
+QWidget#mImageAcquisitWidget QToolButton#mBtnSoftTissue:checked
+{
+        color: #FFFFFF;
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(0, 156, 255, 255), stop:1 rgba(30,81,241, 255));
+        /* qproperty-icon:url(:/Res/Image/image/32.png); */
+}
+QWidget#mImageAcquisitWidget QToolButton#mBtnOtherTissue:pressed,
+QWidget#mImageAcquisitWidget QToolButton#mBtnOtherTissue:checked
+{
+        color: #FFFFFF;
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(0, 156, 255, 255), stop:1 rgba(30,81,241, 255));
+        /* qproperty-icon:url(:/Res/Image/image/26.png); */
+}
+QWidget#mImageAcquisitWidget QToolButton#AddViewpushButton:disabled
+{
+    color:#D9D9D9;
+}
+
+
+
+QWidget#mImageAcquisitWidget QPushButton#mAutoExp
+{
+        border-image:url(:/Res/Image/common/144.png);
+        background-color: transparent;
+    border: 0px solid transparent;
+    color: #000000;
+    padding: 0px;
+    outline: none;
+        border-radius:0px;
+}
+QWidget#mImageAcquisitWidget QPushButton#mAutoExp:hover,
+QWidget#mImageAcquisitWidget QPushButton#mAutoExp:pressed,
+QWidget#mImageAcquisitWidget QPushButton#mAutoExp:checked
+{
+        border-image:url(:/Res/Image/common/143.png);
+        background-color: transparent;
+    border: 0px solid transparent;
+    color: #FFFFFF;
+    padding: 0px;
+    outline: none;
+}
+
+
+QWidget#mImageAcquisitWidget QPushButton#mManualExp
+{
+        border-image:url(:/Res/Image/common/145.png);
+        background-color: transparent;
+    border: 0px solid transparent;
+    color: #000000;
+    padding: 0px;
+    outline: none;
+        border-radius:0px;
+}
+
+
+QWidget#mImageAcquisitWidget QPushButton#mManualExp:hover,
+QWidget#mImageAcquisitWidget QPushButton#mManualExp:pressed,
+QWidget#mImageAcquisitWidget QPushButton#mManualExp:checked
+{
+        border-image:url(:/Res/Image/common/146.png);
+        background-color: transparent;
+    border: 0px solid transparent;
+    color: #FFFFFF;
+    padding: 0px;
+    outline: none;
+}
+
+
+QWidget#mImageAcquisitWidget QPushButton#mSaveDiagnoseDesc:hover,
+QWidget#mImageAcquisitWidget QPushButton#mSaveDiagnoseDesc
+{
+        color: #000000;
+        background-color: transparent;
+        border:0px solid transparent;
+    margin: 0px;
+    padding: 0px;
+}
+QWidget#mImageAcquisitWidget QPushButton#mSaveDiagnoseDesc:pressed,
+QWidget#mImageAcquisitWidget QPushButton#mSaveDiagnoseDesc:checked
+{
+        color: #000000;
+        border:0px solid #3662EC;
+        border-radius:40px;
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(0, 156, 255, 255), stop:1 rgba(30,81,241, 255));
+}
+
+
+
+
+QWidget#mImageAcquisitWidget QPushButton#AECpushButton:hover,
+QWidget#mImageAcquisitWidget QPushButton#AECpushButton
+{
+    background-color: transparent;
+        color: #3662EC;
+        border:2px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+        border-radius:40px;
+        /* qproperty-icon:url(:/Res/Image/image/33.png); */
+}
+QWidget#mImageAcquisitWidget QPushButton#ManualpushButton:hover,
+QWidget#mImageAcquisitWidget QPushButton#ManualpushButton
+{
+    background-color: transparent;
+        color: #3662EC;
+        border:2px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+        border-radius:40px;
+        /* qproperty-icon:url(:/Res/Image/image/35.png); */
+}
+QWidget#mImageAcquisitWidget QPushButton#AECpushButton:pressed,
+QWidget#mImageAcquisitWidget QPushButton#AECpushButton:checked
+{
+        color: #FFFFFF;
+        border:2px solid #3662EC;
+        border-radius:40px;
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(0, 156, 255, 255), stop:1 rgba(30,81,241, 255));
+        /* qproperty-icon:url(:/Res/Image/image/34.png); */
+}
+QWidget#mImageAcquisitWidget QPushButton#ManualpushButton:pressed,
+QWidget#mImageAcquisitWidget QPushButton#ManualpushButton:checked
+{
+        color: #FFFFFF;
+        border:2px solid #3662EC;
+        border-radius:40px;
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(0, 156, 255, 255), stop:1 rgba(30,81,241, 255));
+        /* qproperty-icon:url(:/Res/Image/image/36.png); */
+}
+QWidget#mImageAcquisitWidget QPushButton#AECpushButton:disabled,
+QWidget#mImageAcquisitWidget QPushButton#ManualpushButton:disabled
+{
+    color:#D9D9D9;
+}
+
+
+QWidget#mImageAcquisitWidget QPushButton#mBtnBig2cm:hover,
+QWidget#mImageAcquisitWidget QPushButton#mBtnBig2cm,
+QWidget#mImageAcquisitWidget QPushButton#mBtnSmall2cm:hover,
+QWidget#mImageAcquisitWidget QPushButton#mBtnSmall2cm
+{
+    background-color: transparent;
+        color: #3662EC;
+        border:2px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+        border-radius:40px;
+
+}
+QWidget#mImageAcquisitWidget QPushButton#mBtnSmall2cm:pressed,
+QWidget#mImageAcquisitWidget QPushButton#mBtnSmall2cm:checked,
+QWidget#mImageAcquisitWidget QPushButton#mBtnBig2cm:pressed,
+QWidget#mImageAcquisitWidget QPushButton#mBtnBig2cm:checked
+{
+        color: #FFFFFF;
+        border:2px solid #3662EC;
+        border-radius:40px;
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(0, 156, 255, 255), stop:1 rgba(30,81,241, 255));
+}
+QWidget#mImageAcquisitWidget QPushButton#mBtnBig2cm:disabled,
+QWidget#mImageAcquisitWidget QPushButton#mBtnSmall2cm:disabled
+{
+    color:#D9D9D9;
+}
+
+
+QWidget#mImageAcquisitWidget QToolButton#acqKvMinusButton:hover,
+QWidget#mImageAcquisitWidget QToolButton#acqKvMinusButton
+{
+    background-color: transparent;
+        color: #3662EC;
+        border:0px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+        border-radius:30px;
+}
+QWidget#mImageAcquisitWidget QToolButton#acqKvPlusButton:hover,
+QWidget#mImageAcquisitWidget QToolButton#acqKvPlusButton
+{
+    background-color: transparent;
+        color: #3662EC;
+        border:0px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+        border-radius:30px;
+}
+QWidget#mImageAcquisitWidget QToolButton#acqmAsMinusButton:hover,
+QWidget#mImageAcquisitWidget QToolButton#acqmAsMinusButton
+{
+    background-color: transparent;
+        color: #3662EC;
+        border:0px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+        border-radius:30px;
+}
+QWidget#mImageAcquisitWidget QToolButton#acqmAsPlusButton:hover,
+QWidget#mImageAcquisitWidget QToolButton#acqmAsPlusButton
+{
+    background-color: transparent;
+        color: #3662EC;
+        border:0px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+        border-radius:30px;
+}
+QWidget#mImageAcquisitWidget QToolButton#acqKvMinusButton:pressed,
+QWidget#mImageAcquisitWidget QToolButton#acqKvMinusButton:checked
+{
+        color: #FFFFFF;
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(0, 156, 255, 255), stop:1 rgba(30,81,241, 255));
+}
+
+QWidget#mImageAcquisitWidget QToolButton#acqKvPlusButton:pressed,
+QWidget#mImageAcquisitWidget QToolButton#acqKvPlusButton:checked
+{
+        color: #FFFFFF;
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(0, 156, 255, 255), stop:1 rgba(30,81,241, 255));
+}
+QWidget#mImageAcquisitWidget QToolButton#acqmAsMinusButton:pressed,
+QWidget#mImageAcquisitWidget QToolButton#acqmAsMinusButton:checked
+{
+        color: #FFFFFF;
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(0, 156, 255, 255), stop:1 rgba(30,81,241, 255));
+}
+
+QWidget#mImageAcquisitWidget QToolButton#acqmAsPlusButton:pressed,
+QWidget#mImageAcquisitWidget QToolButton#acqmAsPlusButton:checked
+{
+        color: #FFFFFF;
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:1.0, y2:0.0, stop:0 rgba(0, 156, 255, 255), stop:1 rgba(30,81,241, 255));
+}
+QWidget#mImageAcquisitWidget QToolButton#acqKvMinusButton:disabled ,
+QWidget#mImageAcquisitWidget QToolButton#acqKvPlusButton:disabled ,
+QWidget#mImageAcquisitWidget QToolButton#acqmAsMinusButton:disabled ,
+QWidget#mImageAcquisitWidget QToolButton#acqmAsPlusButton:disabled
+{
+    color:#D9D9D9;
+    background-color: transparent;
+}
+
+QWidget#mImageAcquisitWidget QSpinBox#kVspinBox,
+QWidget#mImageAcquisitWidget QSpinBox#mAsspinBox,
+QWidget#mImageAcquisitWidget QSpinBox#kVspinBox:hover,
+QWidget#mImageAcquisitWidget QSpinBox#mAsspinBox:hover,
+QWidget#mImageAcquisitWidget QSpinBox#kVspinBox:pressed,
+QWidget#mImageAcquisitWidget QSpinBox#mAsspinBox:pressed,
+QWidget#mImageAcquisitWidget QSpinBox#kVspinBox:checked,
+QWidget#mImageAcquisitWidget QSpinBox#mAsspinBox:checked
+{
+        background-color: #F3F3F3;
+        color: #3662EC;
+        border:0px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+        border-radius:0px;
+
+}
+QWidget#mImageAcquisitWidget QSpinBox#kVspinBox:disabled,
+QWidget#mImageAcquisitWidget QSpinBox#mAsspinBox:disabled
+{
+        color: #646464;
+        background-color:#FFFFFF;
+}
+
+QWidget#mImageAcquisitWidget QLabel#mlbKV,
+QWidget#mImageAcquisitWidget QLabel#mlbMas
+{
+        color: #000000;
+        background-color:#F3F3F3;
+}
+QWidget#mImageAcquisitWidget QLabel#mlbKV:disabled,
+QWidget#mImageAcquisitWidget QLabel#mlbMas:disabled
+{
+        color: #646464;
+        background-color:#FFFFFF;
+}
+
+
+QWidget#mImageAcquisitWidget QLabel#mLabelName
+{
+        color: #3662EC;
+}
+
+
+QWidget#mImageAcquisitWidget QFrame#mFrmSlider1,
+QWidget#mImageAcquisitWidget QFrame#mFrmSlider2
+{
+        background-color:#414141;
+        border-radius:15px;
+}
+
+
+QWidget#mImageAcquisitWidget QFrame#mWWWLFrm,
+QWidget#mImageAcquisitWidget QWidget#mWWWLStackWidget1,
+QWidget#mImageAcquisitWidget QWidget#mWWWLStackWidget2
+{
+        background-color:#000000;
+}
+
+
+
+QWidget#mImageAcquisitWidget QLabel#mlbww,
+QWidget#mImageAcquisitWidget QLabel#mlbwl
+{
+        color: #FFFFFF;
+        background-color:transparent;
+}
+QWidget#mImageAcquisitWidget QLabel#mlbZoomMode
+{
+        color: #D3D3D3;
+        background-color:transparent;
+}
+
+
+QWidget#mImageAcquisitWidget QPushButton#btnOneLevel:hover,
+QWidget#mImageAcquisitWidget QPushButton#btnTwoLevel:hover,
+QWidget#mImageAcquisitWidget QPushButton#btnThreeLevel:hover,
+QWidget#mImageAcquisitWidget QPushButton#btnFourLevel:hover,
+QWidget#mImageAcquisitWidget QPushButton#btnFiveLevel:hover,
+QWidget#mImageAcquisitWidget QPushButton#btnOneLevel,
+QWidget#mImageAcquisitWidget QPushButton#btnTwoLevel,
+QWidget#mImageAcquisitWidget QPushButton#btnThreeLevel,
+QWidget#mImageAcquisitWidget QPushButton#btnFourLevel,
+QWidget#mImageAcquisitWidget QPushButton#btnFiveLevel
+{
+        background-color: #414141;
+        color: #FFFFFF;
+        border:0px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+        border-radius:40px;
+}
+
+QWidget#mImageAcquisitWidget QPushButton#btnOneLevel:pressed,
+QWidget#mImageAcquisitWidget QPushButton#btnOneLevel:checked,
+QWidget#mImageAcquisitWidget QPushButton#btnTwoLevel:pressed,
+QWidget#mImageAcquisitWidget QPushButton#btnTwoLevel:checked,
+QWidget#mImageAcquisitWidget QPushButton#btnThreeLevel:pressed,
+QWidget#mImageAcquisitWidget QPushButton#btnThreeLevel:checked,
+QWidget#mImageAcquisitWidget QPushButton#btnFourLevel:pressed,
+QWidget#mImageAcquisitWidget QPushButton#btnFourLevel:checked,
+QWidget#mImageAcquisitWidget QPushButton#btnFiveLevel:pressed,
+QWidget#mImageAcquisitWidget QPushButton#btnFiveLevel:checked,
+QWidget#mImageAcquisitWidget QPushButton#mBtnSwitchWWWL:pressed,
+QWidget#mImageAcquisitWidget QPushButton#mBtnSwitchWWWL:checked
+{
+        background-color: #414141;
+        color: #FFFFFF;
+        border:1px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+        border-radius:40px;
+}
+
+
+
+
+
+QWidget#mImageAcquisitWidget QPushButton#mBtnSwitchWWWL:hover,
+QWidget#mImageAcquisitWidget QPushButton#mBtnSwitchWWWL
+{
+        background-color: #414141;
+        color: #FFFFFF;
+        border:0px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+        border-radius:20px;
+}
+QWidget#mImageAcquisitWidget QPushButton#mBtnSwitchWWWL:pressed,
+QWidget#mImageAcquisitWidget QPushButton#mBtnSwitchWWWL:checked
+{
+        background-color: #414141;
+        color: #FFFFFF;
+        border:1px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+        border-radius:20px;
+}
+
+
+
+
+QWidget#mImageAcquisitWidget QPushButton#mBtnWWAdd
+{
+        background-color: #414141;
+        color: #000000;
+        border:0px solid #3662EC;
+        margin: 0px;
+        padding: 0px;
+        border-radius:15px;
+        /* border-top-left-radius:0px; */
+        /* border-top-right-radius:0px; */
+        /* border-bottom-left-radius:25px; */
+        /* border-bottom-right-radius:25px; */
+        background-image:url(:/Res/Image/image/43.png);
+        background-position:center;background-repeat:repeat;
+}
+QWidget#mImageAcquisitWidget QPushButton#mBtnWWSub
+{
+        background-color: transparent;
+        color: #000000;
+        border:0px solid #3662EC;
+        margin: 0px;
+        padding: 0px;
+        border-radius:15px;
+        background-image:url(:/Res/Image/image/42.png);
+        background-position:center;background-repeat:repeat;
+}
+QWidget#mImageAcquisitWidget QPushButton#mBtnWLAdd
+{
+        background-color: transparent;
+        color: #000000;
+        border:0px solid #3662EC;
+        margin: 0px;
+        padding: 0px;
+        border-radius:15px;
+        background-image:url(:/Res/Image/image/43.png);
+        background-position:center;background-repeat:repeat;
+}
+QWidget#mImageAcquisitWidget QPushButton#mBtnWLSub
+{
+    background-color: transparent;
+        color: #000000;
+        border:0px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+        border-radius:15px;
+        background-image:url(:/Res/Image/image/42.png);
+        background-position:center;background-repeat:repeat;
+}
+QWidget#mImageAcquisitWidget QPushButton#AECpushButton:hover,
+QWidget#mImageAcquisitWidget QPushButton#AECpushButton:pressed,
+QWidget#mImageAcquisitWidget QPushButton#AECpushButton:checked
+{
+
+}
+
+
+
+
+
+
+QWidget#mImageAcquisitWidget QPushButton#mAutoBlend
+{
+    background-color: transparent;
+        color: #000000;
+        border:0px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+        background-image:url(:/Res/Image/image/44.png);
+        background-position:center;background-repeat:repeat;
+}
+QWidget#mImageAcquisitWidget QPushButton#mAutoBlend:hover,
+QWidget#mImageAcquisitWidget QPushButton#mAutoBlend:pressed,
+QWidget#mImageAcquisitWidget QPushButton#mAutoBlend:checked
+{
+        background-image:url(:/Res/Image/image/45.png);
+        background-position:center;background-repeat:repeat;
+}
+QWidget#mImageAcquisitWidget QPushButton#mAutoBlend:disabled
+{
+        background-image:url(:/Res/Image/image/46.png);
+        background-position:center;background-repeat:repeat;
+}
+
+
+
+
+QWidget#mImageAcquisitWidget QComboBox#mIllnessGroup
+{
+        background-color:#FFFFFF;
+        Color:#000000;
+        border:2px solid transparent;
+
+}
+
+
+
+
+QWidget#mReportMenuWidget QWidget#mReportMenuWidget
+{
+        background-color:#F3F3F3;
+}
+
+
+QDialog#lyReportContextTemplate QFrame#millnessFrm
+{
+        background-color:#FFFFFF;
+}
+QDialog#lyReportContextTemplate  QPushButton,
+QDialog#lyReportContextTemplate  QPushButton:hover,
+QDialog#lyReportContextTemplate  QPushButton:pressed,
+QDialog#lyReportContextTemplate  QPushButton:checked
+{
+        background-color:transparent;
+        Color:#3662EC;
+        border:0px solid #3662EC;
+}
+
+
+
+
+QWidget#mImageAcquisitWidget QPushButton#mNewIllnessTemp
+{
+    background-color: #FFFFFF;
+        color: #000000;
+        border:0px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+}
+QWidget#mImageAcquisitWidget QPushButton#mNewIllnessTemp:hover,
+QWidget#mImageAcquisitWidget QPushButton#mNewIllnessTemp:pressed,
+QWidget#mImageAcquisitWidget QPushButton#mNewIllnessTemp:checked
+{
+    background-color: #FFFFFF;
+        color: #000000;
+        border:0px solid #3662EC;
+    margin: 0px;
+    padding: 0px;
+}
+
+

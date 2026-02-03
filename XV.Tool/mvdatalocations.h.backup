@@ -1,0 +1,37 @@
+﻿
+#ifndef mvDataLocations_H_
+#define mvDataLocations_H_
+
+#include <QString>
+#include <QObject>
+#include <QApplication>
+#include <QDir>
+#include <QApplication>
+#include <QDebug>
+
+
+#include "mvconfig.h"
+
+class QSettings;
+
+namespace mv
+{
+
+class DataLocations
+{
+public:
+	static QString getBundlePath(); 
+	static QString getRootConfigPath(); 
+	static QStringList getRootConfigPaths();
+	static QString getDicomPath();
+
+
+private:
+    static bool mBuildFolderChecked;
+    static bool mRunFromBuildFolder;
+
+};
+
+} 
+
+#endif /* mvDataLocations_H_ */

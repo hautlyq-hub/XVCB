@@ -1,0 +1,125 @@
+
+
+QWidget#MainWindow QWidget#mLeftWidget
+{
+    background-color: qlineargradient(spread:reflect, x1:0.0, y1:0.0, x2:0.0, y2:1.0, stop:0 rgba(255, 105, 172, 255), stop:1 rgba(30,81,241, 255));
+	Color:#000000;
+}
+
+
+QWidget#MainWindow QLabel#LogoLabel
+{
+    border-image: url(:/Res/Image/logo1.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+QWidget#MainWindow QStackedWidget#mLoginStackWidget,
+QWidget#MainWindow QPushButton#mBtnExitLogin
+{
+    background-color: transparent;
+	text-align:center;
+}
+
+QWidget#MainWindow QPushButton#mBtnNewCheck
+{
+    background-color: transparent;
+        border-image:url(:/Res/Image/mainwidget/305.png);;
+}
+QWidget#MainWindow QPushButton#mBtnPatientRecord
+{
+    background-color: transparent;
+        border-image:url(:/Res/Image/mainwidget/306.png);;
+}
+QWidget#MainWindow QPushButton#mBtnExp
+{
+    background-color: transparent;
+        border-image:url(:/Res/Image/mainwidget/307.png);;
+}
+QWidget#MainWindow QPushButton#mBtnSysSettings
+{
+    background-color: transparent;
+        border-image:url(:/Res/Image/mainwidget/307.png);;
+}
+QWidget#MainWindow QPushButton#mBtnSysMgnts
+{
+    background-color: transparent;
+        border-image:url(:/Res/Image/mainwidget/307.png);;
+}
+
+
+QWidget#MainWindow QPushButton#mBtnExitSys,
+QWidget#MainWindow QPushButton#mBtnExitSys:hover,
+QWidget#MainWindow QPushButton#mBtnExitSys:pressed
+{
+        width:35px;
+        height:35px;
+	background-color: transparent;
+	background-position:center;background-repeat:repeat;
+        image:url(:/Res/Image/mainwidget/power1.png);
+}
+
+
+QWidget#MainWindow QPushButton#mBtnNewCheck:checked
+{
+        border-image:url(:/Res/Image/mainwidget/299.png);
+	color: #000000;
+}
+
+QWidget#MainWindow QPushButton#mBtnPatientRecord:checked
+{
+        border-image:url(:/Res/Image/mainwidget/300.png);
+	color: #000000;
+}
+
+QWidget#MainWindow QPushButton#mBtnExp:checked
+{
+        border-image:url(:/Res/Image/mainwidget/301.png);
+        color: #000000;
+}
+
+QWidget#MainWindow QPushButton#mBtnSysSettings:checked
+{
+        border-image:url(:/Res/Image/mainwidget/301.png);
+	color: #000000;
+}
+QWidget#MainWindow QPushButton#mBtnSysMgnts:checked
+{
+        border-image:url(:/Res/Image/mainwidget/301.png);
+	color: #000000;
+}
+
+
+QWidget#MainWindow QPushButton#mBtnNewCheck:pressed
+{
+        border-image:url(:/Res/Image/mainwidget/299.png);
+	color: #000000;
+}
+
+QWidget#MainWindow QPushButton#mBtnPatientRecord:pressed
+{
+        border-image:url(:/Res/Image/mainwidget/300.png);
+	color: #000000;
+}
+
+QWidget#MainWindow QPushButton#mBtnExp:pressed
+{
+        border-image:url(:/Res/Image/mainwidget/301.png);
+        color: #000000;
+}
+QWidget#MainWindow QPushButton#mBtnSysSettings:pressed
+{
+        border-image:url(:/Res/Image/mainwidget/301.png);
+	color: #000000;
+}
+QWidget#MainWindow QPushButton#mBtnSysMgnts:pressed
+{
+        border-image:url(:/Res/Image/mainwidget/301.png);
+	color: #000000;
+}
+
+
+
+
+
