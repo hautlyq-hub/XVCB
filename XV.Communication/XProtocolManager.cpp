@@ -984,19 +984,24 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
 
 void XProtocolManager::onExposureF6Ready(const QString& portName)
 {
+    QString normalizedPortName = portName;
+    if (!normalizedPortName.startsWith("/dev/")) {
+        normalizedPortName = "/dev/" + normalizedPortName;
+    }
+
     // 在线程池中执行图像采集
-    QtConcurrent::run(m_threadPool, [this, portName]() {
+    QtConcurrent::run(m_threadPool, [this, normalizedPortName]() {
         // 查找对应的设备
         QString deviceKey;
         for (const auto& setting : m_portSettings) {
-            if (setting.portName == portName) {
+            if (setting.portName == normalizedPortName) {
                 deviceKey = setting.deviceKey;
                 break;
             }
         }
 
         if (deviceKey.isEmpty()) {
-            qWarning() << "Unknown port for image acquisition:" << portName;
+            qWarning() << "Unknown port for image acquisition:" << normalizedPortName;
             return;
         }
 

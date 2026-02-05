@@ -213,7 +213,6 @@ bool XSensorProtocol::echoSerialPort(QSerialPort* serialPort)
                 continue;
             }
 
-            qInfo() << "5. Checking for response...";
             QThread::msleep(300);
 
             QByteArray response = readResponse(2000);
@@ -888,8 +887,6 @@ bool XSensorProtocol::powerOff()
         return false;
     }
 
-    qInfo() << "Turning off device (with low power mode first)...";
-
     bool success = false;
 
     try {
@@ -1077,9 +1074,6 @@ void XSensorProtocol::cleanupAfterImageAcquisition(bool success)
         m_exposing = false;
 
         if (m_serial && m_serial->isOpen() && m_poweredOn) {
-            qInfo() << "[" << m_serial->portName()
-                    << "] Powering off device after image acquisition";
-
             if (sendCommand(Commands::F8_TO_LOWER_POWER)) {
                 QThread::msleep(100);
             }
@@ -1096,7 +1090,6 @@ void XSensorProtocol::cleanupAfterImageAcquisition(bool success)
             emit exposureCompleted();
             emit statusChanged("Exposure completed and device powered off");
         } else {
-            emit errorOccurred("Image acquisition failed");
             emit statusChanged("Image acquisition failed");
         }
 
@@ -1353,11 +1346,7 @@ XSensorProtocol::DeviceInfo XSensorProtocol::parseDeviceInfo(const QByteArray& d
         return info;
     }
 
-    qInfo() << "=== Parsing device info from" << data.size() << "bytes ===";
-
     try {
-        qInfo() << "Data (first 32 bytes):" << data.left(32).toHex(' ');
-
         if (static_cast<quint8>(data[0]) != 0xFA || static_cast<quint8>(data[1]) != 0xFA) {
             qWarning() << "Invalid header - expected FA FA, got:"
                        << QString::number(static_cast<quint8>(data[0]), 16)
