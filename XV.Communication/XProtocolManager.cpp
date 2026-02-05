@@ -1112,7 +1112,7 @@ void XProtocolManager::onSensorImageAvailable(HWImageData& image, const QString&
     // 查找对应的传感器键
     QString sensorKey;
     for (const auto& setting : m_portSettings) {
-        if (setting.portName == portName
+        if (setting.portName.contains(portName)
             && (setting.deviceKey == SENSOR1_KEY || setting.deviceKey == SENSOR2_KEY)) {
             image.orientation = setting.orientation;
             sensorKey = setting.deviceKey;

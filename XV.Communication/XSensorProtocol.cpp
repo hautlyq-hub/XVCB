@@ -529,8 +529,6 @@ void XSensorProtocol::acquireImage()
                 validRawDataInByte = receivedDataBytes.left(
                     qMin(receivedDataBytes.size(), rawImgTotalBytes));
 
-                qInfo() << "[" << m_serial->portName() << "] ^^^^^^ End Acquiring Image."
-                        << (realGetBags - 1) << "bags." << sw.elapsed() << "ms ^^^^^^";
                 imgRetrieved = true;
             } else {
                 qWarning() << "[" << m_serial->portName()
@@ -546,7 +544,6 @@ void XSensorProtocol::acquireImage()
             if (!processedImage.isEmpty()) {
                 emit imageReady(processedImage);
                 emit statusChanged("Image acquired successfully");
-                qInfo() << "[" << m_serial->portName() << "] Image processing completed";
             } else {
                 allGot = false;
                 qWarning() << "[" << m_serial->portName() << "] Image processing failed";
@@ -571,7 +568,6 @@ void XSensorProtocol::acquireImage()
     m_exposing = false;
 
     cleanupAfterImageAcquisition(allGot);
-    qInfo() << "[" << m_serial->portName() << "] AcquireImage End - Success:" << allGot;
 }
 
 QByteArray XSensorProtocol::retrieveImageByte(QString& errorCode, int& realGetBags, int packageIndex)
@@ -676,6 +672,7 @@ QByteArray XSensorProtocol::retrieveImageByte(QString& errorCode, int& realGetBa
 
 QByteArray XSensorProtocol::processImageData(const QByteArray& rawData, int cols, int rows)
 {
+    // 检查原始数据大小是否足够
     if (rawData.size() < cols * rows * 2) {
         m_lastError = QString("Invalid image data size: %1, expected: %2")
                           .arg(rawData.size())
@@ -684,15 +681,52 @@ QByteArray XSensorProtocol::processImageData(const QByteArray& rawData, int cols
         return QByteArray();
     }
 
-    QByteArray processedImage;
+    // 计算裁剪后的尺寸
+    int cropSize = 4; // 每边裁剪的像素数
+    int newCols = cols - 2 * cropSize;
+    int newRows = rows - 2 * cropSize;
 
-    processedImage.resize(cols * rows * 2);
-    for (int i = 0; i < rawData.size(); i += 2) {
-        processedImage[i] = rawData[i + 1];
-        processedImage[i + 1] = rawData[i];
+    // 检查裁剪后的尺寸是否有效
+    if (newCols <= 0 || newRows <= 0) {
+        m_lastError = QString("Image too small for cropping: %1x%2, crop size: %3")
+                          .arg(cols)
+                          .arg(rows)
+                          .arg(cropSize);
+        qDebug() << m_lastError;
+        return QByteArray();
     }
 
-    emit statusChanged("Image data processed");
+    // 调整输出数据大小（每个像素2字节）
+    QByteArray processedImage;
+    processedImage.resize(newCols * newRows * 2);
+
+    // 处理数据：交换字节顺序并裁剪
+    int destIndex = 0;
+
+    // 从第cropSize行开始，到rows-cropSize行结束
+    for (int row = cropSize; row < rows - cropSize; row++) {
+        // 计算当前行的起始索引（每个像素2字节）
+        int rowStartIndex = row * cols * 2;
+
+        // 从第cropSize列开始，到cols-cropSize列结束
+        for (int col = cropSize; col < cols - cropSize; col++) {
+            // 计算源数据中的像素位置（每个像素2字节）
+            int srcPixelIndex = rowStartIndex + col * 2;
+
+            // 交换字节顺序：低字节和高字节互换
+            processedImage[destIndex] = rawData[srcPixelIndex + 1]; // 高字节
+            processedImage[destIndex + 1] = rawData[srcPixelIndex]; // 低字节
+
+            // 目标索引前进2字节
+            destIndex += 2;
+        }
+    }
+
+    emit statusChanged(QString("Image data processed and cropped. Original: %1x%2, Cropped: %3x%4")
+                           .arg(cols)
+                           .arg(rows)
+                           .arg(newCols)
+                           .arg(newRows));
     return processedImage;
 }
 
@@ -1068,8 +1102,6 @@ void XSensorProtocol::cleanupAfterImageAcquisition(bool success)
     QMutexLocker locker(&m_mutex);
 
     try {
-        qInfo() << "[" << (m_serial ? m_serial->portName() : "Unknown")
-                << "] Cleaning up after image acquisition, success:" << success;
 
         m_exposing = false;
 
@@ -1080,7 +1112,6 @@ void XSensorProtocol::cleanupAfterImageAcquisition(bool success)
 
             if (sendCommand(Commands::F4_POWER_OFF)) {
                 m_poweredOn = false;
-                qInfo() << "[" << m_serial->portName() << "] Device powered off successfully";
             }
         }
 
