@@ -88,22 +88,22 @@ bool XSensorProtocol::initSerialPort(const QString& portName)
     for (const QSerialPortInfo& info : ports) {
         if (info.portName() == portName) {
             portExists = true;
-            qDebug() << "Port found:" << portName << "description:" << info.description();
+            qDebug() << "Port found:" << portName;
             break;
         }
     }
 
-    if (!portExists) {
-        qWarning() << "Port" << portName << "does not exist";
-        m_lastError = QString("端口 %1 不存在").arg(portName);
-        return false;
-    }
+    // if (!portExists) {
+    //     qWarning() << "Port" << portName << "does not exist";
+    //     m_lastError = QString("端口 %1 不存在").arg(portName);
+    //     return false;
+    // }
 
-    if (m_serial) {
-        m_serial->close();
-        delete m_serial;
-        m_serial = nullptr;
-    }
+    // if (m_serial) {
+    //     m_serial->close();
+    //     delete m_serial;
+    //     m_serial = nullptr;
+    // }
 
     m_serial = internalGetTransducerCOM(portName);
 
@@ -119,7 +119,7 @@ bool XSensorProtocol::initSerialPort(const QString& portName)
 
 QSerialPort* XSensorProtocol::internalGetTransducerCOM(const QString& comPort)
 {
-    qInfo() << "线程" << QThread::currentThreadId() << "Opening port:" << comPort;
+    qInfo() << "Sensor Opening port:" << comPort;
 
     QSerialPort* sp = new QSerialPort();
     sp->setPortName(comPort);
@@ -171,8 +171,6 @@ bool XSensorProtocol::echoSerialPort(QSerialPort* serialPort)
         return false;
     }
 
-    qInfo() << "=== Starting echo test on" << serialPort->portName() << "===";
-
     QSerialPort* oldSerial = m_serial;
     m_serial = serialPort;
 
@@ -180,7 +178,6 @@ bool XSensorProtocol::echoSerialPort(QSerialPort* serialPort)
     bool powerOnSuccess = false;
 
     try {
-        qInfo() << "1. Clearing buffer before starting...";
         m_serial->clear(QSerialPort::Input | QSerialPort::Output);
         QThread::msleep(200);
 
@@ -189,14 +186,12 @@ bool XSensorProtocol::echoSerialPort(QSerialPort* serialPort)
             qInfo() << "  Discarded initial leftover:" << initialLeftover.size() << "bytes";
         }
 
-        qInfo() << "2. Powering on device...";
         powerOnSuccess = powerOn();
         if (!powerOnSuccess) {
             qWarning() << "Power on failed: " << m_lastError;
             throw std::runtime_error("Power on failed");
         }
 
-        qInfo() << "3. Waiting for device to stabilize...";
         QThread::msleep(300);
 
         m_serial->clear(QSerialPort::Input | QSerialPort::Output);
@@ -208,11 +203,7 @@ bool XSensorProtocol::echoSerialPort(QSerialPort* serialPort)
                     << "bytes";
         }
 
-        qInfo() << "4. Sending FA find device command...";
-
-        for (int attempt = 1; attempt <= 3; attempt++) {
-            qInfo() << "  Attempt" << attempt << "/3";
-
+        for (int attempt = 1; attempt <= 1; attempt++) {
             m_serial->clear(QSerialPort::Input | QSerialPort::Output);
             QThread::msleep(100);
             m_serial->readAll();
@@ -226,7 +217,7 @@ bool XSensorProtocol::echoSerialPort(QSerialPort* serialPort)
             QThread::msleep(300);
 
             QByteArray response = readResponse(2000);
-            qDebug() << "Response:" << response.toHex(' ');
+            qDebug() << "resp" << response.toHex(' ');
 
             if (response.size() >= 512) {
                 QString hexString;
@@ -288,7 +279,6 @@ bool XSensorProtocol::echoSerialPort(QSerialPort* serialPort)
     m_serial = oldSerial;
 
     if (echoSuccess) {
-        qInfo() << "*** Echo test successful! ***";
     } else {
         qWarning() << "Echo failed: " << m_lastError;
     }
@@ -298,9 +288,7 @@ bool XSensorProtocol::echoSerialPort(QSerialPort* serialPort)
 
 void XSensorProtocol::closeSerialPort()
 {
-    qInfo() << "=== 关闭串口 (曝光后) ===";
-    qInfo() << "当前状态 - 曝光中:" << m_exposing << "电源开启:" << m_poweredOn
-            << "忙碌:" << m_isBusy;
+    qInfo() << "=== 关闭传感器串口 ===";
 
     m_exposing = false;
     m_poweredOn = false;
@@ -393,7 +381,7 @@ bool XSensorProtocol::switchToLowPowerMode()
         return false;
     }
 
-    qDebug() << "Response:" << response.toHex(' ');
+    qDebug() << "resp" << response.toHex(' ');
 
     if (response.size() >= 4 && static_cast<quint8>(response[0]) == 0xF8
         && static_cast<quint8>(response[1]) == 0xF8) {
@@ -441,7 +429,7 @@ bool XSensorProtocol::enableExposure(bool wait, bool isCalibration)
     qInfo() << "[" << m_serial->portName() << "] 等待F6响应...";
     QByteArray response = readResponse(6000);
 
-    qDebug() << "Response:" << response.toHex(' ');
+    qDebug() << "resp" << response.toHex(' ');
     bool exposureSuccess = false;
     if (response.size() >= 4 && static_cast<quint8>(response[0]) == 0xF6
         && static_cast<quint8>(response[1]) == 0xF6) {
@@ -840,7 +828,7 @@ bool XSensorProtocol::echoDevice()
         return false;
     }
 
-    qDebug() << "Response:" << response.toHex(' ');
+    qDebug() << "resp" << response.toHex(' ');
 
     m_deviceInfo = parseDeviceInfo(response);
     if (m_deviceInfo.version.isEmpty()) {
@@ -873,7 +861,7 @@ bool XSensorProtocol::powerOn()
         return false;
     } else {
         QByteArray response = readResponse(m_echoTimeout);
-        qDebug() << "Response:" << response.toHex(' ');
+        qDebug() << "resp" << response.toHex(' ');
     }
 
     QThread::msleep(300);
@@ -883,7 +871,7 @@ bool XSensorProtocol::powerOn()
         return false;
     } else {
         QByteArray response = readResponse(m_echoTimeout);
-        qDebug() << "Response:" << response.toHex(' ');
+        qDebug() << "resp" << response.toHex(' ');
     }
 
     m_poweredOn = true;
@@ -1026,22 +1014,6 @@ void XSensorProtocol::stopExposure()
 
 bool XSensorProtocol::sendCommand(const QByteArray& cmd)
 {
-    if (QThread::currentThread() != this->thread()) {
-        qDebug() << "调度命令到正确线程...";
-
-        bool result = false;
-        QMetaObject::invokeMethod(
-            this,
-            [this, cmd, &result]() { result = sendCommand(cmd); },
-            Qt::BlockingQueuedConnection);
-        return result;
-    }
-
-    if (!m_serial || !m_serial->isOpen()) {
-        m_lastError = "Serial port not open";
-        return false;
-    }
-
     QByteArray fullCommand = buildCommand(cmd, '\x0D', '\x0A');
     if (fullCommand.isEmpty()) {
         m_lastError = "Failed to build command";
@@ -1049,8 +1021,7 @@ bool XSensorProtocol::sendCommand(const QByteArray& cmd)
     }
 
     QString hexStr = fullCommand.toHex(' ').toUpper();
-    qDebug() << "[TX] 线程" << QThread::currentThreadId() << "发送命令:" << hexStr << "到端口"
-             << m_serial->portName();
+    qDebug() << "req:" << hexStr << "到端口" << m_serial->portName();
 
     m_serial->write(fullCommand);
 
@@ -1089,6 +1060,8 @@ QByteArray XSensorProtocol::readResponse(int timeout)
 
         QCoreApplication::processEvents();
     }
+
+    qDebug() << "resp:" << response.toHex(' ');
 
     return response;
 }
@@ -1226,8 +1199,6 @@ bool XSensorProtocol::sendF5Config()
         return false;
     }
 
-    qDebug() << "Response:" << response.toHex(' ');
-
     // 2. 电压配置
     if (true) {
         int vset = (int) (0.75 * 2000);
@@ -1267,7 +1238,7 @@ bool XSensorProtocol::sendF5Config()
             return false;
         }
 
-        qDebug() << "Response:" << response.toHex(' ');
+        qDebug() << "resp" << response.toHex(' ');
 
         // 🔧 修复点4: 增加电压配置后的等待时间
         QThread::msleep(500); // 新增500ms等待
@@ -1277,7 +1248,7 @@ bool XSensorProtocol::sendF5Config()
         && static_cast<quint8>(response[1]) == 0xF5) {
         qDebug() << "F5 config successful!";
     } else {
-        qDebug() << "Response:" << response.toHex(' ');
+        qDebug() << "resp" << response.toHex(' ');
         return false;
     }
 
@@ -1345,7 +1316,7 @@ void XSensorProtocol::rectifyDeviceParam()
         qWarning() << m_lastError;
         return;
     }
-    qDebug() << "Response:" << response.toHex(' ');
+    qDebug() << "resp" << response.toHex(' ');
 
     if (response.size() >= 18) {
         auto getValue = [&response](int index) -> int {

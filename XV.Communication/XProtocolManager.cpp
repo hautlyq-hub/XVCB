@@ -225,23 +225,12 @@ void XProtocolManager::loadConfig()
     QString sensor1Desc = ConfigFileManager::getInstance()->getValue("sensor1/description");
     int sensor1Ori = ConfigFileManager::getInstance()->getValue("sensor1/orientation").toInt();
 
-    // 去掉 /dev/ 前缀，因为系统只认短格式
-    if (sensor1Port.startsWith("/dev/")) {
-        sensor1Port = sensor1Port.mid(5); // 去掉前5个字符 "/dev/"
-        qDebug() << "传感器1端口修正为短格式:" << sensor1Port;
-    }
-
     m_portSettings.append({"sensor1", sensor1Port, sensor1Desc, sensor1Ori, false});
 
     // 加载传感器2配置
     QString sensor2Port = ConfigFileManager::getInstance()->getValue("sensor2/value");
     QString sensor2Desc = ConfigFileManager::getInstance()->getValue("sensor2/description");
     int sensor2Ori = ConfigFileManager::getInstance()->getValue("sensor2/orientation").toInt();
-
-    if (sensor2Port.startsWith("/dev/")) {
-        sensor2Port = sensor2Port.mid(5);
-        qDebug() << "传感器2端口修正为短格式:" << sensor2Port;
-    }
 
     m_portSettings.append({"sensor2", sensor2Port, sensor2Desc, sensor2Ori, false});
 
@@ -250,22 +239,12 @@ void XProtocolManager::loadConfig()
     QString xray1Desc = ConfigFileManager::getInstance()->getValue("xray1/description");
     int xray1Ori = ConfigFileManager::getInstance()->getValue("xray1/orientation").toInt();
 
-    if (xray1Port.startsWith("/dev/")) {
-        xray1Port = xray1Port.mid(5);
-        qDebug() << "X光机1端口修正为短格式:" << xray1Port;
-    }
-
     m_portSettings.append({"xray1", xray1Port, xray1Desc, xray1Ori, false});
 
     // 加载X光机2配置
     QString xray2Port = ConfigFileManager::getInstance()->getValue("xray2/value");
     QString xray2Desc = ConfigFileManager::getInstance()->getValue("xray2/description");
     int xray2Ori = ConfigFileManager::getInstance()->getValue("xray2/orientation").toInt();
-
-    if (xray2Port.startsWith("/dev/")) {
-        xray2Port = xray2Port.mid(5);
-        qDebug() << "X光机2端口修正为短格式:" << xray2Port;
-    }
 
     m_portSettings.append({"xray2", xray2Port, xray2Desc, xray2Ori, false});
 
@@ -688,7 +667,7 @@ int XProtocolManager::checkSensorCalibrateFileCount()
 bool XProtocolManager::startExposure()
 {
     bool success1 = false;
-    bool success2 = false;
+    bool success2 = true;
 
     if (m_sensor1) {
         QMetaObject::invokeMethod(
@@ -952,18 +931,19 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
         }
         bool isXmain = isMain && isX;
 
-        if (m_sensor2) {
-            QMetaObject::invokeMethod(
-                m_sensor2,
-                [this]() { m_sensor2->enableExposure(!isXmain, true); },
-                Qt::QueuedConnection);
-        }
-        QThread::msleep(10);
-
         if (m_sensor1) {
             QMetaObject::invokeMethod(
                 m_sensor1,
-                [this]() { m_sensor1->enableExposure(isXmain, true); },
+                [this, isXmain]() { m_sensor1->enableExposure(isXmain, m_xRayIndex != 0); },
+                Qt::QueuedConnection);
+        }
+
+        QThread::msleep(10);
+
+        if (m_sensor2) {
+            QMetaObject::invokeMethod(
+                m_sensor2,
+                [this, isXmain]() { m_sensor2->enableExposure(!isXmain, m_xRayIndex != 0); },
                 Qt::QueuedConnection);
         }
 
@@ -1120,7 +1100,7 @@ void XProtocolManager::onSetupTimeout()
     stopWorkMode();
 }
 
-void XProtocolManager::onSensorImageAvailable(const HWImageData& image, const QString& portName)
+void XProtocolManager::onSensorImageAvailable(HWImageData& image, const QString& portName)
 {
     QMutexLocker locker(&m_imageMutex);
 
@@ -1129,6 +1109,7 @@ void XProtocolManager::onSensorImageAvailable(const HWImageData& image, const QS
     for (const auto& setting : m_portSettings) {
         if (setting.portName == portName
             && (setting.deviceKey == SENSOR1_KEY || setting.deviceKey == SENSOR2_KEY)) {
+            image.orientation = setting.orientation;
             sensorKey = setting.deviceKey;
             break;
         }

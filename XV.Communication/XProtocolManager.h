@@ -206,7 +206,7 @@ private slots:
     void onXrayTemperatureUpdated(float deviceTemp, float mcuTemp, int index);
 
     // 图像处理
-    void onSensorImageAvailable(const HWImageData& image, const QString& portName);
+    void onSensorImageAvailable(HWImageData& image, const QString& portName);
 
 private:
     // 初始化函数

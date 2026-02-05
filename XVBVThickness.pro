@@ -218,10 +218,35 @@ TRANSLATIONS += \
 # 树莓派运行时库路径
 QMAKE_LFLAGS += -Wl,-rpath,'$$ORIGIN/lib'
 
-# ============ 其他配置 ============
-# 防止Qt Designer中自动生成的ui_*.h文件找不到
-MOC_DIR = .moc
-RCC_DIR = .rcc
-UI_DIR = .ui
-OBJECTS_DIR = .obj
+# ============ 分 Debug/Release 的输出路径 ============
+# 基础构建路径
+BUILD_BASE = $$PWD/build
+
+# 根据配置选择路径
+CONFIG(debug, debug|release) {
+    BUILD_TYPE = debug
+    # 可选：给 Debug 版本添加后缀
+    # TARGET = $$join(TARGET,,,_debug)
+} else {
+    BUILD_TYPE = release
+}
+
+# 设置所有输出路径
+BUILD_PATH = $${BUILD_BASE}/$${BUILD_TYPE}
+DESTDIR = $${BUILD_PATH}
+MOC_DIR = $${BUILD_PATH}/.moc
+RCC_DIR = $${BUILD_PATH}/.rcc
+UI_DIR = $${BUILD_PATH}/.ui
+OBJECTS_DIR = $${BUILD_PATH}/.obj
+
+# 确保目录存在
+!exists($$BUILD_PATH) {
+    mkpath($$BUILD_PATH)
+}
+
+# 也可以为中间文件创建子目录
+!exists($${BUILD_PATH}/.moc) { mkpath($${BUILD_PATH}/.moc) }
+!exists($${BUILD_PATH}/.rcc) { mkpath($${BUILD_PATH}/.rcc) }
+!exists($${BUILD_PATH}/.ui) { mkpath($${BUILD_PATH}/.ui) }
+!exists($${BUILD_PATH}/.obj) { mkpath($${BUILD_PATH}/.obj) }
 

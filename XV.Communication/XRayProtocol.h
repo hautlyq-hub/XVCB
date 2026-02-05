@@ -186,9 +186,9 @@ private:
 
     // 内部方法
     QByteArray buildCommand(quint16 cmdCode, quint8 operate, const QByteArray &data);
-    QByteArray executeCommand(quint16 cmdCode,
-                              const QByteArray &data = QByteArray(),
-                              int responseTimeout = 1000);
+    bool sendCommand(quint16 cmdCode, const QByteArray &data = QByteArray());
+    QByteArray readResponse(int timeout);
+
     QByteArray getWaveformCommandTemplate(quint16 waveformType, const QByteArray &data);
 
     // 数据解析
@@ -207,6 +207,7 @@ private:
     QTimer *m_statusTimer;
     int m_coolingRemaining;
     int m_expTimeMs;
+    int m_respTimeout;
     // 线程安全
     QMutex m_statusMutex;
 

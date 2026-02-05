@@ -259,6 +259,9 @@ void mvsystemsettings::onReconnecttoggled()
             bool ret = mManager->initSerialPort();
             if (ret) {
                 resetUI();
+            } else {
+                updateInfoPanel("串口初始化失败", Error);
+                updateDeviceState(ExposureState::Fault);
             }
             QTimer::singleShot(2000, this, [this]() { ui->pushButtonConnect->setEnabled(true); });
         });
@@ -289,8 +292,8 @@ void mvsystemsettings::enableUIComponents(bool enabled)
     ui->mBtnGenerate->setEnabled(enabled);
 
     // 启用轴选择
-    ui->mRBtnX->setEnabled(enabled);
-    ui->mRBtnY->setEnabled(enabled);
+    // ui->mRBtnX->setEnabled(enabled);
+    // ui->mRBtnY->setEnabled(enabled);
 
     // 启用串口选择
     ui->mCbComSensor1->setEnabled(enabled);
@@ -299,10 +302,10 @@ void mvsystemsettings::enableUIComponents(bool enabled)
     ui->mCbComXray2->setEnabled(enabled);
 
     // 启用方向选择
-    ui->mRBtnSensorOri1LR->setEnabled(enabled);
-    ui->mRBtnSensorOri1UpDown->setEnabled(enabled);
-    ui->mRBtnSensorOri2LR->setEnabled(enabled);
-    ui->mRBtnSensorOri2UpDown->setEnabled(enabled);
+    // ui->mRBtnSensorOri1LR->setEnabled(enabled);
+    // ui->mRBtnSensorOri1UpDown->setEnabled(enabled);
+    // ui->mRBtnSensorOri2LR->setEnabled(enabled);
+    // ui->mRBtnSensorOri2UpDown->setEnabled(enabled);
 }
 
 // 按钮点击处理
@@ -616,7 +619,7 @@ void mvsystemsettings::GenerateCalibrationFiles()
     QDir().mkpath(destDirX);
 
     // 调用算法生成校准文件
-    // genRes = XPectAlgorithmic::GenCorrectionFile(...);
+    //genRes = XPectAlgorithmic::Instance()->GenerateCorrectionFile(...);
 
     // 生成Y轴校准文件
     QString destDirY = "Cal/CalFile/" + mHWImageDataY->deviceVersion + "/"
@@ -904,20 +907,15 @@ void mvsystemsettings::refreshComPorts()
 
     // 添加到所有下拉框
     for (const QSerialPortInfo& port : ports) {
-        QString portName = port.portName();       // 短格式：ttyUSB0
-        QString description = port.description(); // 设备描述
-
-        // 构造显示文本：端口号 + 设备描述（如果有）
-        QString displayText = portName;
-        if (!description.isEmpty()) {
-            displayText += " - " + description;
-        }
+        QString portName = port.portName();
+        qDebug() << "==============" + portName;
+        QString displayText = "/dev/" + portName;
 
         // 添加项，存储短格式端口名
-        ui->mCbComSensor1->addItem(displayText, portName);
-        ui->mCbComSensor2->addItem(displayText, portName);
-        ui->mCbComXray1->addItem(displayText, portName);
-        ui->mCbComXray2->addItem(displayText, portName);
+        ui->mCbComSensor1->addItem(displayText, displayText);
+        ui->mCbComSensor2->addItem(displayText, displayText);
+        ui->mCbComXray1->addItem(displayText, displayText);
+        ui->mCbComXray2->addItem(displayText, displayText);
     }
 
     // 恢复之前的选择
@@ -965,6 +963,21 @@ void mvsystemsettings::loadSelectedPorts()
     QString sensor2Port = ConfigFileManager::getInstance()->getValue("sensor2/value");
     QString xray1Port = ConfigFileManager::getInstance()->getValue("xray1/value");
     QString xray2Port = ConfigFileManager::getInstance()->getValue("xray2/value");
+
+    //确保保存的端口名有前缀
+    auto ensurePrefix = [](const QString& port) -> QString {
+        if (port.isEmpty())
+            return port;
+        if (!port.startsWith("/dev/")) {
+            return "/dev/" + port;
+        }
+        return port;
+    };
+
+    sensor1Port = ensurePrefix(sensor1Port);
+    sensor2Port = ensurePrefix(sensor2Port);
+    xray1Port = ensurePrefix(xray1Port);
+    xray2Port = ensurePrefix(xray2Port);
 
     // 在对应下拉框中查找并选中
     selectPortInComboBox(ui->mCbComSensor1, sensor1Port);
@@ -1047,20 +1060,6 @@ void mvsystemsettings::savePortSettings()
         QString sensor2Port = ui->mCbComSensor2->currentData().toString();
         QString xray1Port = ui->mCbComXray1->currentData().toString();
         QString xray2Port = ui->mCbComXray2->currentData().toString();
-
-        // 去掉 /dev/ 前缀，保存短格式
-        if (sensor1Port.startsWith("/dev/")) {
-            sensor1Port = sensor1Port.mid(5);
-        }
-        if (sensor2Port.startsWith("/dev/")) {
-            sensor2Port = sensor2Port.mid(5);
-        }
-        if (xray1Port.startsWith("/dev/")) {
-            xray1Port = xray1Port.mid(5);
-        }
-        if (xray2Port.startsWith("/dev/")) {
-            xray2Port = xray2Port.mid(5);
-        }
 
         // 获取方向设置
         int sensor1Orientation = ui->mRBtnSensorOri1LR->isChecked() ? 0 : 1;

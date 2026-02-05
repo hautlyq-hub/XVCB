@@ -39,6 +39,7 @@ XRayProtocol::XRayProtocol(QObject *parent)
     , m_lastError(XRAY_SUCCESS)
     , m_coolingRemaining(0)
     , m_expTimeMs(30000)
+    , m_respTimeout(1000)
 {
     m_exposureTimer = new QTimer(this);
     m_exposureTimer->setSingleShot(false);
@@ -59,60 +60,32 @@ XRayProtocol::~XRayProtocol()
 
 bool XRayProtocol::initSerialPort(const QString &portName, int baudRate)
 {
-    if (QThread::currentThread() != this->thread()) {
-        qCritical() << "❌ 跨线程访问XRayProtocol串口！";
-        qCritical() << "对象在线程:" << this->thread();
-        qCritical() << "当前线程:" << QThread::currentThread();
-
-        // 自动调度到正确线程
-        bool result = false;
-        QMetaObject::invokeMethod(
-            this,
-            [this, portName, baudRate, &result]() { result = initSerialPort(portName, baudRate); },
-            Qt::BlockingQueuedConnection);
-        return result;
-    }
-
-    QString fullPortName = portName;
-    if (!fullPortName.startsWith("/dev/")) {
-        fullPortName = "/dev/" + fullPortName;
-    }
-
-    // 检查端口文件是否存在
-    QFileInfo portFile(fullPortName);
-    if (!portFile.exists()) {
-        qWarning() << "端口文件不存在:" << fullPortName;
-        return false;
-    }
-
-    // 清理旧的串口
-    if (m_serialPort) {
-        delete m_serialPort;
-        m_serialPort = nullptr;
-    }
+    qInfo() << "XRay Opening port:" << portName;
 
     m_serialPort = new QSerialPort();
 
-    m_serialPort->setPortName(fullPortName);
-    m_serialPort->setBaudRate(921600);
+    m_serialPort->setPortName(portName);
+    m_serialPort->setBaudRate(baudRate);
     m_serialPort->setDataBits(QSerialPort::Data8);
     m_serialPort->setParity(QSerialPort::NoParity);
     m_serialPort->setStopBits(QSerialPort::OneStop);
     m_serialPort->setFlowControl(QSerialPort::NoFlowControl);
 
-    if (!m_serialPort->open(QIODevice::ReadWrite)) {
-        qWarning() << "无法打开串口:" << fullPortName;
-        delete m_serialPort;
-        m_serialPort = nullptr;
-        return false;
-    }
+    if (m_serialPort->open(QIODevice::ReadWrite)) {
+        qInfo() << "Port opened successfully at 921600 baud";
+        QThread::msleep(500);
+        m_serialPort->clear();
 
-    // 测试连接
-    QString version = getVersion();
-    if (version.isEmpty()) {
-        qWarning() << "无法获取设备版本号";
+        QString version = getVersion();
+        if (version.isEmpty()) {
+            qWarning() << "无法获取设备版本号";
+            delete m_serialPort;
+            m_serialPort = nullptr;
+            return false;
+        }
+    } else {
+        qWarning() << "Failed to open port:" << portName;
         delete m_serialPort;
-        m_serialPort = nullptr;
         return false;
     }
 
@@ -131,10 +104,11 @@ bool XRayProtocol::initSerialPort(const QString &portName, int baudRate)
 
 void XRayProtocol::closeSerialPort()
 {
-    qInfo() << "=== 关闭X光串口 (曝光后) ===";
-    qInfo() << "设备状态:" << m_deviceStatus << "曝光定时器激活:" << m_exposureTimer->isActive();
+    qInfo() << "=== 关闭X光串口 ===";
 
     if (m_serialPort) {
+        qWarning() << "Actively close port" << m_serialPort->portName();
+
         if (m_serialPort->isOpen()) {
             m_serialPort->close();
         }
@@ -156,191 +130,6 @@ bool XRayProtocol::isConnected() const
     return m_serialPort && m_serialPort->isOpen();
 }
 
-QString XRayProtocol::getVersion()
-{
-    QByteArray response = executeCommand(0x0C, QByteArray(), 500);
-    return parseVersion(response);
-}
-
-QString XRayProtocol::getSerialNumber()
-{
-    QByteArray response = executeCommand(0x0A, QByteArray(), 500);
-    return parseSerialNumber(response);
-}
-
-ADCValues XRayProtocol::getADCValues()
-{
-    QByteArray response = executeCommand(0x0D, QByteArray(), 500);
-    return parseADCValues(response);
-}
-
-bool XRayProtocol::setExposureParams(const ExposureParams &params)
-{
-    if (!isConnected()) {
-        qWarning() << "Device not connected";
-        return false;
-    }
-
-    // 构建参数数据包
-    QByteArray data;
-    QDataStream stream(&data, QIODevice::WriteOnly);
-    stream.setFloatingPointPrecision(QDataStream::SinglePrecision);
-    stream.setByteOrder(QDataStream::LittleEndian);
-
-    stream << params.ma_min;
-    stream << params.ma_max;
-    stream << params.ma_val;
-    stream << params.kvs_min;
-    stream << params.kvs_max;
-    stream << params.kv_min;
-    stream << params.kv_max;
-    stream << params.kv_val;
-    stream << params.exp_time_ms;
-
-    m_expTimeMs = params.exp_time_ms;
-    QByteArray response = executeCommand(0x1C, data, 1000);
-
-    if (response.isEmpty()) {
-        return false;
-    }
-
-    // 解析响应，验证参数设置成功
-    if (response.size() >= 44) {
-        // 可以解析返回的参数进行验证
-        m_currentParams = params;
-        return true;
-    }
-
-    return false;
-}
-
-// 提取曝光状态检查方法
-bool XRayProtocol::checkExposureStatus(ExposureStatus &status)
-{
-    // 使用正确的查询命令
-    QByteArray queryResponse = executeCommand(0x1B, QByteArray(), 1000);
-
-    if (queryResponse.isEmpty() || queryResponse.size() < 29) {
-        qWarning() << "曝光状态查询失败或无响应";
-        return false;
-    }
-
-    // 调试输出收到的完整响应
-    qDebug() << "曝光查询响应HEX:" << queryResponse.toHex(' ').toUpper();
-
-    // 解析状态 - 从第16字节开始
-    QDataStream stream(queryResponse.mid(16));
-    stream.setByteOrder(QDataStream::LittleEndian);
-
-    stream >> status.exposureEnable;
-    stream >> status.exposureMode;
-    stream >> status.lowBattery;
-    stream >> status.hardwareCheck;
-    stream >> status.delayShutdown;
-    stream >> status.cooldownTime;
-    stream >> status.exposureStep;
-
-    qDebug() << "解析曝光状态:";
-    qDebug() << "  曝光使能:" << status.exposureEnable;
-    qDebug() << "  曝光模式:" << status.exposureMode;
-    qDebug() << "  低电量:" << status.lowBattery;
-    qDebug() << "  硬件检测:" << status.hardwareCheck;
-    qDebug() << "  延迟关机:" << status.delayShutdown << "ms";
-    qDebug() << "  冷却时间:" << status.cooldownTime << "s";
-    qDebug() << "  曝光步骤:" << status.exposureStep;
-
-    // 检查异常状态
-    if (status.exposureEnable == 0xFFFF) {
-        qWarning() << "⚠️ 设备返回异常状态 (曝光使能=65535)，需要重置设备";
-        return false;
-    }
-
-    return true;
-}
-
-// 提取故障清除方法
-bool XRayProtocol::clearFaults()
-{
-    qDebug() << "清除设备故障...";
-
-    // 1. 发送清除错误命令 (0x1D, OPERATE=0x01)
-    QByteArray clearData = QByteArray::fromHex("01000000");
-    QByteArray response = executeCommand(0x1D, clearData, 500);
-
-    if (response.isEmpty()) {
-        qWarning() << "清除故障失败";
-        return false;
-    }
-
-    qDebug() << "故障清除成功";
-
-    // 2. 等待设备复位
-    QThread::msleep(300);
-
-    // 3. 发送停止曝光命令，确保设备处于停止状态
-    QByteArray stopData;
-    stopData.append(static_cast<char>(0x01)); // 使能=1
-    stopData.append(static_cast<char>(0x00));
-    stopData.append(static_cast<char>(0x00)); // 模式=0（停止）
-    stopData.append(static_cast<char>(0x00));
-
-    executeCommand(0x1B, stopData, 300);
-
-    // 4. 再次清除错误（双重保险）
-    executeCommand(0x1D, clearData, 300);
-
-    QThread::msleep(200);
-
-    return true;
-}
-
-// 提取使能曝光方法
-bool XRayProtocol::enableExposure()
-{
-    qDebug() << "使能设备曝光...";
-
-    QByteArray enableData;
-    enableData.append(static_cast<char>(0x01)); // 曝光使能低字节
-    enableData.append(static_cast<char>(0x00)); // 曝光使能高字节
-    enableData.append(static_cast<char>(0x00)); // 曝光模式低字节
-    enableData.append(static_cast<char>(0x00)); // 曝光模式高字节
-
-    QByteArray enableResponse = executeCommand(0x1B, enableData, 1000);
-
-    if (enableResponse.isEmpty()) {
-        qWarning() << "曝光使能命令失败";
-        return false;
-    }
-
-    qDebug() << "曝光使能成功";
-    QThread::msleep(200); // 等待设备稳定
-
-    return true;
-}
-
-// 提取发送开始曝光命令方法
-bool XRayProtocol::sendStartExposureCommand(quint8 &exposureStep)
-{
-    qDebug() << "发送开始曝光命令...";
-
-    QByteArray startData;
-    startData.append(static_cast<char>(0x01)); // 曝光使能=1
-    startData.append(static_cast<char>(0x00));
-    startData.append(static_cast<char>(0x01)); // 曝光模式=1（开始）
-    startData.append(static_cast<char>(0x00));
-
-    QByteArray startResponse = executeCommand(0x1B, startData, 1000);
-
-    if (startResponse.isEmpty() || startResponse.size() < 29) {
-        qWarning() << "开始曝光命令无响应或响应不完整";
-        return false;
-    }
-
-    exposureStep = static_cast<quint8>(startResponse[24]);
-    qDebug() << "曝光处理步骤:" << exposureStep;
-
-    return true;
-}
 
 bool XRayProtocol::startExposure()
 {
@@ -378,19 +167,15 @@ bool XRayProtocol::startExposure()
 
 bool XRayProtocol::stopExposure()
 {
-    QMutexLocker locker(&m_serialMutex);
-
-    if (!isConnected()) {
-        return true;
-    }
 
     if (m_deviceStatus != DEVICE_EXPOSING) {
         return true;
     }
 
-    // 发送预定义的曝光停止命令
-
-    QByteArray response = executeCommand(0x1B, QByteArray::fromHex("01000000"), 1000);
+    QByteArray response;
+    if (sendCommand(0x1B, QByteArray::fromHex("01000000"))) {
+        response = readResponse(m_respTimeout);
+    }
 
     m_exposureTimer->stop();
     m_deviceStatus = DEVICE_READY;
@@ -401,41 +186,6 @@ bool XRayProtocol::stopExposure()
     return true;
 }
 
-bool XRayProtocol::resetDevice()
-{
-    qDebug() << "=== 重置X光设备 ===";
-
-    // 1. 发送停止曝光命令
-    QByteArray stopData;
-    QDataStream stopStream(&stopData, QIODevice::WriteOnly);
-    stopStream.setByteOrder(QDataStream::LittleEndian);
-    stopStream << (quint16) 1; // 使能=1
-    stopStream << (quint16) 0; // 模式=0
-
-    executeCommand(0x1B, stopData, 500);
-    QThread::msleep(200);
-
-    // 2. 清除错误标志
-    if (!clearFaults()) {
-        qWarning() << "清除错误标志失败";
-        return false;
-    }
-
-    // 3. 等待设备稳定
-    QThread::msleep(500);
-
-    // 4. 验证设备状态
-    ExposureStatus status;
-    if (checkExposureStatus(status)) {
-        if (status.exposureEnable != 0xFFFF && status.exposureStep != 9) {
-            qDebug() << "✅ 设备重置成功";
-            return true;
-        }
-    }
-
-    qWarning() << "设备重置失败";
-    return false;
-}
 QString XRayProtocol::portName() const
 {
     return m_portName;
@@ -443,10 +193,12 @@ QString XRayProtocol::portName() const
 
 bool XRayProtocol::checkExposureReady()
 {
-    QByteArray response = executeCommand(0x1B, QByteArray(), 1000);
+    QByteArray response;
+    if (sendCommand(0x1B, QByteArray())) {
+        response = readResponse(m_respTimeout);
+    }
 
     if (response.isEmpty()) {
-        qWarning() << "曝光查询无响应";
         return false;
     }
 
@@ -502,11 +254,9 @@ QByteArray XRayProtocol::getWaveformData(quint16 waveformType)
         stream << packetIndex;
         stream << packetSize;
 
-        // 使用修改后的executeCommand，它会自动使用波形模板
-        QByteArray response = executeCommand(waveformType, requestData, 2000);
-
-        if (response.isEmpty()) {
-            break;
+        QByteArray response;
+        if (sendCommand(waveformType, requestData)) {
+            response = readResponse(m_respTimeout);
         }
 
         // 解析响应
@@ -619,13 +369,8 @@ QByteArray XRayProtocol::buildCommand(quint16 cmdCode, quint8 operate, const QBy
     return command;
 }
 
-QByteArray XRayProtocol::executeCommand(quint16 cmdCode, const QByteArray &data, int responseTimeout)
+bool XRayProtocol::sendCommand(quint16 cmdCode, const QByteArray &data)
 {
-    if (!m_serialPort || !m_serialPort->isOpen()) {
-        qWarning() << "串口未打开";
-        return QByteArray();
-    }
-
     // 清空接收缓冲区
     m_serialPort->clear(QSerialPort::Input);
     QThread::msleep(10);
@@ -679,7 +424,7 @@ QByteArray XRayProtocol::executeCommand(quint16 cmdCode, const QByteArray &data,
             }
         } else {
             qWarning() << "曝光命令数据格式错误";
-            return QByteArray();
+            return false;
         }
         break;
     }
@@ -692,7 +437,7 @@ QByteArray XRayProtocol::executeCommand(quint16 cmdCode, const QByteArray &data,
             command = buildCommand(cmdCode, 0x01, data);
         } else {
             qWarning() << "曝光参数命令数据大小错误";
-            return QByteArray();
+            return false;
         }
         break;
     default:
@@ -703,114 +448,69 @@ QByteArray XRayProtocol::executeCommand(quint16 cmdCode, const QByteArray &data,
 
     if (command.isEmpty()) {
         qWarning() << "构建命令失败";
-        return QByteArray();
+        return false;
     }
+
+    // 清空接收缓冲区
+    m_serialPort->clear(QSerialPort::Input);
+    QThread::msleep(10);
 
     // 发送命令
-    qint64 bytesWritten = m_serialPort->write(command);
-    if (bytesWritten == -1 || bytesWritten != command.size()) {
-        qWarning() << "写入失败";
-        return QByteArray();
-    }
+    QString hexStr = command.toHex(' ').toUpper();
+    qDebug() << "req:" << hexStr << "到端口" << m_serialPort->portName();
+
+    m_serialPort->write(command);
 
     if (!m_serialPort->waitForBytesWritten(100)) {
-        qWarning() << "写入超时";
-        return QByteArray();
+        qWarning() << "Write timeout";
+        return false;
     }
 
+    m_serialPort->flush();
+    return true;
+}
+
+QByteArray XRayProtocol::readResponse(int timeout)
+{
     QElapsedTimer timer;
     timer.start();
-    QByteArray responseBuffer;
+    QByteArray buffer;
 
-    while (timer.elapsed() < responseTimeout) {
+    while (timer.elapsed() < timeout) {
         if (m_serialPort->waitForReadyRead(10)) {
-            responseBuffer.append(m_serialPort->readAll());
+            buffer.append(m_serialPort->readAll());
 
-            // 调试输出接收到的数据
-            if (!responseBuffer.isEmpty()) {
-                qDebug() << "接收到数据，当前缓冲区大小:" << responseBuffer.size();
-            }
-
-            // 尝试提取完整包
-            while (true) {
-                QByteArray completePacket = extractCompletePacket(responseBuffer);
-                if (completePacket.isEmpty()) {
-                    break; // 没有完整包，继续等待
-                }
-
-                if (verifyCRC(completePacket)) {
-                    // 验证命令码
-                    if (completePacket.size() >= 6) {
-                        quint16 respCmdCode = static_cast<quint8>(completePacket[4])
-                                              | (static_cast<quint8>(completePacket[5]) << 8);
-
-                        if (respCmdCode == cmdCode) {
-                            if (cmdCode == 0x1B) {
-                                handleExposureResponse(completePacket);
-                            }
-                            return completePacket;
-                        } else {
-                            qDebug() << "收到其他命令的响应，命令码: 0x"
-                                     << QString::number(respCmdCode, 16).toUpper() << "，期望: 0x"
-                                     << QString::number(cmdCode, 16).toUpper();
-                        }
-                    }
-                } else {
-                    qWarning() << "CRC校验失败的命令响应";
-                }
+            QByteArray packet = extractCompletePacket(buffer);
+            if (!packet.isEmpty() && verifyCRC(packet)) {
+                qDebug() << "resp:" << packet.toHex(' ');
+                return packet;
             }
         }
-    }
-
-    // 超时后，记录缓冲区中的数据
-    if (!responseBuffer.isEmpty()) {
-        qWarning() << "超时时缓冲区中的数据大小:" << responseBuffer.size()
-                   << "，内容:" << responseBuffer.toHex(' ').toUpper();
     }
 
     return QByteArray();
 }
 
-QByteArray XRayProtocol::getWaveformCommandTemplate(quint16 waveformType, const QByteArray &data)
+QByteArray XRayProtocol::extractCompletePacket(QByteArray &buffer)
 {
-    qDebug() << "获取波形命令模板，类型: 0x" << QString::number(waveformType, 16).toUpper()
-             << "数据大小:" << data.size() << "字节";
-
-    // 验证数据格式：分包序号(2字节) + 分包长度(2字节)
-    if (data.size() < 4) {
-        qWarning() << "波形命令数据格式错误，需要至少4字节(分包序号+分包长度)";
+    if (buffer.size() < 4) {
         return QByteArray();
     }
 
-    // 使用标准命令构建函数
-    // 根据协议，波形命令是读操作，OPERATE=0x00
-    QByteArray command = buildCommand(waveformType, 0x00, data);
-
-    if (command.isEmpty()) {
-        qWarning() << "构建波形命令失败";
-    } else {
-        qDebug() << "波形命令构建完成，长度:" << command.size() << "字节";
-    }
-
-    return command;
-}
-
-QByteArray XRayProtocol::extractCompletePacket(QByteArray &buffer)
-{
-    // 寻找包头 (0x55 0xAA)
+    const quint8 *data = reinterpret_cast<const quint8 *>(buffer.constData());
+    int bufferSize = buffer.size();
     int packetStart = -1;
-    for (int i = 0; i <= buffer.size() - 2; i++) {
-        if (static_cast<quint8>(buffer[i]) == 0x55 && static_cast<quint8>(buffer[i + 1]) == 0xAA) {
+
+    for (int i = 0; i <= bufferSize - 2; ++i) {
+        if (data[i] == 0x55 && data[i + 1] == 0xAA) {
             packetStart = i;
             break;
         }
     }
 
-    // 没有找到包头
     if (packetStart == -1) {
-        // 保留最近的数据（最多200字节），防止协议粘包
-        if (buffer.size() > 200) {
-            buffer = buffer.right(200);
+        if (bufferSize > 256) {
+            buffer = buffer.right(128);
         }
         return QByteArray();
     }
@@ -818,51 +518,41 @@ QByteArray XRayProtocol::extractCompletePacket(QByteArray &buffer)
     // 移除包头之前的数据
     if (packetStart > 0) {
         buffer.remove(0, packetStart);
-        qDebug() << "移除无效包头前数据:" << packetStart << "字节";
     }
 
-    // 检查是否有足够的数据获取包长度（至少需要4字节：包头2 + 长度2）
-    if (buffer.size() < 4) {
-        return QByteArray(); // 数据不足，等待更多数据
+    data = reinterpret_cast<const quint8 *>(buffer.constData());
+    bufferSize = buffer.size();
+
+    if (bufferSize < 4) {
+        return QByteArray();
     }
 
-    // 解析包长度（小端序）
-    // 协议格式：HEAD0 HEAD1 LEN_L LEN_H ...
-    quint16 packetLength = static_cast<quint8>(buffer[2]) | (static_cast<quint8>(buffer[3]) << 8);
+    quint16 packetLength = data[2] | (data[3] << 8);
 
-    // 验证包长度合理性
-    const quint16 MIN_PACKET_SIZE = 16; // 最小包：2包头+2长度+2命令+2操作+4TX+4RX+2CRC
+    const quint16 MIN_PACKET_SIZE = 16;
     const quint16 MAX_PACKET_SIZE = 1024;
 
     if (packetLength < MIN_PACKET_SIZE || packetLength > MAX_PACKET_SIZE) {
-        qWarning() << "包长度无效:" << packetLength << "，丢弃第一个字节并重试";
-        // 丢弃第一个字节（可能是损坏的数据），然后重试
-        buffer.remove(0, 1);
-        return extractCompletePacket(buffer);
+        if (bufferSize > 1) {
+            buffer.remove(0, 1);
+        } else {
+            buffer.clear();
+        }
+        return QByteArray();
     }
 
-    // 检查是否收到完整包
-    if (buffer.size() >= packetLength) {
-        // 提取完整包
+    if (bufferSize >= packetLength) {
         QByteArray packet = buffer.left(packetLength);
 
-        // 验证CRC（可选）
         if (verifyCRC(packet)) {
-            // 从缓冲区移除已处理的数据
             buffer.remove(0, packetLength);
-            qDebug() << "提取完整包，长度:" << packetLength << "，缓冲区剩余:" << buffer.size()
-                     << "字节";
             return packet;
         } else {
-            qWarning() << "CRC校验失败，丢弃包";
-            // CRC失败，丢弃整个包
             buffer.remove(0, packetLength);
             return QByteArray();
         }
     }
 
-    // 包不完整
-    qDebug() << "包不完整，需要" << packetLength << "字节，当前" << buffer.size() << "字节";
     return QByteArray();
 }
 
@@ -1001,7 +691,9 @@ void XRayProtocol::onExposureTimeout()
 
     if (elapsed >= m_expTimeMs + 2000) {
         m_exposureTimer->stop();
-        executeCommand(0x1B, m_exposureStopData, 500);
+        if (sendCommand(0x1B, m_exposureStopData)) {
+            QByteArray resp = readResponse(m_respTimeout);
+        }
         m_deviceStatus = DEVICE_READY;
         emit exposureStopped();
         emit deviceStatusChanged(m_deviceStatus);
@@ -1010,22 +702,22 @@ void XRayProtocol::onExposureTimeout()
     //     m_over18SecSent = true; // 标记已发送
     //     // emit exposureWarning("曝光时间已超过1.8秒");
     //     //buchuguang
-    //     executeCommand(0x1B, m_exposureStartData, 100);
+    //     sendCommand(0x1B, m_exposureStartData);
     // }
     else {
         // 正常曝光中，继续发送曝光命令
-        executeCommand(0x1B, m_exposureStartData, 100);
+        if (sendCommand(0x1B, m_exposureStartData)) {
+            QByteArray resp = readResponse(m_respTimeout);
+        }
     }
 }
 
 void XRayProtocol::updateDeviceStatus()
 {
-    if (!isConnected()) {
-        return;
+    QByteArray response;
+    if (sendCommand(0x1B, QByteArray())) {
+        response = readResponse(m_respTimeout);
     }
-
-    // 定期查询设备状态
-    QByteArray response = executeCommand(0x1B, QByteArray(), 2000);
 
     if (!response.isEmpty()) {
         handleExposureResponse(response);
@@ -1077,7 +769,7 @@ ADCValues XRayProtocol::parseADCValues(const QByteArray &data)
 
 QString XRayProtocol::parseVersion(const QByteArray &data)
 {
-    if (data.size() < 17) {
+    if (data.size() < 10) {
         qWarning() << "版本数据包太小:" << data.size();
         return QString();
     }
@@ -1098,19 +790,146 @@ QString XRayProtocol::parseVersion(const QByteArray &data)
     return version;
 }
 
-void XRayProtocol::logCommunication(const QString &direction, const QByteArray &data)
+QString XRayProtocol::getVersion()
 {
-#ifdef QT_DEBUG
-    QString hexString = data.toHex(' ').toUpper();
-    qDebug() << QString("[%1] %2").arg(direction).arg(hexString);
-#endif
+    QByteArray response;
+    if (sendCommand(0x0C, QByteArray())) {
+        response = readResponse(m_respTimeout);
+    } else {
+        qDebug() << "1111111111111";
+    }
+    return parseVersion(response);
+}
+
+QString XRayProtocol::getSerialNumber()
+{
+    QByteArray response;
+    if (sendCommand(0x0A, QByteArray())) {
+        response = readResponse(m_respTimeout);
+    }
+    return parseSerialNumber(response);
+}
+
+ADCValues XRayProtocol::getADCValues()
+{
+    QByteArray response;
+    if (sendCommand(0x0D, QByteArray())) {
+        response = readResponse(m_respTimeout);
+    }
+    return parseADCValues(response);
+}
+
+bool XRayProtocol::setExposureParams(const ExposureParams &params)
+{
+    if (!isConnected()) {
+        qWarning() << "Device not connected";
+        return false;
+    }
+
+    // 构建参数数据包
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    stream.setFloatingPointPrecision(QDataStream::SinglePrecision);
+    stream.setByteOrder(QDataStream::LittleEndian);
+
+    stream << params.ma_min;
+    stream << params.ma_max;
+    stream << params.ma_val;
+    stream << params.kvs_min;
+    stream << params.kvs_max;
+    stream << params.kv_min;
+    stream << params.kv_max;
+    stream << params.kv_val;
+    stream << params.exp_time_ms;
+
+    m_expTimeMs = params.exp_time_ms;
+    QByteArray response;
+    if (sendCommand(0x1C, data)) {
+        response = readResponse(m_respTimeout);
+    }
+
+    if (response.isEmpty()) {
+        return false;
+    }
+
+    // 解析响应，验证参数设置成功
+    if (response.size() >= 44) {
+        // 可以解析返回的参数进行验证
+        m_currentParams = params;
+        return true;
+    }
+
+    return false;
+}
+
+// 提取曝光状态检查方法
+bool XRayProtocol::checkExposureStatus(ExposureStatus &status)
+{
+    QByteArray queryResponse;
+    if (sendCommand(0x1B, QByteArray())) {
+        queryResponse = readResponse(m_respTimeout);
+    }
+
+    if (queryResponse.isEmpty() || queryResponse.size() < 29) {
+        return false;
+    }
+
+    qDebug() << "曝光查询响应HEX:" << queryResponse.toHex(' ').toUpper();
+
+    // 解析状态 - 从第16字节开始
+    QDataStream stream(queryResponse.mid(16));
+    stream.setByteOrder(QDataStream::LittleEndian);
+
+    stream >> status.exposureEnable;
+    stream >> status.exposureMode;
+    stream >> status.lowBattery;
+    stream >> status.hardwareCheck;
+    stream >> status.delayShutdown;
+    stream >> status.cooldownTime;
+    stream >> status.exposureStep;
+
+    qDebug() << "解析曝光状态:";
+    qDebug() << "  曝光使能:" << status.exposureEnable;
+    qDebug() << "  曝光模式:" << status.exposureMode;
+    qDebug() << "  低电量:" << status.lowBattery;
+    qDebug() << "  硬件检测:" << status.hardwareCheck;
+    qDebug() << "  延迟关机:" << status.delayShutdown << "ms";
+    qDebug() << "  冷却时间:" << status.cooldownTime << "s";
+    qDebug() << "  曝光步骤:" << status.exposureStep;
+
+    // 检查异常状态
+    if (status.exposureEnable == 0xFFFF) {
+        qWarning() << "⚠️ 设备返回异常状态 (曝光使能=65535)，需要重置设备";
+        return false;
+    }
+
+    return true;
+}
+
+// 提取故障清除方法
+bool XRayProtocol::clearFaults()
+{
+    QByteArray response;
+    if (sendCommand(0x1D, QByteArray::fromHex("01000000"))) {
+        response = readResponse(m_respTimeout);
+    }
+
+    if (response.isEmpty()) {
+        return false;
+    }
+
+    qDebug() << "故障清除成功";
+
+    return true;
 }
 
 // 错误处理
 bool XRayProtocol::clearErrorFlags()
 {
-    // 使用预定义的错误清除命令
-    QByteArray response = executeCommand(0x1D, QByteArray::fromHex("01000000"), 500);
+    QByteArray response;
+    if (sendCommand(0x1D, QByteArray::fromHex("01000000"))) {
+        response = readResponse(m_respTimeout);
+    }
     return !response.isEmpty();
 }
 

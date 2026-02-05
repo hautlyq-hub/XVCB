@@ -20,3 +20,7 @@
 #define XV_APPSETTING "/AppSettings.ini"
 
 #define XV_APPDATA "/Conf/AppData.xml"
+
+#define XV_ALGORITHMIC_CONFIG "/Conf/DataProcFeature.xml"
+
+#define XV_DATABASE "/Database"

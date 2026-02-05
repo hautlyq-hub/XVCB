@@ -676,6 +676,9 @@
                  <layout class="QHBoxLayout" name="horizontalLayout_7">
                   <item>
                    <widget class="QRadioButton" name="mRBtnSensorOri1LR">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -704,6 +707,9 @@
                   </item>
                   <item>
                    <widget class="QRadioButton" name="mRBtnSensorOri1UpDown">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -736,6 +742,9 @@
                  <layout class="QHBoxLayout" name="horizontalLayout_8">
                   <item>
                    <widget class="QRadioButton" name="mRBtnSensorOri2LR">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -764,6 +773,9 @@
                   </item>
                   <item>
                    <widget class="QRadioButton" name="mRBtnSensorOri2UpDown">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -1287,6 +1299,9 @@
              </item>
              <item row="1" column="0">
               <widget class="QRadioButton" name="mRBtnX">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -1306,6 +1321,9 @@
              </item>
              <item row="1" column="1">
               <widget class="QRadioButton" name="mRBtnY">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="minimumSize">
                 <size>
                  <width>0</width>
