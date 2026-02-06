@@ -57,6 +57,10 @@ public:
     // 错误信息
     QString getLastError() const;
 
+    QString getDeviceInfoVersion();
+    QString getDeviceInfoSN();
+    DeviceInfo getDeviceInfo();
+
 signals:
     void statusChanged(const QString& status);
     void errorOccurred(const QString& errorMessage);

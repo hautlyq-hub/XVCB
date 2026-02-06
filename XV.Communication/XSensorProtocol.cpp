@@ -493,6 +493,21 @@ bool XSensorProtocol::getVersion()
     return true;
 }
 
+QString XSensorProtocol::getDeviceInfoVersion()
+{
+    return m_deviceInfo.version;
+}
+
+QString XSensorProtocol::getDeviceInfoSN()
+{
+    return m_deviceInfo.sn;
+}
+
+XSensorProtocol::DeviceInfo XSensorProtocol::getDeviceInfo()
+{
+    return m_deviceInfo;
+}
+
 bool XSensorProtocol::powerOn()
 {
     if (sendCommand(Commands::F4_POWER_ON_3V3)) {
@@ -675,6 +690,7 @@ void XSensorProtocol::cleanupAfterImageAcquisition(bool success)
         if (success) {
             emit exposureCompleted();
         } else {
+            emit exposureCompleted();
             emit statusChanged("Image acquisition failed");
         }
     } catch (const std::exception& ex) {

@@ -209,6 +209,8 @@ void mvsystemsettings::Init()
     ui->mLblStatusInfo->setText("");
     updateDeviceState(ExposureState::Idle);
 
+    mPreCalFolder = DataLocations::getRootConfigPath() + "/Cal/Pre";
+
     // 扫描并填充串口列表
     refreshComPorts();
 
@@ -219,7 +221,8 @@ void mvsystemsettings::Init()
     mPortMonitorTimer->start();
 
     // 创建当前目录
-    mCurrentDir = QDateTime::currentDateTime().toString("QC_yyyyMMddHHmmss");
+    mCurrentDirX = QDateTime::currentDateTime().toString("QC_X_yyyyMMddHHmmss");
+    mCurrentDirY = QDateTime::currentDateTime().toString("QC_Y_yyyyMMddHHmmss");
 
     mManager = new XProtocolManager(this);
     connect(mManager, &XProtocolManager::info, this, &mvsystemsettings::onInfoReceived);
@@ -323,11 +326,11 @@ void mvsystemsettings::onBtnGenerateClicked()
     ui->mBtnGenerate->setEnabled(false);
 
     try {
-        if (!mHWImageDataX || !mHWImageDataY) {
-            updateInfoPanel("No raw images found", Warning);
-            ui->mBtnGenerate->setEnabled(true);
-            return;
-        }
+        // if (!mHWImageDataX || !mHWImageDataY) {
+        //     updateInfoPanel("No raw images found", Warning);
+        //     ui->mBtnGenerate->setEnabled(true);
+        //     return;
+        // }
 
         // 在后台线程中生成校准文件
         QFuture<void> future = QtConcurrent::run([this]() { GenerateCalibrationFiles(); });
@@ -470,23 +473,53 @@ void mvsystemsettings::AcceptImage(const QVector<HWImageData>& raws)
 
     for (const HWImageData& raw : raws) {
         if (raw.orientation % 2 == isx) {
-            // 保存文件
-            SaveRawImage(raw);
-
-            // 根据方向保存到对应的变量 - 优化内存管理
+            QString _file;
             if (raw.orientation % 2 == 0) { // X轴
-                if (mHWImageDataX) {
-                    // 如果已经存在，重新分配前先清理
-                    delete mHWImageDataX;
-                    mHWImageDataX = nullptr;
-                }
-                mHWImageDataX = new HWImageData(raw);
+                _file = mCurrentDirX;
             } else { // Y轴
-                if (mHWImageDataY) {
-                    delete mHWImageDataY;
-                    mHWImageDataY = nullptr;
+                _file = mCurrentDirY;
+            }
+
+            QString timestamp = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss_zzz");
+
+            QString fileName = QDir::toNativeSeparators(mPreCalFolder + "/" + _file + "/"
+                                                        + QString("image_%1.raw").arg(timestamp));
+
+            qDebug() << "保存图像到:" << fileName;
+
+            QFileInfo fileInfo(fileName);
+            if (!QDir().mkpath(fileInfo.path())) {
+                qWarning() << "创建目录失败:" << fileInfo.path();
+                return;
+            }
+
+            // 如果有原始图像数据，直接保存
+            if (!raw.imageData.isEmpty()) {
+                QFile file(fileName);
+                if (file.open(QIODevice::WriteOnly)) {
+                    file.write(raw.imageData);
+                    file.close();
+                    qDebug() << "原始数据已保存到:" << fileName;
+
+                    // 更新数据结构中的文件路径
+                    HWImageData& mutableData = const_cast<HWImageData&>(raw);
+                    mutableData.filePath = fileName;
+                } else {
+                    qWarning() << "无法写入文件:" << fileName;
                 }
-                mHWImageDataY = new HWImageData(raw);
+            }
+            // 如果有文件路径，复制文件
+            else if (!raw.filePath.isEmpty() && QFile::exists(raw.filePath)) {
+                if (QFile::copy(raw.filePath, fileName)) {
+                    qDebug() << "文件复制成功:" << fileName;
+
+                    // 删除源文件（可选）
+                    QFile::remove(raw.filePath);
+                } else {
+                    qWarning() << "文件复制失败";
+                }
+            } else {
+                qWarning() << "没有可保存的图像数据";
             }
         }
     }
@@ -604,75 +637,80 @@ void mvsystemsettings::CleanupEnv()
     }
 }
 
-
 void mvsystemsettings::GenerateCalibrationFiles()
 {
-    if (!mHWImageDataX || !mHWImageDataY) {
-        return;
+    QString _file;
+    for (int i = 0; i < 2; i++) {
+        if (i == 0)
+            _file = mCurrentDirX;
+        else
+            _file = mCurrentDirY;
+
+        QDir directory(mPreCalFolder + "/" + _file);
+        directory.setFilter(QDir::Files);
+        QFileInfoList fileList = directory.entryInfoList();
+        if (fileList.size() == 0) {
+            qDebug() << ("No valid data. Calibration suspended.");
+            ui->mLblStatusInfo->setText(tr("No valid data. Calibration suspended."));
+            return;
+        }
+
+        QString version = mManager->getSensorVersion(QString::number(i));
+        if (!version.isEmpty()) {
+            mOralMajor = version.left(1).toInt();
+        } else {
+            mOralMajor = 0; // 默认值
+        }
+
+        QString serial = mManager->getSensorSerialNumber(QString::number(i));
+        if (!serial.isEmpty()) {
+            mOralAddr = serial;
+        } else {
+            mOralAddr = "Unknown"; // 默认值
+        }
+
+        auto algorithmic = XPectAlgorithmic::Instance();
+        QString targetFile = DataLocations::getRootConfigPath() + "/Cal/"
+                             + QString::number(mOralMajor) + ".0/" + mOralAddr;
+        qDebug() << targetFile;
+        QDir dir;
+        dir.mkpath(targetFile);
+        targetFile += "/Calibration.dat";
+        if (mImageWidth == 0 && mImageHeight == 0) {
+            if (mOralMajor == 7 || mOralMajor == 10) {
+                mImageWidth = 288;
+                mImageHeight = 288;
+            } else if (mOralMajor == 3 || mOralMajor == 6 || mOralMajor == 9) {
+                mImageWidth = 344;
+                mImageHeight = 417;
+            } else if (mOralMajor == 8) {
+                mImageWidth = 288;
+                mImageHeight = 423;
+            }
+        }
+        qDebug() << (QString("GenCalibrationFile,width:%1, height:%2")
+                         .arg(mImageWidth)
+                         .arg(mImageHeight)
+                         .toStdString());
+        int res = algorithmic->GenerateCorrectionFile(mPreCalFolder + "/" + _file,
+                                                      targetFile,
+                                                      mImageWidth,
+                                                      mImageHeight,
+                                                      mImageBit);
+
+        if (res == 0) {
+            qDebug() << ("End generating calibration file Successful");
+            ui->mLblStatusInfo->setText(tr("Calibration completed."));
+        } else {
+            qDebug() << ("End generating calibration file Failed");
+            ui->mLblStatusInfo->setText(tr("Calibration failed.."));
+        }
     }
-
-    int genRes = -1;
-
-    // 生成X轴校准文件
-    QString destDirX = "Cal/CalFile/" + mHWImageDataX->deviceVersion + "/"
-                       + mHWImageDataX->deviceSN;
-    QDir().mkpath(destDirX);
-
-    // 调用算法生成校准文件
-    //genRes = XPectAlgorithmic::Instance()->GenerateCorrectionFile(...);
-
-    // 生成Y轴校准文件
-    QString destDirY = "Cal/CalFile/" + mHWImageDataY->deviceVersion + "/"
-                       + mHWImageDataY->deviceSN;
-    QDir().mkpath(destDirY);
-
-    // int res = XPectAlgorithmic::GenCorrectionFile(...);
-    // if (genRes == 0) genRes = res;
 }
 
 void mvsystemsettings::SaveRawImage(const HWImageData& data)
 {
-    QString timestamp = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss_zzz");
 
-    QString fileName = QDir::toNativeSeparators(QDir::currentPath() + "/" + mCurrentDir + "/"
-                                                + QString("image_%1.raw").arg(timestamp));
-
-    qDebug() << "保存图像到:" << fileName;
-
-    QFileInfo fileInfo(fileName);
-    if (!QDir().mkpath(fileInfo.path())) {
-        qWarning() << "创建目录失败:" << fileInfo.path();
-        return;
-    }
-
-    // 如果有原始图像数据，直接保存
-    if (!data.imageData.isEmpty()) {
-        QFile file(fileName);
-        if (file.open(QIODevice::WriteOnly)) {
-            file.write(data.imageData);
-            file.close();
-            qDebug() << "原始数据已保存到:" << fileName;
-
-            // 更新数据结构中的文件路径
-            HWImageData& mutableData = const_cast<HWImageData&>(data);
-            mutableData.filePath = fileName;
-        } else {
-            qWarning() << "无法写入文件:" << fileName;
-        }
-    }
-    // 如果有文件路径，复制文件
-    else if (!data.filePath.isEmpty() && QFile::exists(data.filePath)) {
-        if (QFile::copy(data.filePath, fileName)) {
-            qDebug() << "文件复制成功:" << fileName;
-
-            // 删除源文件（可选）
-            QFile::remove(data.filePath);
-        } else {
-            qWarning() << "文件复制失败";
-        }
-    } else {
-        qWarning() << "没有可保存的图像数据";
-    }
 }
 
 // 状态信息显示

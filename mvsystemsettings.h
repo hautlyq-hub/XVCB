@@ -93,7 +93,15 @@ private:
     QVector<CorrectRelationView*> mToothPosition; // 注意：这里保持复数形式
 
     // 当前目录
-    QString mCurrentDir;
+    QString mCurrentDirX;
+    QString mCurrentDirY;
+    QString mPreCalFolder;
+
+    QString mOralAddr;
+    int mOralMajor = 3;
+    int mImageWidth = 0;
+    int mImageHeight = 0;
+    int mImageBit = 16;
 
     QTimer* mSaveSettingsTimer;
     QTimer* mPortMonitorTimer;

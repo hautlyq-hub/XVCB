@@ -814,10 +814,6 @@ ADCValues XRayProtocol::getADCValues()
 
 bool XRayProtocol::setExposureParams(const ExposureParams &params)
 {
-    if (!isConnected()) {
-        qWarning() << "Device not connected";
-        return false;
-    }
 
     // 构建参数数据包
     QByteArray data;

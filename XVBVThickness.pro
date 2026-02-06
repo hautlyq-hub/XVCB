@@ -250,3 +250,4 @@ OBJECTS_DIR = $${BUILD_PATH}/.obj
 !exists($${BUILD_PATH}/.ui) { mkpath($${BUILD_PATH}/.ui) }
 !exists($${BUILD_PATH}/.obj) { mkpath($${BUILD_PATH}/.obj) }
 
+unix:QMAKE_LFLAGS += -Wl,-rpath,\'\$$ORIGIN/libs\'

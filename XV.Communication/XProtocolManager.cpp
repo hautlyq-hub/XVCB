@@ -900,7 +900,12 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
                 xrayParams.ma_val = m_exposureParams.ma_val;
                 xrayParams.exp_time_ms = m_exposureParams.exp_time_ms;
 
-                m_xrayProtocol1->setExposureParams(xrayParams);
+                bool ret = m_xrayProtocol1->setExposureParams(xrayParams);
+                if (!ret) {
+                    qDebug() << "曝光参数设置失败";
+                } else {
+                    qDebug() << "曝光参数设置成功";
+                }
                 m_xrayProtocol1->startExposure();
             },
             Qt::QueuedConnection);
@@ -1316,4 +1321,22 @@ void XProtocolManager::onSensorDeviceDisconnected()
 void XProtocolManager::onSensorStatusChanged(const QString& status)
 {
     emit info(QString("传感器状态: %1").arg(status));
+}
+
+QString XProtocolManager::getSensorVersion(const QString& sensorKey)
+{
+    XSensorProtocol* sensor = (sensorKey == "0") ? m_sensor1 : m_sensor2;
+    return sensor->getDeviceInfoVersion();
+}
+
+QString XProtocolManager::getSensorSerialNumber(const QString& sensorKey)
+{
+    XSensorProtocol* sensor = (sensorKey == "0") ? m_sensor1 : m_sensor2;
+    return sensor->getDeviceInfoSN();
+}
+
+XSensorProtocol::DeviceInfo XProtocolManager::getSensorInfo(const QString& sensorKey)
+{
+    XSensorProtocol* sensor = (sensorKey == "0") ? m_sensor1 : m_sensor2;
+    return sensor->getDeviceInfo();
 }
