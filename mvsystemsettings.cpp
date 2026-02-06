@@ -1,4 +1,5 @@
-// mvsystemsettings.cpp
+
+// scp /home/pi/XVBVThiness/build/release/XVBVThickness pi@192.168.2.158:/home/pi/XVBVThickness/release/
 #include "mvsystemsettings.h"
 #include <QButtonGroup>
 #include <QComboBox>
