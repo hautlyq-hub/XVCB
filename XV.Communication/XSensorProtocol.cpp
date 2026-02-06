@@ -156,11 +156,6 @@ void XSensorProtocol::resetDeviceState()
     m_serialPort = nullptr;
 }
 
-bool XSensorProtocol::checkActive()
-{
-    return isConnected() && m_poweredOn;
-}
-
 QByteArray XSensorProtocol::buildCommand(const QByteArray& cmdData, char endChar1, char endChar2)
 {
     if (cmdData.isEmpty()) {
@@ -177,51 +172,8 @@ QByteArray XSensorProtocol::buildCommand(const QByteArray& cmdData, char endChar
     return fullCommand;
 }
 
-bool XSensorProtocol::switchToLowPowerMode()
-{
-    if (!m_serialPort || !m_serialPort->isOpen()) {
-        return false;
-    }
-
-    qInfo() << "Switching to low power mode...";
-
-    QByteArray lowPowerCmd = buildCommand(Commands::F8_TO_LOWER_POWER, '\x0D', '\x0A');
-
-    qint64 written = m_serialPort->write(lowPowerCmd);
-    if (written != lowPowerCmd.size()) {
-        qWarning() << "Failed to write low power mode command";
-        return false;
-    }
-
-    if (!m_serialPort->waitForBytesWritten(m_writeTimeout)) {
-        qWarning() << "Write timeout for low power mode command";
-        return false;
-    }
-
-    m_serialPort->flush();
-
-    QByteArray response = readResponse(m_readTimeout);
-    if (response.isEmpty()) {
-        qWarning() << "No response to low power mode command";
-        return false;
-    }
-
-    qDebug() << "resp" << response.toHex(' ');
-
-    if (response.size() >= 4 && static_cast<quint8>(response[0]) == 0xF8
-        && static_cast<quint8>(response[1]) == 0xF8) {
-        qInfo() << "Switched to low power mode successfully";
-        return true;
-    }
-
-    return false;
-}
-
 bool XSensorProtocol::sendExposureF6(bool wait, bool isCalibration)
 {
-    qInfo() << "[" << (m_serialPort ? m_serialPort->portName() : "Unknown")
-            << "] 开始使能曝光，等待:" << wait << "，校准:" << isCalibration;
-
     if (wait) {
         QThread::msleep(1950);
     }
@@ -470,62 +422,28 @@ QByteArray XSensorProtocol::retrieveImageByte(QString& errorCode, int& realGetBa
 
 QByteArray XSensorProtocol::processImageData(const QByteArray& rawData, int cols, int rows)
 {
-    // 检查原始数据大小是否足够
-    if (rawData.size() < cols * rows * 2) {
-        m_lastError = QString("Invalid image data size: %1, expected: %2")
-                          .arg(rawData.size())
-                          .arg(cols * rows * 2);
-        qDebug() << m_lastError;
+    const int crop = 4;
+    const int newW = cols - 2 * crop;
+    const int newH = rows - 2 * crop;
+
+    if (rawData.size() < cols * rows * 2 || newW <= 0 || newH <= 0) {
         return QByteArray();
     }
 
-    // 计算裁剪后的尺寸
-    int cropSize = 4; // 每边裁剪的像素数
-    int newCols = cols - 2 * cropSize;
-    int newRows = rows - 2 * cropSize;
+    QByteArray result(newW * newH * 2, 0);
+    const quint8* src = reinterpret_cast<const quint8*>(rawData.constData());
+    quint8* dst = reinterpret_cast<quint8*>(result.data());
 
-    // 检查裁剪后的尺寸是否有效
-    if (newCols <= 0 || newRows <= 0) {
-        m_lastError = QString("Image too small for cropping: %1x%2, crop size: %3")
-                          .arg(cols)
-                          .arg(rows)
-                          .arg(cropSize);
-        qDebug() << m_lastError;
-        return QByteArray();
-    }
-
-    // 调整输出数据大小（每个像素2字节）
-    QByteArray processedImage;
-    processedImage.resize(newCols * newRows * 2);
-
-    // 处理数据：交换字节顺序并裁剪
-    int destIndex = 0;
-
-    // 从第cropSize行开始，到rows-cropSize行结束
-    for (int row = cropSize; row < rows - cropSize; row++) {
-        // 计算当前行的起始索引（每个像素2字节）
-        int rowStartIndex = row * cols * 2;
-
-        // 从第cropSize列开始，到cols-cropSize列结束
-        for (int col = cropSize; col < cols - cropSize; col++) {
-            // 计算源数据中的像素位置（每个像素2字节）
-            int srcPixelIndex = rowStartIndex + col * 2;
-
-            // 交换字节顺序：低字节和高字节互换
-            processedImage[destIndex] = rawData[srcPixelIndex + 1]; // 高字节
-            processedImage[destIndex + 1] = rawData[srcPixelIndex]; // 低字节
-
-            // 目标索引前进2字节
-            destIndex += 2;
+    for (int y = crop; y < rows - crop; y++) {
+        const quint8* rowStart = src + y * cols * 2;
+        for (int x = crop; x < cols - crop; x++) {
+            const quint8* pixel = rowStart + x * 2;
+            *dst++ = pixel[1];
+            *dst++ = pixel[0];
         }
     }
 
-    emit statusChanged(QString("Image data processed and cropped. Original: %1x%2, Cropped: %3x%4")
-                           .arg(cols)
-                           .arg(rows)
-                           .arg(newCols)
-                           .arg(newRows));
-    return processedImage;
+    return result;
 }
 
 void XSensorProtocol::setCalibrationBefore() {}

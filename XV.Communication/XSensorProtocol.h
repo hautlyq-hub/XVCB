@@ -64,7 +64,6 @@ public:
     QByteArray buildCommand(const QByteArray& cmdData,
                             char endChar1 = '\x0D',
                             char endChar2 = '\x0A');
-    bool switchToLowPowerMode();
 
 signals:
     void deviceConnected();
