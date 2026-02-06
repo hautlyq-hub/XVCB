@@ -72,13 +72,17 @@ bool XSensorProtocol::initSerialPort(const QString& portName)
         m_serialPort->clear();
 
         if (!echoSerialPort()) {
+            qWarning() << tr("Echo test failed for port:") << portName;
+            // 清理资源
+            m_serialPort->close();
             delete m_serialPort;
+            m_serialPort = nullptr;
             return false;
         }
-
     } else {
         qWarning() << tr("Failed to open port:") << portName;
         delete m_serialPort;
+        m_serialPort = nullptr;
         return false;
     }
 
@@ -102,6 +106,8 @@ bool XSensorProtocol::echoSerialPort()
 
     if (!getVersion())
         return false;
+
+    m_deviceInitialized = true;
 
     if (m_poweredOn)
         powerOff();
@@ -464,7 +470,7 @@ QString XSensorProtocol::portName() const
 
 bool XSensorProtocol::isConnected() const
 {
-    return m_serialPort && m_serialPort->isOpen();
+    return m_serialPort && m_serialPort->isOpen() && m_deviceInitialized;
 }
 
 QString XSensorProtocol::getLastError() const

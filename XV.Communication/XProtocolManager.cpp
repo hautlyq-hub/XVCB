@@ -170,6 +170,12 @@ bool XProtocolManager::initSerialPort()
     // m_comCheckTimer->start();
     // m_xrayCheckTimer->start();
 
+    // 如果必要的设备未连接，返回失败
+    if (!allConnected) {
+        emit errorOccurred(tr("Some devices failed to connect, please check connections"));
+        return false;
+    }
+
     return allConnected;
 }
 
@@ -800,7 +806,6 @@ bool XProtocolManager::connectSensor(const QString& sensorKey)
 
     qDebug() << tr("Connecting sensor:") << sensorKey << tr("Port:") << portName;
 
-    // 在传感器线程中执行连接
     bool success = false;
     QMetaObject::invokeMethod(
         sensor,
@@ -820,7 +825,8 @@ bool XProtocolManager::connectSensor(const QString& sensorKey)
             [this, sensorKey]() { emit info(QString(tr("Sensor %1 connected")).arg(sensorKey)); },
             Qt::QueuedConnection);
     } else {
-        qWarning() << tr("Sensor") << sensorKey << tr("disconnected");
+        qWarning() << tr("Sensor") << sensorKey << tr("connection failed");
+        // 不要在这里设置disconnected，因为没有成功连接过
     }
 
     return success;
