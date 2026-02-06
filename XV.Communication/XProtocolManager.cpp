@@ -430,12 +430,7 @@ void XProtocolManager::initializeXray()
             [this](XRayErrorCode error, const QString& description) {
                 onXrayErrorOccurred(error, description, 0);
             });
-    connect(
-        m_xrayProtocol1,
-        &XRayProtocol::exposureCoolingRemaining,
-        this,
-        [this](int seconds) { onXrayCoolingRemaining(seconds, 0); },
-        Qt::QueuedConnection);
+
     connect(
         m_xrayProtocol1,
         &XRayProtocol::temperatureUpdated,
@@ -483,12 +478,6 @@ void XProtocolManager::initializeXray()
         [this](XRayErrorCode error, const QString& description) {
             onXrayErrorOccurred(error, description, 1);
         },
-        Qt::QueuedConnection);
-    connect(
-        m_xrayProtocol2,
-        &XRayProtocol::exposureCoolingRemaining,
-        this,
-        [this](int seconds) { onXrayCoolingRemaining(seconds, 1); },
         Qt::QueuedConnection);
 
     connect(

@@ -183,7 +183,7 @@ bool XRayProtocol::stopExposure()
 
 QString XRayProtocol::portName() const
 {
-    return m_portName;
+    return m_serialPort->portName();
 }
 
 bool XRayProtocol::checkExposureReady()

@@ -1,4 +1,4 @@
-﻿// XRayProtocol.h
+﻿// XRayProtocol.h - 更新版本
 #ifndef XRAYPROTOCOL_H
 #define XRAYPROTOCOL_H
 
@@ -100,8 +100,9 @@ public:
     explicit XRayProtocol(QObject *parent = nullptr);
     ~XRayProtocol();
 
-    // 设备控制接口
+    // 设备连接管理
     bool initSerialPort(const QString &portName, int baudRate = 921600);
+    void closeSerialPort();
     bool isConnected() const;
     QString portName() const;
 
@@ -110,7 +111,7 @@ public:
     QString getSerialNumber();
     ADCValues getADCValues();
 
-    // 波形数据获取（只保留实际实现的方法）
+    // 波形数据获取
     QByteArray getWaveformData(quint16 waveformType);
     QByteArray getKVWaveform();
 
@@ -119,7 +120,6 @@ public:
     bool startExposure();
     bool stopExposure();
     bool checkExposureReady();
-    bool resetDevice();
 
     // 错误处理
     bool clearErrorFlags();
@@ -128,9 +128,9 @@ public:
 
     // 设备状态
     XRayDeviceStatus getDeviceStatus() const;
-    int getCoolingRemainingTime() const; // 返回冷却剩余时间(秒)
+    int getCoolingRemainingTime() const;
 
-    // 内部方法（移到private？）
+    // 数据包处理
     QByteArray extractCompletePacket(QByteArray &buffer);
 
 signals:
@@ -142,33 +142,23 @@ signals:
     // 曝光相关信号
     void exposureStarted();
     void exposureStopped();
-    void exposureProgress(int percent);
-    void exposureCompleted();
     void exposureError(XRayErrorCode error);
 
     // 数据更新信号
     void adcValuesUpdated(const ADCValues &values);
     void temperatureUpdated(float deviceTemp, float mcuTemp);
-    void batteryStatusUpdated(float voltage, bool isLow); // 可能未使用，但保留
 
     // 错误信号
     void errorOccurred(XRayErrorCode error, const QString &description);
-    void warningMessage(const QString &message);
-
-    void coolingTimeUpdated(int remainingSeconds);
-    void exposureCoolingRemaining(int seconds);
 
 private slots:
     void onErrorOccurred(QSerialPort::SerialPortError error);
     void onExposureTimeout();
-    void updateDeviceStatus(); // 移到private slots
-
-    void closeSerialPort();
+    void updateDeviceStatus();
 
 private:
     // 串口通信
     QSerialPort *m_serialPort;
-    QByteArray m_receiveBuffer;
     QMutex m_serialMutex;
 
     // 命令定义
@@ -177,56 +167,40 @@ private:
     static const QByteArray CMD_ADC_VALUES;
     static const QByteArray CMD_ERROR_QUERY;
     static const QByteArray CMD_ERROR_CLEAR;
-
-    // 曝光命令
+    static const QByteArray CMD_EXPOSURE_QUERY;
     static const QByteArray CMD_EXPOSURE_START;
     static const QByteArray CMD_EXPOSURE_STOP;
-    static const QByteArray CMD_EXPOSURE_QUERY;
-    static const QByteArray CMD_EXPOSURE_QUERY_EMPTY;
 
-    // 内部方法
+    // 内部通信方法
     QByteArray buildCommand(quint16 cmdCode, quint8 operate, const QByteArray &data);
     bool sendCommand(quint16 cmdCode, const QByteArray &data = QByteArray());
     QByteArray readResponse(int timeout);
-
-    QByteArray getWaveformCommandTemplate(quint16 waveformType, const QByteArray &data);
 
     // 数据解析
     ADCValues parseADCValues(const QByteArray &data);
     QString parseVersion(const QByteArray &data);
     QString parseSerialNumber(const QByteArray &data);
-
-    // CRC校验
     bool verifyCRC(const QByteArray &data);
+    void handleExposureResponse(const QByteArray &response);
 
     // 状态管理
     XRayDeviceStatus m_deviceStatus;
     XRayErrorCode m_lastError;
     ExposureParams m_currentParams;
     QTimer *m_exposureTimer;
-    QTimer *m_statusTimer;
     int m_coolingRemaining;
     int m_expTimeMs;
     int m_respTimeout;
-    // 线程安全
-    QMutex m_statusMutex;
 
-    // 配置
-    QString m_portName;
-
+    // 曝光控制
     bool m_over18SecSent;
     QDateTime m_exposureStartTime;
     QByteArray m_exposureStartData;
     QByteArray m_exposureStopData;
 
-    // 私有辅助方法
-    bool waitForResponse(int timeout);
-    void handleExposureResponse(const QByteArray &response);
-    void logCommunication(const QString &direction, const QByteArray &data);
-
+    // 辅助方法
     bool checkExposureStatus(ExposureStatus &status);
     bool clearFaults();
-    bool enableExposure();
-    bool sendStartExposureCommand(quint8 &exposureStep);
 };
+
 #endif // XRAYPROTOCOL_H
