@@ -184,13 +184,13 @@
                  <number>10</number>
                 </property>
                 <property name="topMargin">
-                 <number>2</number>
+                 <number>5</number>
                 </property>
                 <property name="rightMargin">
                  <number>10</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>10</number>
+                 <number>7</number>
                 </property>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -336,7 +336,7 @@
                      </font>
                     </property>
                     <property name="text">
-                     <string>X-detector</string>
+                     <string>X-ray</string>
                     </property>
                    </widget>
                   </item>
@@ -395,13 +395,13 @@
                  <number>10</number>
                 </property>
                 <property name="topMargin">
-                 <number>2</number>
+                 <number>5</number>
                 </property>
                 <property name="rightMargin">
                  <number>10</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>10</number>
+                 <number>7</number>
                 </property>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -547,7 +547,7 @@
                      </font>
                     </property>
                     <property name="text">
-                     <string>Y-detector</string>
+                     <string>Y-ray</string>
                     </property>
                    </widget>
                   </item>
@@ -606,13 +606,13 @@
                  <number>10</number>
                 </property>
                 <property name="topMargin">
-                 <number>2</number>
+                 <number>6</number>
                 </property>
                 <property name="rightMargin">
                  <number>10</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>10</number>
+                 <number>0</number>
                 </property>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_9">

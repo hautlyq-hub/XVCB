@@ -247,6 +247,8 @@ void mvsystemsettings::onReconnecttoggled()
 {
     ui->pushButtonConnect->setEnabled(false);
 
+    onComboBoxChanged();
+
     if (mManager) {
         mManager->unInitSerialPort();
 
@@ -256,7 +258,6 @@ void mvsystemsettings::onReconnecttoggled()
             bool ret = mManager->initSerialPort();
             if (ret) {
                 resetUI();
-                onComboBoxChanged();
             } else {
                 updateInfoPanel(tr("Serial port initialization failed"), Error);
                 updateDeviceState(ExposureState::Fault);
@@ -1067,7 +1068,7 @@ void mvsystemsettings::onComboBoxChanged()
     if (mSaveSettingsTimer && mSaveSettingsTimer->isActive()) {
         mSaveSettingsTimer->stop();
     }
-    mSaveSettingsTimer->start(100);
+    mSaveSettingsTimer->start(10);
 }
 
 void mvsystemsettings::savePortSettings()
