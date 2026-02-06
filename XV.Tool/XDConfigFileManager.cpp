@@ -19,7 +19,6 @@ ConfigFileManager::ConfigFileManager()
     // 2. 直接测试文件读取
     QFile file(pathIni);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qDebug() << "Can read file, first line:" << file.readLine().trimmed();
         file.close();
     } else {
         qDebug() << "Cannot open file:" << file.errorString();

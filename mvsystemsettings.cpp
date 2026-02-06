@@ -122,15 +122,13 @@ void mvsystemsettings::initializeOrientationButtons()
 
     connect(ui->mRBtnSensor1, &QRadioButton::toggled, this, [this](bool checked) {
         if (checked) {
-            qDebug() << tr("Main sensor: 1, Secondary sensor: 2");
-            onComboBoxChanged(); // 保存配置
+            // onComboBoxChanged(); // 保存配置
         }
     });
 
     connect(ui->mRBtnSensor2, &QRadioButton::toggled, this, [this](bool checked) {
         if (checked) {
-            qDebug() << tr("Main sensor: 2, Secondary sensor: 1");
-            onComboBoxChanged(); // 保存配置
+            // onComboBoxChanged(); // 保存配置
         }
     });
 
@@ -138,7 +136,7 @@ void mvsystemsettings::initializeOrientationButtons()
     connect(ui->mRBtnSensorOri1LR, &QRadioButton::toggled, this, [this](bool checked) {
         if (checked) {
             ui->mRBtnSensorOri2UpDown->setChecked(true);
-            onComboBoxChanged(); // 自动保存配置
+            // onComboBoxChanged(); // 自动保存配置
         }
     });
 
@@ -146,7 +144,7 @@ void mvsystemsettings::initializeOrientationButtons()
     connect(ui->mRBtnSensorOri2LR, &QRadioButton::toggled, this, [this](bool checked) {
         if (checked) {
             ui->mRBtnSensorOri1UpDown->setChecked(true);
-            onComboBoxChanged(); // 自动保存配置
+            // onComboBoxChanged(); // 自动保存配置
         }
     });
 
@@ -154,8 +152,7 @@ void mvsystemsettings::initializeOrientationButtons()
     connect(ui->mRBtnSensorOri1UpDown, &QRadioButton::toggled, this, [this](bool checked) {
         if (checked) {
             ui->mRBtnSensorOri2LR->setChecked(true);
-            qDebug() << tr("Sensor 1: Up-Down, Sensor 2: Left-Right");
-            onComboBoxChanged(); // 自动保存配置
+            // onComboBoxChanged(); // 自动保存配置
         }
     });
 
@@ -163,8 +160,7 @@ void mvsystemsettings::initializeOrientationButtons()
     connect(ui->mRBtnSensorOri2UpDown, &QRadioButton::toggled, this, [this](bool checked) {
         if (checked) {
             ui->mRBtnSensorOri1LR->setChecked(true);
-            qDebug() << tr("Sensor 2: Up-Down, Sensor 1: Left-Right");
-            onComboBoxChanged(); // 自动保存配置
+            // onComboBoxChanged(); // 自动保存配置
         }
     });
 }
@@ -260,6 +256,7 @@ void mvsystemsettings::onReconnecttoggled()
             bool ret = mManager->initSerialPort();
             if (ret) {
                 resetUI();
+                onComboBoxChanged();
             } else {
                 updateInfoPanel(tr("Serial port initialization failed"), Error);
                 updateDeviceState(ExposureState::Fault);
@@ -707,8 +704,6 @@ void mvsystemsettings::GenerateCalibrationFiles()
     }
 }
 
-void mvsystemsettings::SaveRawImage(const HWImageData& data) {}
-
 // 状态信息显示
 void mvsystemsettings::updateInfoPanel(const QString& message, int type)
 {
@@ -959,22 +954,22 @@ void mvsystemsettings::refreshComPorts()
     ui->mCbComXray2->blockSignals(false);
 
     // 连接ComboBox的变化信号
-    connect(ui->mCbComSensor1,
-            QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this,
-            &mvsystemsettings::onComboBoxChanged);
-    connect(ui->mCbComSensor2,
-            QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this,
-            &mvsystemsettings::onComboBoxChanged);
-    connect(ui->mCbComXray1,
-            QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this,
-            &mvsystemsettings::onComboBoxChanged);
-    connect(ui->mCbComXray2,
-            QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this,
-            &mvsystemsettings::onComboBoxChanged);
+    // connect(ui->mCbComSensor1,
+    //         QOverload<int>::of(&QComboBox::currentIndexChanged),
+    //         this,
+    //         &mvsystemsettings::onComboBoxChanged);
+    // connect(ui->mCbComSensor2,
+    //         QOverload<int>::of(&QComboBox::currentIndexChanged),
+    //         this,
+    //         &mvsystemsettings::onComboBoxChanged);
+    // connect(ui->mCbComXray1,
+    //         QOverload<int>::of(&QComboBox::currentIndexChanged),
+    //         this,
+    //         &mvsystemsettings::onComboBoxChanged);
+    // connect(ui->mCbComXray2,
+    //         QOverload<int>::of(&QComboBox::currentIndexChanged),
+    //         this,
+    //         &mvsystemsettings::onComboBoxChanged);
 
     // 如果之前保存定时器在运行，重新启动它
     if (saveTimerWasActive) {
@@ -1069,13 +1064,10 @@ void mvsystemsettings::selectPortInComboBox(QComboBox* comboBox, const QString& 
 
 void mvsystemsettings::onComboBoxChanged()
 {
-    // 使用定时器实现防抖，避免频繁保存
     if (mSaveSettingsTimer && mSaveSettingsTimer->isActive()) {
         mSaveSettingsTimer->stop();
     }
-
-    // 延迟500ms后保存，用户快速连续操作时只会保存最后一次
-    mSaveSettingsTimer->start(500);
+    mSaveSettingsTimer->start(100);
 }
 
 void mvsystemsettings::savePortSettings()
