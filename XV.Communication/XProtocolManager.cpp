@@ -502,7 +502,6 @@ void XProtocolManager::initializeXray()
 
 }
 
-
 bool XProtocolManager::setupWorkMode(bool calibrationBefore, int xRayIndex)
 {
     m_xRayIndex = xRayIndex;
@@ -524,7 +523,6 @@ bool XProtocolManager::setupWorkMode(bool calibrationBefore, int xRayIndex)
 
             m_imageBuffer.clear();
             m_exposureWait = 0;
-            qDebug() << "[setupWorkMode] Current thread:" << QThread::currentThread();
             bool success = startExposure();
 
             if (success) {

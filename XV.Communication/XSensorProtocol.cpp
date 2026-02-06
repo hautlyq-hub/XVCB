@@ -835,124 +835,52 @@ bool XSensorProtocol::autoInitialize(const QString& preferredPort, int timeoutMs
     return success;
 }
 
-bool XSensorProtocol::echoDevice()
-{
-    if (!m_serial || !m_serial->isOpen()) {
-        m_lastError = "Serial port not open";
-        return false;
-    }
-
-    emit statusChanged("Echoing device...");
-
-    if (!sendCommand(Commands::F4_POWER_ON_3V3)) {
-        m_lastError = "Failed to send power on command";
-        return false;
-    }
-    QThread::msleep(200);
-
-    if (!sendCommand(Commands::FA_FIND_DEVICE)) {
-        m_lastError = "Failed to send find device command";
-        return false;
-    }
-
-    QByteArray response = readResponse(m_echoTimeout);
-    if (response.isEmpty() || response.size() < 50) {
-        m_lastError = "Invalid or empty device response";
-        return false;
-    }
-
-    qDebug() << "resp" << response.toHex(' ');
-
-    m_deviceInfo = parseDeviceInfo(response);
-    if (m_deviceInfo.version.isEmpty()) {
-        m_lastError = "Failed to parse device info";
-        return false;
-    }
-
-    qDebug() << "Device found - Version:" << m_deviceInfo.version << "SN:" << m_deviceInfo.sn;
-
-    powerOff();
-    emit deviceReady();
-    emit statusChanged("Device echo successful");
-    return true;
-}
-
 bool XSensorProtocol::powerOn()
 {
-    if (!m_serial || !m_serial->isOpen()) {
-        m_lastError = "Serial port not open";
-        return false;
-    }
-
-    emit statusChanged("Powering on device...");
-
-    m_serial->clear();
-    QThread::msleep(100);
-
-    if (!sendCommand(Commands::F4_POWER_ON_3V3)) {
-        m_lastError = "Failed to send power on command";
-        return false;
-    } else {
+    if (sendCommand(Commands::F4_POWER_ON_3V3)) {
         QByteArray response = readResponse(m_echoTimeout);
-        qDebug() << "resp" << response.toHex(' ');
+    } else {
+        return false;
     }
 
     QThread::msleep(300);
 
-    if (!sendCommand(Commands::F4_POWER_ON)) {
-        m_lastError = "Failed to send main power on command";
-        return false;
-    } else {
+    if (sendCommand(Commands::F4_POWER_ON)) {
         QByteArray response = readResponse(m_echoTimeout);
-        qDebug() << "resp" << response.toHex(' ');
+    } else {
+        return false;
     }
 
     m_poweredOn = true;
     emit statusChanged("Device powered on");
 
-    qInfo() << "Power on successful";
     return true;
 }
 
 bool XSensorProtocol::powerOff()
 {
-    if (!m_serial || !m_serial->isOpen()) {
-        qWarning() << "Serial port not open";
+    if (m_poweredOn) {
+        if (sendCommand(Commands::F8_TO_LOWER_POWER)) {
+            readResponse(m_readTimeout);
+        } else {
+            return false;
+        }
+
+        QThread::msleep(200);
+    }
+
+    if (sendCommand(Commands::F4_POWER_OFF)) {
+        readResponse(m_readTimeout);
+    } else {
         return false;
     }
 
-    bool success = false;
+    m_poweredOn = false;
+    emit statusChanged("Device powered off");
 
-    try {
-        if (m_poweredOn) {
-            if (sendCommand(Commands::F8_TO_LOWER_POWER)) {
-                readResponse(m_readTimeout);
-            }
-
-            QThread::msleep(200);
-        }
-
-        if (sendCommand(Commands::F4_POWER_OFF)) {
-            readResponse(m_readTimeout);
-            success = true;
-            m_poweredOn = false;
-        }
-
-    } catch (...) {
-        qCritical() << "Exception during power off";
-    }
-
-    if (!success && m_serial) {
-        qWarning() << "Power off failed, forcing close...";
-        m_poweredOn = false;
-    }
-
-    return success;
+    return true;
 }
 
-// ==================================================================================
-// 🔧 修复关键函数2: setupWorkMode - 无修改，但调用了sendF5Config
-// ==================================================================================
 bool XSensorProtocol::setupWorkMode(bool b)
 {
 
@@ -961,8 +889,6 @@ bool XSensorProtocol::setupWorkMode(bool b)
         return false;
     }
 
-    QMutexLocker locker(&m_mutex);
-
     if (m_isBusy) {
         m_lastError = "Device is busy";
         qWarning() << m_lastError;
@@ -970,8 +896,6 @@ bool XSensorProtocol::setupWorkMode(bool b)
     }
 
     m_isBusy = true;
-
-    bool success = false;
 
     try {
         emit statusChanged("Setting up work mode...");
@@ -999,9 +923,7 @@ bool XSensorProtocol::setupWorkMode(bool b)
 
         QThread::msleep(500);
 
-        success = sendF5Config();
-
-        if (!success) {
+        if (!sendF5Config()) {
             qWarning() << "F5 config failed";
             powerOff();
         } else {
@@ -1013,34 +935,24 @@ bool XSensorProtocol::setupWorkMode(bool b)
         if (m_poweredOn) {
             powerOff();
         }
-        success = false;
+        m_isBusy = false;
+        return false;
     }
 
-    m_isBusy = false;
-    return success;
+    return true;
 }
 
 void XSensorProtocol::stopExposure()
 {
-    QMutexLocker locker(&m_mutex);
-
-    m_isBusy = true;
     emit statusChanged("Stopping exposure...");
 
-    m_exposing = false;
-
     if (m_poweredOn) {
-        sendCommand(Commands::F4_POWER_OFF);
-        readResponse(m_readTimeout);
-
         powerOff();
     }
 
-    m_isBusy = false;
-
+    m_exposing = false;
     m_cancelRequested = true;
     emit exposureCompleted();
-    emit statusChanged("Exposure stopped");
 }
 
 bool XSensorProtocol::sendCommand(const QByteArray& cmd)
