@@ -108,9 +108,12 @@ bool XProtocolManager::initSerialPort()
             continue;
 
         if (portMap.contains(setting.portName)) {
-            qCritical() << "错误：端口" << setting.portName << "被多个设备配置使用："
-                        << portMap[setting.portName] << "和" << setting.deviceKey;
-            emit errorOccurred(QString("端口 %1 配置重复，请检查配置文件").arg(setting.portName));
+            qCritical() << tr("Error: Port") << setting.portName
+                        << tr("is used by multiple devices:") << portMap[setting.portName]
+                        << tr("and") << setting.deviceKey;
+            emit errorOccurred(
+                QString(tr("Port %1 configuration duplicate, please check configuration file"))
+                    .arg(setting.portName));
             return false; // 直接返回，不要继续
         }
         portMap[setting.portName] = setting.deviceKey;
@@ -284,7 +287,7 @@ void XProtocolManager::loadConfig()
         }
         file.close();
     } else {
-        qWarning() << "Failed to load AppData config, using default interval";
+        qWarning() << tr("Failed to load AppData config, using default interval");
     }
 }
 
@@ -384,13 +387,10 @@ void XProtocolManager::initializeSensors()
         this,
         [this]() { emit exposureProcess(ExposureState::Idle); },
         Qt::QueuedConnection);
-
-    qInfo() << "Sensors initialized";
 }
 
 void XProtocolManager::initializeXray()
 {
-
     m_xray1Thread = new QThread(this);
     m_xray1Thread->setObjectName("Xray1-Thread");
 
@@ -505,7 +505,6 @@ void XProtocolManager::initializeXray()
             onXrayTemperatureUpdated(deviceTemp, mcuTemp, 1);
         },
         Qt::QueuedConnection);
-
 }
 
 bool XProtocolManager::setupWorkMode(bool calibrationBefore, int xRayIndex)
@@ -513,7 +512,7 @@ bool XProtocolManager::setupWorkMode(bool calibrationBefore, int xRayIndex)
     m_xRayIndex = xRayIndex;
 
     if (m_isExposing.loadAcquire() != 0) {
-        qWarning() << "setupWorkMode repeat";
+        qWarning() << tr("setupWorkMode repeat");
         return false;
     }
 
@@ -523,7 +522,7 @@ bool XProtocolManager::setupWorkMode(bool calibrationBefore, int xRayIndex)
     // 直接在当前线程同步执行，不使用线程池
     try {
         if (!checkConnected()) {
-            emit errorOccurred("设备未连接");
+            emit errorOccurred(tr("Device not connected"));
             m_isExposing = 0; // 重置状态
             return false;
         }
@@ -535,16 +534,16 @@ bool XProtocolManager::setupWorkMode(bool calibrationBefore, int xRayIndex)
         bool success = startExposure();
 
         if (success) {
-            emit info("工作模式设置完成");
+            emit info(tr("Work mode setup completed"));
             return true;
         } else {
-            emit errorOccurred("工作模式设置失败");
+            emit errorOccurred(tr("Work mode setup failed"));
             m_isExposing = 0;
             return false;
         }
 
     } catch (const std::exception& ex) {
-        emit errorOccurred(QString("设置错误: %1").arg(ex.what()));
+        emit errorOccurred(QString(tr("Setup error: %1")).arg(ex.what()));
         m_isExposing = 0;
         return false;
     }
@@ -584,7 +583,6 @@ void XProtocolManager::stopWorkMode()
     m_isExposing = 0;
     m_isSettingUp = 0;
     m_imageBuffer.clear();
-
 }
 
 bool XProtocolManager::checkConnected()
@@ -636,7 +634,7 @@ bool XProtocolManager::checkSensorCalibrateFile()
     int sensorCount = checkSensorCalibrateFileCount();
 
     if (sensorCount != 2) {
-        emit warning("传感器未标定，请先进行标定");
+        emit warning(tr("Sensor not calibrated, please calibrate first"));
         return false;
     }
 
@@ -656,7 +654,7 @@ int XProtocolManager::checkSensorCalibrateFileCount()
         bool res = true; // TODO: 实现标定文件检查
         if (res) {
             sensorCount++;
-            qDebug() << "Sensor1 calibration file OK";
+            qDebug() << tr("Sensor1 calibration file OK");
         }
     }
 
@@ -666,7 +664,7 @@ int XProtocolManager::checkSensorCalibrateFileCount()
         bool res = true; // TODO: 实现标定文件检查
         if (res) {
             sensorCount++;
-            qDebug() << "Sensor2 calibration file OK";
+            qDebug() << tr("Sensor2 calibration file OK");
         }
     }
 
@@ -681,9 +679,7 @@ bool XProtocolManager::startExposure()
     if (m_sensor1) {
         QMetaObject::invokeMethod(
             m_sensor1,
-            [this, &success1]() {
-                success1 = m_sensor1->setupWorkMode(true);
-            },
+            [this, &success1]() { success1 = m_sensor1->setupWorkMode(true); },
             Qt::BlockingQueuedConnection);
     }
 
@@ -692,7 +688,7 @@ bool XProtocolManager::startExposure()
         QMetaObject::invokeMethod(
             m_sensor2,
             [this, &success2]() {
-                qDebug() << "[m_sensor2] Current thread:" << QThread::currentThread();
+                qDebug() << tr("[m_sensor2] Current thread:") << QThread::currentThread();
                 success2 = m_sensor2->setupWorkMode(true);
             },
             Qt::BlockingQueuedConnection);
@@ -702,7 +698,8 @@ bool XProtocolManager::startExposure()
     if (success1 && success2) {
         return true;
     } else {
-        qWarning() << "工作模式设置失败 - sensor1:" << success1 << "sensor2:" << success2;
+        qWarning() << tr("Work mode setup failed - sensor1:") << success1 << tr("sensor2:")
+                   << success2;
         return false;
     }
 }
@@ -732,7 +729,7 @@ bool XProtocolManager::executeCalibrationBefore()
 #endif
 
     } catch (...) {
-        qCritical() << "校准前设置失败";
+        qCritical() << tr("Pre-calibration setup failed");
     }
 
     return success1 && success2;
@@ -790,27 +787,24 @@ bool XProtocolManager::connectSensor(const QString& sensorKey)
     }
 
     if (portName.isEmpty()) {
-        qWarning() << "传感器" << sensorKey << "没有配置端口";
+        qWarning() << tr("Sensor") << sensorKey << tr("has no port configured");
         return false;
     }
 
     // 获取传感器实例
     XSensorProtocol* sensor = (sensorKey == SENSOR1_KEY) ? m_sensor1 : m_sensor2;
     if (!sensor) {
-        qWarning() << "传感器实例未初始化:" << sensorKey;
+        qWarning() << tr("Sensor instance not initialized:") << sensorKey;
         return false;
     }
 
-    qDebug() << "连接传感器:" << sensorKey << "端口:" << portName;
+    qDebug() << tr("Connecting sensor:") << sensorKey << tr("Port:") << portName;
 
     // 在传感器线程中执行连接
     bool success = false;
     QMetaObject::invokeMethod(
         sensor,
-        [sensor, portName, &success]() {
-            qDebug() << "在线程" << QThread::currentThreadId() << "中连接传感器";
-            success = sensor->initSerialPort(portName);
-        },
+        [sensor, portName, &success]() { success = sensor->initSerialPort(portName); },
         Qt::BlockingQueuedConnection);
 
     if (success) {
@@ -823,10 +817,10 @@ bool XProtocolManager::connectSensor(const QString& sensorKey)
         }
         QMetaObject::invokeMethod(
             this,
-            [this, sensorKey]() { emit info(QString("传感器 %1 连接成功").arg(sensorKey)); },
+            [this, sensorKey]() { emit info(QString(tr("Sensor %1 connected")).arg(sensorKey)); },
             Qt::QueuedConnection);
     } else {
-        qWarning() << "传感器" << sensorKey << "连接失败";
+        qWarning() << tr("Sensor") << sensorKey << tr("disconnected");
     }
 
     return success;
@@ -844,25 +838,23 @@ bool XProtocolManager::connectXray(const QString& xrayKey)
     }
 
     if (portName.isEmpty()) {
-        qWarning() << "X光机" << xrayKey << "没有配置端口";
+        qWarning() << tr("X-ray ") << xrayKey << tr("has no port configured");
         return true;
     }
 
     XRayProtocol* xrayProtocol = (xrayKey == XRAY1_KEY) ? m_xrayProtocol1 : m_xrayProtocol2;
 
     if (!xrayProtocol) {
-        qWarning() << "X光机" << xrayKey << "协议实例未初始化";
+        qWarning() << tr("X-ray ") << xrayKey << tr("protocol instance not initialized");
         return false;
     }
+    qDebug() << tr("Connecting X-ray :") << xrayKey << tr("Port:") << portName;
 
     // 在X光机线程中执行连接
     bool success = false;
     QMetaObject::invokeMethod(
         xrayProtocol,
-        [xrayProtocol, portName, &success]() {
-            qDebug() << "在线程" << QThread::currentThreadId() << "中连接X光机";
-            success = xrayProtocol->initSerialPort(portName);
-        },
+        [xrayProtocol, portName, &success]() { success = xrayProtocol->initSerialPort(portName); },
         Qt::BlockingQueuedConnection);
 
     if (success) {
@@ -873,12 +865,6 @@ bool XProtocolManager::connectXray(const QString& xrayKey)
                 break;
             }
         }
-        QMetaObject::invokeMethod(
-            this,
-            [this, xrayKey]() { emit info(QString("X光机 %1 已连接").arg(xrayKey)); },
-            Qt::QueuedConnection);
-    } else {
-        qWarning() << "X光机" << xrayKey << "连接失败";
     }
 
     return success;
@@ -919,9 +905,9 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
 
                 bool ret = m_xrayProtocol1->setExposureParams(xrayParams);
                 if (!ret) {
-                    qDebug() << "曝光参数设置失败";
+                    qDebug() << tr("Exposure parameter setting failed");
                 } else {
-                    qDebug() << "曝光参数设置成功";
+                    qDebug() << tr("Exposure parameter setting successful");
                 }
                 m_xrayProtocol1->startExposure();
             },
@@ -996,7 +982,6 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
 
 void XProtocolManager::onExposureF6Ready(const QString& portName)
 {
-
     // 在线程池中执行图像采集
     QtConcurrent::run(m_threadPool, [this, portName]() {
         // 查找对应的设备
@@ -1009,7 +994,7 @@ void XProtocolManager::onExposureF6Ready(const QString& portName)
         }
 
         if (deviceKey.isEmpty()) {
-            qWarning() << "Unknown port for image acquisition:" << portName;
+            qWarning() << tr("Unknown port for image acquisition:") << portName;
             return;
         }
 
@@ -1129,7 +1114,7 @@ void XProtocolManager::onSensorImageAvailable(HWImageData& image, const QString&
     }
 
     if (sensorKey.isEmpty()) {
-        qWarning() << "Unknown sensor port:" << portName;
+        qWarning() << tr("Unknown sensor port:") << portName;
         return;
     }
 
@@ -1138,7 +1123,6 @@ void XProtocolManager::onSensorImageAvailable(HWImageData& image, const QString&
 
     // 检查是否收到所有图像
     checkAllImagesReceived();
-
 }
 
 void XProtocolManager::checkAllImagesReceived()
@@ -1226,19 +1210,18 @@ void XProtocolManager::cancelAllOperations()
     if (m_exposureWatcher->isRunning()) {
         m_exposureWatcher->cancel();
     }
-
 }
 
 void XProtocolManager::onXrayDeviceConnected(int index)
 {
     QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
-    emit info(QString("X光机 %1 已连接").arg(xrayKey));
+    emit info(QString(tr("X-ray %1 connected")).arg(xrayKey));
 }
 
 void XProtocolManager::onXrayDeviceDisconnected(int index)
 {
     QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
-    emit warning(QString("X光机 %1 已断开").arg(xrayKey));
+    emit warning(QString(tr("X-ray %1 disconnected")).arg(xrayKey));
 }
 
 void XProtocolManager::onXrayStatusChanged(XRayDeviceStatus status, int index)
@@ -1246,39 +1229,39 @@ void XProtocolManager::onXrayStatusChanged(XRayDeviceStatus status, int index)
     QString statusStr;
     switch (status) {
     case DEVICE_IDLE:
-        statusStr = "空闲";
+        statusStr = tr("Idle");
         break;
     case DEVICE_READY:
-        statusStr = "就绪";
+        statusStr = tr("Ready");
         break;
     case DEVICE_EXPOSING:
-        statusStr = "曝光中";
+        statusStr = tr("Exposing");
         break;
     case DEVICE_COOLING:
-        statusStr = "冷却中";
+        statusStr = tr("Cooling");
         break;
     case DEVICE_ERROR:
-        statusStr = "错误";
+        statusStr = tr("Error");
         break;
     default:
-        statusStr = "未知";
+        statusStr = tr("Unknown");
         break;
     }
 
-    QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
-    emit info(QString("X光机 %1 状态: %2").arg(xrayKey).arg(statusStr));
+    // QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
+    // emit info(QString("X光机 %1 状态: %2").arg(xrayKey).arg(statusStr));
 }
 
 void XProtocolManager::onXrayExposureStarted(int index)
 {
     QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
-    emit info(QString("X光机 %1 开始曝光").arg(xrayKey));
+    emit info(QString(tr("X-ray %1 started exposure")).arg(xrayKey));
 }
 
 void XProtocolManager::onXrayExposureStopped(int index)
 {
     QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
-    emit info(QString("X光机 %1 停止曝光").arg(xrayKey));
+    emit info(QString(tr("X-ray %1 stopped exposure")).arg(xrayKey));
 }
 
 void XProtocolManager::onXrayExposureError(XRayErrorCode error, int index)
@@ -1290,9 +1273,9 @@ void XProtocolManager::onXrayExposureError(XRayErrorCode error, int index)
         xray = m_xrayProtocol2;
     }
 
-    QString errorStr = xray ? xray->getErrorString(error) : "未知错误";
+    QString errorStr = xray ? xray->getErrorString(error) : tr("Unknown error");
     QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
-    emit errorOccurred(QString("X光机 %1 曝光错误: %2").arg(xrayKey).arg(errorStr));
+    emit errorOccurred(QString(tr("X-ray %1 exposure error: %2")).arg(xrayKey).arg(errorStr));
 }
 
 void XProtocolManager::onXrayErrorOccurred(XRayErrorCode error,
@@ -1306,16 +1289,18 @@ void XProtocolManager::onXrayErrorOccurred(XRayErrorCode error,
         xray = m_xrayProtocol2;
     }
 
-    QString errorStr = xray ? xray->getErrorString(error) : "未知错误";
+    QString errorStr = xray ? xray->getErrorString(error) : tr("Unknown error");
     QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
-    emit errorOccurred(QString("X光机 %1 错误: %2 - %3").arg(xrayKey).arg(errorStr).arg(description));
+    emit errorOccurred(
+        QString(tr("X-ray %1 error: %2 - %3")).arg(xrayKey).arg(errorStr).arg(description));
 }
 
 void XProtocolManager::onXrayCoolingRemaining(int seconds, int index)
 {
     QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
     if (seconds > 0) {
-        emit warning(QString("X光机 %1 冷却剩余: %2秒").arg(xrayKey).arg(seconds));
+        emit warning(
+            QString(tr("X-ray %1 cooling remaining: %2 seconds")).arg(xrayKey).arg(seconds));
     }
 }
 
@@ -1323,7 +1308,8 @@ void XProtocolManager::onXrayTemperatureUpdated(float deviceTemp, float mcuTemp,
 {
     QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
     if (deviceTemp > 50.0f) {
-        emit warning(QString("X光机 %1 温度过高: %2°C").arg(xrayKey).arg(deviceTemp));
+        emit warning(
+            QString(tr("X-ray %1 temperature too high: %2°C")).arg(xrayKey).arg(deviceTemp));
     }
 }
 
@@ -1331,13 +1317,13 @@ void XProtocolManager::onXrayTemperatureUpdated(float deviceTemp, float mcuTemp,
 
 void XProtocolManager::onSensorDeviceDisconnected()
 {
-    emit warning("传感器已断开");
+    emit warning(tr("Sensor disconnected"));
     updateConnectionStatus();
 }
 
 void XProtocolManager::onSensorStatusChanged(const QString& status)
 {
-    emit info(QString("传感器状态: %1").arg(status));
+    emit info(QString(tr("Sensor status: %1")).arg(status));
 }
 
 QString XProtocolManager::getSensorVersion(const QString& sensorKey)

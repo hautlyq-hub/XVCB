@@ -1,4 +1,3 @@
-
 // scp /home/pi/XVBVThiness/build/release/XVBVThickness pi@192.168.2.158:/home/pi/XVBVThickness/release/
 #include "mvsystemsettings.h"
 #include <QButtonGroup>
@@ -123,14 +122,14 @@ void mvsystemsettings::initializeOrientationButtons()
 
     connect(ui->mRBtnSensor1, &QRadioButton::toggled, this, [this](bool checked) {
         if (checked) {
-            qDebug() << "主传感器: 1, 次传感器: 2";
+            qDebug() << tr("Main sensor: 1, Secondary sensor: 2");
             onComboBoxChanged(); // 保存配置
         }
     });
 
     connect(ui->mRBtnSensor2, &QRadioButton::toggled, this, [this](bool checked) {
         if (checked) {
-            qDebug() << "主传感器: 2, 次传感器: 1";
+            qDebug() << tr("Main sensor: 2, Secondary sensor: 1");
             onComboBoxChanged(); // 保存配置
         }
     });
@@ -139,7 +138,6 @@ void mvsystemsettings::initializeOrientationButtons()
     connect(ui->mRBtnSensorOri1LR, &QRadioButton::toggled, this, [this](bool checked) {
         if (checked) {
             ui->mRBtnSensorOri2UpDown->setChecked(true);
-            qDebug() << "Sensor 1: Left-Right, Sensor 2: Up-Down";
             onComboBoxChanged(); // 自动保存配置
         }
     });
@@ -148,7 +146,6 @@ void mvsystemsettings::initializeOrientationButtons()
     connect(ui->mRBtnSensorOri2LR, &QRadioButton::toggled, this, [this](bool checked) {
         if (checked) {
             ui->mRBtnSensorOri1UpDown->setChecked(true);
-            qDebug() << "Sensor 2: Left-Right, Sensor 1: Up-Down";
             onComboBoxChanged(); // 自动保存配置
         }
     });
@@ -157,7 +154,7 @@ void mvsystemsettings::initializeOrientationButtons()
     connect(ui->mRBtnSensorOri1UpDown, &QRadioButton::toggled, this, [this](bool checked) {
         if (checked) {
             ui->mRBtnSensorOri2LR->setChecked(true);
-            qDebug() << "Sensor 1: Up-Down, Sensor 2: Left-Right";
+            qDebug() << tr("Sensor 1: Up-Down, Sensor 2: Left-Right");
             onComboBoxChanged(); // 自动保存配置
         }
     });
@@ -166,7 +163,7 @@ void mvsystemsettings::initializeOrientationButtons()
     connect(ui->mRBtnSensorOri2UpDown, &QRadioButton::toggled, this, [this](bool checked) {
         if (checked) {
             ui->mRBtnSensorOri1LR->setChecked(true);
-            qDebug() << "Sensor 2: Up-Down, Sensor 1: Left-Right";
+            qDebug() << tr("Sensor 2: Up-Down, Sensor 1: Left-Right");
             onComboBoxChanged(); // 自动保存配置
         }
     });
@@ -264,7 +261,7 @@ void mvsystemsettings::onReconnecttoggled()
             if (ret) {
                 resetUI();
             } else {
-                updateInfoPanel("串口初始化失败", Error);
+                updateInfoPanel(tr("Serial port initialization failed"), Error);
                 updateDeviceState(ExposureState::Fault);
             }
             QTimer::singleShot(2000, this, [this]() { ui->pushButtonConnect->setEnabled(true); });
@@ -328,7 +325,7 @@ void mvsystemsettings::onBtnGenerateClicked()
 
     try {
         // if (!mHWImageDataX || !mHWImageDataY) {
-        //     updateInfoPanel("No raw images found", Warning);
+        //     updateInfoPanel(tr("No raw images found"), Warning);
         //     ui->mBtnGenerate->setEnabled(true);
         //     return;
         // }
@@ -338,14 +335,14 @@ void mvsystemsettings::onBtnGenerateClicked()
 
         QFutureWatcher<void>* watcher = new QFutureWatcher<void>();
         connect(watcher, &QFutureWatcher<void>::finished, [this, watcher]() {
-            updateInfoPanel("Calibration files generated successfully", Warning);
+            updateInfoPanel(tr("Calibration files generated successfully"), Warning);
             ui->mBtnGenerate->setEnabled(true);
             watcher->deleteLater();
         });
         watcher->setFuture(future);
 
     } catch (...) {
-        updateInfoPanel("Failed to generate calibration files", Error);
+        updateInfoPanel(tr("Failed to generate calibration files"), Error);
         ui->mBtnGenerate->setEnabled(true);
     }
 }
@@ -355,7 +352,7 @@ void mvsystemsettings::onRBtnXtoggled(bool checked)
     if (checked) {
         mRBtnXChecked = true;
         // 显示当前使用的设备
-        updateInfoPanel("当前使用: X轴 (X光机1)", Normal);
+        updateInfoPanel(tr("Current use: X-axis (X-ray machine 1)"), Normal);
         // 高亮X光机1下拉框
         ui->mCbComXray1->setStyleSheet("border: 2px solid blue;");
         ui->mCbComXray2->setStyleSheet("");
@@ -367,7 +364,7 @@ void mvsystemsettings::onRBtnYtoggled(bool checked)
     if (checked) {
         mRBtnXChecked = false;
         // 显示当前使用的设备
-        updateInfoPanel("当前使用: Y轴 (X光机2)", Normal);
+        updateInfoPanel(tr("Current use: Y-axis (X-ray machine 2)"), Normal);
         // 高亮X光机2下拉框
         ui->mCbComXray1->setStyleSheet("");
         ui->mCbComXray2->setStyleSheet("border: 2px solid blue;");
@@ -379,13 +376,13 @@ void mvsystemsettings::StartExposure()
     mIsExposing = true;
     ui->mBtnEnableExp->setText(tr("Stop"));
 
-    updateInfoPanel("正在设置工作模式...", Normal);
+    updateInfoPanel(tr("Setting up work mode..."), Normal);
     updateDeviceState(ExposureState::SettingUp);
 
     // 状态检查
     if (!canStartExposure()) {
         resetUI();
-        updateInfoPanel("Lack of exposure conditions", Error);
+        updateInfoPanel(tr("Lack of exposure conditions"), Error);
         updateDeviceState(ExposureState::Fault);
         return;
     }
@@ -397,11 +394,10 @@ void mvsystemsettings::StartExposure()
 
     if (!success) {
         resetUI();
-        updateInfoPanel("设置工作模式失败，请重试", Error);
+        updateInfoPanel(tr("Failed to set work mode, please try again"), Error);
         updateDeviceState(ExposureState::Fault);
         return;
     }
-
 }
 
 void mvsystemsettings::StopExposure()
@@ -420,7 +416,7 @@ void mvsystemsettings::StopExposure()
 void mvsystemsettings::AutoNextExposure()
 {
     if (mIsExposing) {
-        qDebug() << "当前正在曝光中，跳过自动曝光";
+        qDebug() << tr("Currently exposing, skip auto exposure");
         return;
     }
 
@@ -435,12 +431,14 @@ void mvsystemsettings::AutoNextExposure()
 
     if (correctRelationView) {
         // 延迟1秒后自动曝光
-        qDebug() << "找到未曝光位置，将在1秒后启动自动曝光，位置ID:" << correctRelationView->ViewId;
+        qDebug() << tr(
+            "Found unexposed position, will start auto exposure after 1 second, position ID:")
+                 << correctRelationView->ViewId;
         mAutoExposureTimer->start(1000);
     } else {
         // 所有位置都已完成
-        updateInfoPanel("所有位置曝光完成", Normal);
-        qDebug() << "所有位置已完成曝光";
+        updateInfoPanel(tr("All positions exposure completed"), Normal);
+        qDebug() << tr("All positions have been exposed");
     }
 }
 
@@ -486,11 +484,11 @@ void mvsystemsettings::AcceptImage(const QVector<HWImageData>& raws)
             QString fileName = QDir::toNativeSeparators(mPreCalFolder + "/" + _file + "/"
                                                         + QString("image_%1.raw").arg(timestamp));
 
-            qDebug() << "保存图像到:" << fileName;
+            qDebug() << tr("Saving image to:") << fileName;
 
             QFileInfo fileInfo(fileName);
             if (!QDir().mkpath(fileInfo.path())) {
-                qWarning() << "创建目录失败:" << fileInfo.path();
+                qWarning() << tr("Failed to create directory:") << fileInfo.path();
                 return;
             }
 
@@ -500,27 +498,27 @@ void mvsystemsettings::AcceptImage(const QVector<HWImageData>& raws)
                 if (file.open(QIODevice::WriteOnly)) {
                     file.write(raw.imageData);
                     file.close();
-                    qDebug() << "原始数据已保存到:" << fileName;
+                    qDebug() << tr("Raw data saved to:") << fileName;
 
                     // 更新数据结构中的文件路径
                     HWImageData& mutableData = const_cast<HWImageData&>(raw);
                     mutableData.filePath = fileName;
                 } else {
-                    qWarning() << "无法写入文件:" << fileName;
+                    qWarning() << tr("Cannot write file:") << fileName;
                 }
             }
             // 如果有文件路径，复制文件
             else if (!raw.filePath.isEmpty() && QFile::exists(raw.filePath)) {
                 if (QFile::copy(raw.filePath, fileName)) {
-                    qDebug() << "文件复制成功:" << fileName;
+                    qDebug() << tr("File copied successfully:") << fileName;
 
                     // 删除源文件（可选）
                     QFile::remove(raw.filePath);
                 } else {
-                    qWarning() << "文件复制失败";
+                    qWarning() << tr("File copy failed");
                 }
             } else {
-                qWarning() << "没有可保存的图像数据";
+                qWarning() << tr("No image data to save");
             }
         }
     }
@@ -651,7 +649,7 @@ void mvsystemsettings::GenerateCalibrationFiles()
         directory.setFilter(QDir::Files);
         QFileInfoList fileList = directory.entryInfoList();
         if (fileList.size() == 0) {
-            qDebug() << ("No valid data. Calibration suspended.");
+            qDebug() << tr("No valid data. Calibration suspended.");
             ui->mLblStatusInfo->setText(tr("No valid data. Calibration suspended."));
             return;
         }
@@ -667,7 +665,7 @@ void mvsystemsettings::GenerateCalibrationFiles()
         if (!serial.isEmpty()) {
             mOralAddr = serial;
         } else {
-            mOralAddr = "Unknown"; // 默认值
+            mOralAddr = tr("Unknown"); // 默认值
         }
 
         auto algorithmic = XPectAlgorithmic::Instance();
@@ -689,9 +687,9 @@ void mvsystemsettings::GenerateCalibrationFiles()
                 mImageHeight = 423;
             }
         }
-        qDebug() << (QString("GenCalibrationFile,width:%1, height:%2")
-                         .arg(mImageWidth)
-                         .arg(mImageHeight)
+        qDebug() << (QString(tr("GenCalibrationFile,width:%1, height:%2")
+                                 .arg(mImageWidth)
+                                 .arg(mImageHeight))
                          .toStdString());
         int res = algorithmic->GenerateCorrectionFile(mPreCalFolder + "/" + _file,
                                                       targetFile,
@@ -700,19 +698,16 @@ void mvsystemsettings::GenerateCalibrationFiles()
                                                       mImageBit);
 
         if (res == 0) {
-            qDebug() << ("End generating calibration file Successful");
+            qDebug() << tr("End generating calibration file Successful");
             ui->mLblStatusInfo->setText(tr("Calibration completed."));
         } else {
-            qDebug() << ("End generating calibration file Failed");
-            ui->mLblStatusInfo->setText(tr("Calibration failed.."));
+            qDebug() << tr("End generating calibration file Failed");
+            ui->mLblStatusInfo->setText(tr("Calibration failed."));
         }
     }
 }
 
-void mvsystemsettings::SaveRawImage(const HWImageData& data)
-{
-
-}
+void mvsystemsettings::SaveRawImage(const HWImageData& data) {}
 
 // 状态信息显示
 void mvsystemsettings::updateInfoPanel(const QString& message, int type)
@@ -771,35 +766,35 @@ void mvsystemsettings::updateDeviceState(ExposureState state)
 
     switch (state) {
     case ExposureState::Idle:
-        text = "空闲";
+        text = tr("Idle");
         style = "color: gray; font-weight: bold; font-size: 25px;";
         break;
     case ExposureState::SettingUp:
-        text = "准备中";
+        text = tr("Setting Up");
         style = "color: orange;font-weight: bold; font-size: 25px;";
         break;
     case ExposureState::Exposing:
-        text = "曝光中";
+        text = tr("Exposing");
         style = "color: yellow;font-weight: bold; font-size: 25px;";
         break;
     case ExposureState::Acquiring:
-        text = "采集中";
+        text = tr("Acquiring");
         style = "color: blue;font-weight: bold; font-size: 25px;";
         break;
     case ExposureState::Processing:
-        text = "处理中";
+        text = tr("Processing");
         style = "color: purple;font-weight: bold; font-size: 25px;";
         break;
     case ExposureState::Completed:
-        text = "完成";
+        text = tr("Completed");
         style = "color: green;font-weight: bold; font-size: 25px;";
         break;
     case ExposureState::Fault:
-        text = "故障";
+        text = tr("Fault");
         style = "color: red;font-weight: bold; font-size: 25px;";
         break;
     case ExposureState::Timeout:
-        text = "超时";
+        text = tr("Timeout");
         style = "color: red;font-weight: bold; font-size: 25px;";
         break;
     }
@@ -831,12 +826,12 @@ void mvsystemsettings::onInfoReceived(const QString& message)
 
 void mvsystemsettings::onWarningReceived(const QString& message)
 {
-    updateInfoPanel("警告: " + message, Warning);
+    updateInfoPanel(tr("Warning: ") + message, Warning);
 }
 
 void mvsystemsettings::onErrorReceived(const QString& message)
 {
-    updateInfoPanel("错误: " + message, Error);
+    updateInfoPanel(tr("Error: ") + message, Error);
 
     // 更新状态但不阻塞
     updateDeviceState(ExposureState::Fault);
@@ -851,11 +846,11 @@ void mvsystemsettings::onErrorReceived(const QString& message)
 void mvsystemsettings::onNotificationReceived(const QString& message)
 {
     // 通知信息，显示较短时间
-    updateInfoPanel("通知: " + message, Normal);
+    updateInfoPanel(tr("Notification: ") + message, Normal);
 
     // 5秒后自动清除通知
     QTimer::singleShot(5000, [this]() {
-        if (ui->mLblStatusInfo->text().contains("通知:")) {
+        if (ui->mLblStatusInfo->text().contains(tr("Notification:"))) {
             updateInfoPanel("", Normal);
         }
     });
@@ -863,7 +858,7 @@ void mvsystemsettings::onNotificationReceived(const QString& message)
 
 void mvsystemsettings::onExposureFinished()
 {
-    qDebug() << "曝光完成，重置UI并准备下一次曝光";
+    qDebug() << tr("Exposure completed, reset UI and prepare for next exposure");
 
     // 重置UI状态
     resetUI();
@@ -878,7 +873,7 @@ void mvsystemsettings::onExposureFinished()
 
 void mvsystemsettings::onExposureError(const QString& error)
 {
-    updateInfoPanel("曝光错误: " + error, Error);
+    updateInfoPanel(tr("Exposure error: ") + error, Error);
     updateDeviceState(ExposureState::Fault);
 }
 
@@ -890,7 +885,7 @@ void mvsystemsettings::onExposureProcess(ExposureState state)
 
 void mvsystemsettings::onImagesReady(const QVector<HWImageData>& images)
 {
-    updateInfoPanel(QString("收到 %1 张图像").arg(images.size()), Normal);
+    updateInfoPanel(QString(tr("Received %1 images")).arg(images.size()), Normal);
     updateDeviceState(ExposureState::Processing);
 
     // 延迟处理，确保状态已更新
@@ -942,7 +937,6 @@ void mvsystemsettings::refreshComPorts()
     // 添加到所有下拉框
     for (const QSerialPortInfo& port : ports) {
         QString portName = port.portName();
-        qDebug() << "==============" + portName;
         QString displayText = "/dev/" + portName;
 
         // 添加项，存储短格式端口名
@@ -987,7 +981,7 @@ void mvsystemsettings::refreshComPorts()
         onComboBoxChanged();
     }
 
-    qDebug() << "串口列表已刷新，找到" << ports.size() << "个串口";
+    qDebug() << tr("Serial port list refreshed, found") << ports.size() << tr("ports");
 }
 
 void mvsystemsettings::loadSelectedPorts()
@@ -1036,8 +1030,6 @@ void mvsystemsettings::loadSelectedPorts()
     } else {
         ui->mRBtnSensorOri2UpDown->setChecked(true);
     }
-
-    qDebug() << "从配置文件加载端口设置完成";
 }
 
 void mvsystemsettings::selectPortInComboBox(QComboBox* comboBox, const QString& portName)
@@ -1115,17 +1107,13 @@ void mvsystemsettings::savePortSettings()
         ConfigFileManager::getInstance()->setValue("sensor2/orientation",
                                                    QString::number(sensor2Orientation));
         if (true) {
-            // 给用户一个视觉反馈
-            QString feedback = QString("配置已自动保存");
-
-            updateInfoPanel(feedback, Normal);
-
+            updateInfoPanel(tr("Configuration has been saved automatically"), Normal);
         } else {
-            updateInfoPanel("配置保存失败", Error);
+            updateInfoPanel(tr("Configuration save failed"), Error);
         }
 
     } catch (const std::exception& e) {
-        updateInfoPanel(QString("保存错误: %1").arg(e.what()), Error);
+        updateInfoPanel(QString(tr("Save error: %1")).arg(e.what()), Error);
     }
 }
 
@@ -1147,7 +1135,7 @@ void mvsystemsettings::checkPortChanges()
         // 只在界面可见时更新
         if (this->isVisible()) {
             refreshComPorts();
-            qDebug() << "检测到串口变化，已更新列表";
+            qDebug() << tr("Serial port change detected, list updated");
         }
     }
 }

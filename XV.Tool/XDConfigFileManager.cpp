@@ -16,11 +16,6 @@ ConfigFileManager::ConfigFileManager()
 {
     QString pathIni = DataLocations::getRootConfigPath() + XV_APPSETTING;
 
-    // 1. 验证路径
-    qDebug() << "=== Config Debug ===";
-    qDebug() << "Full path:" << pathIni;
-    qDebug() << "File exists:" << QFile::exists(pathIni);
-
     // 2. 直接测试文件读取
     QFile file(pathIni);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -32,9 +27,6 @@ ConfigFileManager::ConfigFileManager()
 
     // 3. QSettings 测试
     mQs = new QSettings(pathIni, QSettings::IniFormat);
-    qDebug() << "QSettings status:" << mQs->status();
-    qDebug() << "All groups:" << mQs->childGroups();
-    qDebug() << "=== End Debug ===";
 }
 
 ConfigFileManager::~ConfigFileManager()

@@ -12,7 +12,6 @@ QWidget#MainWindow QLabel#LogoLabel
     border-image: url(:/Res/Image/logo1.png);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: contain;
 }
 
 QWidget#MainWindow QStackedWidget#mLoginStackWidget,

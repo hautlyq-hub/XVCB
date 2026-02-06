@@ -335,9 +335,6 @@
      <property name="whatsThis">
       <string>lyBtn</string>
      </property>
-     <property name="styleSheet">
-      <string notr="true">background-image:url(:/Icons/Large/ButtonBackground.png)</string>
-     </property>
      <property name="text">
       <string>Login</string>
      </property>

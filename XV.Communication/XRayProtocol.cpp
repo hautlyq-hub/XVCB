@@ -47,7 +47,6 @@ XRayProtocol::XRayProtocol(QObject *parent)
     // m_statusTimer = new QTimer(this);
     // connect(m_statusTimer, &QTimer::timeout, this, &XRayProtocol::updateDeviceStatus);
     // m_statusTimer->start(1000); // 每秒更新一次状态
-
 }
 
 XRayProtocol::~XRayProtocol()
@@ -68,19 +67,18 @@ bool XRayProtocol::initSerialPort(const QString &portName, int baudRate)
     m_serialPort->setFlowControl(QSerialPort::NoFlowControl);
 
     if (m_serialPort->open(QIODevice::ReadWrite)) {
-        qInfo() << "Port opened successfully at 921600 baud";
         QThread::msleep(500);
         m_serialPort->clear();
 
         QString version = getVersion();
         if (version.isEmpty()) {
-            qWarning() << "无法获取设备版本号";
+            qWarning() << tr("Unable to get device version");
             delete m_serialPort;
             m_serialPort = nullptr;
             return false;
         }
     } else {
-        qWarning() << "Failed to open port:" << portName;
+        qWarning() << tr("Failed to open port:") << portName;
         delete m_serialPort;
         return false;
     }
@@ -100,10 +98,10 @@ bool XRayProtocol::initSerialPort(const QString &portName, int baudRate)
 
 void XRayProtocol::closeSerialPort()
 {
-    qInfo() << "=== 关闭X光串口 ===";
+    qInfo() << tr("=== Closing X-ray serial port ===");
 
     if (m_serialPort) {
-        qWarning() << "Actively close port" << m_serialPort->portName();
+        qWarning() << tr("Actively close port") << m_serialPort->portName();
 
         if (m_serialPort->isOpen()) {
             m_serialPort->close();
@@ -125,7 +123,6 @@ bool XRayProtocol::isConnected() const
 {
     return m_serialPort && m_serialPort->isOpen();
 }
-
 
 bool XRayProtocol::startExposure()
 {
@@ -162,7 +159,6 @@ bool XRayProtocol::startExposure()
 
 bool XRayProtocol::stopExposure()
 {
-
     if (m_deviceStatus != DEVICE_EXPOSING) {
         return true;
     }
@@ -265,7 +261,7 @@ QByteArray XRayProtocol::getWaveformData(quint16 waveformType)
             respStream >> respLength;
 
             if (respIndex != packetIndex) {
-                qWarning() << "Packet index mismatch";
+                qWarning() << tr("Packet index mismatch");
                 break;
             }
 
@@ -290,7 +286,7 @@ QByteArray XRayProtocol::getWaveformData(quint16 waveformType)
 bool XRayProtocol::verifyCRC(const QByteArray &data)
 {
     if (data.size() < 4) { // 至少要有包头和CRC
-        qWarning() << "数据包太小，无法验证CRC";
+        qWarning() << tr("Packet too small, cannot verify CRC");
         return false;
     }
 
@@ -418,7 +414,7 @@ bool XRayProtocol::sendCommand(quint16 cmdCode, const QByteArray &data)
                 command = buildCommand(cmdCode, 0x01, data);
             }
         } else {
-            qWarning() << "曝光命令数据格式错误";
+            qWarning() << tr("Exposure command data format error");
             return false;
         }
         break;
@@ -431,7 +427,7 @@ bool XRayProtocol::sendCommand(quint16 cmdCode, const QByteArray &data)
             // 设置参数
             command = buildCommand(cmdCode, 0x01, data);
         } else {
-            qWarning() << "曝光参数命令数据大小错误";
+            qWarning() << tr("Exposure parameter command data size error");
             return false;
         }
         break;
@@ -442,7 +438,7 @@ bool XRayProtocol::sendCommand(quint16 cmdCode, const QByteArray &data)
     }
 
     if (command.isEmpty()) {
-        qWarning() << "构建命令失败";
+        qWarning() << tr("Failed to build command");
         return false;
     }
 
@@ -452,12 +448,12 @@ bool XRayProtocol::sendCommand(quint16 cmdCode, const QByteArray &data)
 
     // 发送命令
     QString hexStr = command.toHex(' ').toUpper();
-    qDebug() << "req:" << hexStr << "到端口" << m_serialPort->portName();
+    qDebug() << "req:" << hexStr << tr("to port") << m_serialPort->portName();
 
     m_serialPort->write(command);
 
     if (!m_serialPort->waitForBytesWritten(100)) {
-        qWarning() << "Write timeout";
+        qWarning() << tr("Write timeout");
         return false;
     }
 
@@ -467,6 +463,11 @@ bool XRayProtocol::sendCommand(quint16 cmdCode, const QByteArray &data)
 
 QByteArray XRayProtocol::readResponse(int timeout)
 {
+    if (!m_serialPort || !m_serialPort->isOpen()) {
+        qWarning() << tr("readResponse: Serial port not open");
+        return QByteArray();
+    }
+
     QElapsedTimer timer;
     timer.start();
     QByteArray buffer;
@@ -477,7 +478,7 @@ QByteArray XRayProtocol::readResponse(int timeout)
 
             QByteArray packet = extractCompletePacket(buffer);
             if (!packet.isEmpty() && verifyCRC(packet)) {
-                qDebug() << "resp:" << packet.toHex(' ');
+                qDebug() << "resp:" << packet.toHex(' ').toUpper();
                 return packet;
             }
         }
@@ -554,7 +555,7 @@ QByteArray XRayProtocol::extractCompletePacket(QByteArray &buffer)
 void XRayProtocol::handleExposureResponse(const QByteArray &response)
 {
     if (response.size() < 29) {
-        qWarning() << "Invalid exposure response size:" << response.size();
+        qWarning() << tr("Invalid exposure response size:") << response.size();
         return;
     }
 
@@ -594,12 +595,12 @@ void XRayProtocol::handleExposureResponse(const QByteArray &response)
     // 检查错误
     if (low_battery_flag == 1) {
         m_lastError = XRAY_ERROR_LOW_BATTERY;
-        emit errorOccurred(XRAY_ERROR_LOW_BATTERY, "低电量");
+        emit errorOccurred(XRAY_ERROR_LOW_BATTERY, tr("Low battery"));
     }
 
     if (hard_check_result == 1 || hard_check_result == 2) {
         m_lastError = XRAY_ERROR_HARDWARE_CHECK;
-        emit errorOccurred(XRAY_ERROR_HARDWARE_CHECK, "硬件检测异常");
+        emit errorOccurred(XRAY_ERROR_HARDWARE_CHECK, tr("Hardware check abnormal"));
     }
 
     if (exp_step == 9) {
@@ -613,7 +614,7 @@ void XRayProtocol::handleExposureResponse(const QByteArray &response)
 QString XRayProtocol::parseSerialNumber(const QByteArray &data)
 {
     if (data.isEmpty() || data.size() < 28) {
-        qDebug() << "Invalid data for serial number parsing, size:" << data.size();
+        qDebug() << tr("Invalid data for serial number parsing, size:") << data.size();
         return QString();
     }
 
@@ -633,7 +634,7 @@ QString XRayProtocol::parseSerialNumber(const QByteArray &data)
         // 将二进制数据转换为十六进制字符串
         serialNumber = uidData.toHex().toUpper();
 
-        qDebug() << "原始序列号HEX:" << serialNumber;
+        qDebug() << tr("Raw serial number HEX:") << serialNumber;
 
         // 如果需要格式化为更可读的格式
         if (serialNumber.length() >= 24) {
@@ -642,36 +643,36 @@ QString XRayProtocol::parseSerialNumber(const QByteArray &data)
                                     .arg(serialNumber.mid(0, 8))
                                     .arg(serialNumber.mid(8, 8))
                                     .arg(serialNumber.mid(16, 8));
-            qDebug() << "格式化序列号:" << formatted;
+            qDebug() << tr("Formatted serial number:") << formatted;
             return formatted;
         }
 
         return serialNumber;
     }
 
-    qDebug() << "Failed to parse serial number from data";
+    qDebug() << tr("Failed to parse serial number from data");
     return QString();
 }
 
 void XRayProtocol::onErrorOccurred(QSerialPort::SerialPortError error)
 {
     if (error != QSerialPort::NoError && error != QSerialPort::TimeoutError) {
-        qWarning() << "Serial port error:" << error << m_serialPort->errorString();
+        qWarning() << tr("Serial port error:") << error << m_serialPort->errorString();
 
         // 根据错误类型处理
         switch (error) {
         case QSerialPort::PermissionError:
-            emit errorOccurred(XRAY_ERROR_HARDWARE_CHECK, "串口访问被拒绝");
+            emit errorOccurred(XRAY_ERROR_HARDWARE_CHECK, tr("Serial port access denied"));
             break;
         case QSerialPort::DeviceNotFoundError:
-            emit errorOccurred(XRAY_ERROR_HARDWARE_CHECK, "设备未找到");
+            emit errorOccurred(XRAY_ERROR_HARDWARE_CHECK, tr("Device not found"));
             break;
         case QSerialPort::ResourceError:
-            emit errorOccurred(XRAY_ERROR_HARDWARE_CHECK, "设备被移除");
+            emit errorOccurred(XRAY_ERROR_HARDWARE_CHECK, tr("Device removed"));
             closeSerialPort();
             break;
         default:
-            emit errorOccurred(XRAY_ERROR_HARDWARE_CHECK, "串口通信错误");
+            emit errorOccurred(XRAY_ERROR_HARDWARE_CHECK, tr("Serial port communication error"));
             break;
         }
     }
@@ -745,18 +746,18 @@ ADCValues XRayProtocol::parseADCValues(const QByteArray &data)
         stream >> values.device_temp;
 
         // 添加详细输出
-        qDebug() << "ADC值解析:";
-        qDebug() << "  充电电流:" << values.charge_current;
-        qDebug() << "  电池分压:" << values.battery_div;
-        qDebug() << "  KV参考:" << values.kv_ref;
-        qDebug() << "  mA:" << values.ma;
-        qDebug() << "  灯丝电流:" << values.fill;
-        qDebug() << "  KV:" << values.kv;
-        qDebug() << "  MCU温度:" << values.mcu_temp << "°C";
-        qDebug() << "  MCU参考电压:" << values.mcu_vref << "V";
-        qDebug() << "  设备温度:" << values.device_temp << "°C";
+        qDebug() << tr("ADC values parsed:");
+        qDebug() << tr("  Charge current:") << values.charge_current;
+        qDebug() << tr("  Battery divider:") << values.battery_div;
+        qDebug() << tr("  KV reference:") << values.kv_ref;
+        qDebug() << tr("  mA:") << values.ma;
+        qDebug() << tr("  Filament current:") << values.fill;
+        qDebug() << tr("  KV:") << values.kv;
+        qDebug() << tr("  MCU temperature:") << values.mcu_temp << "°C";
+        qDebug() << tr("  MCU reference voltage:") << values.mcu_vref << "V";
+        qDebug() << tr("  Device temperature:") << values.device_temp << "°C";
     } else {
-        qWarning() << "ADC数据包太小:" << data.size();
+        qWarning() << tr("ADC data packet too small:") << data.size();
     }
 
     return values;
@@ -765,7 +766,7 @@ ADCValues XRayProtocol::parseADCValues(const QByteArray &data)
 QString XRayProtocol::parseVersion(const QByteArray &data)
 {
     if (data.size() < 10) {
-        qWarning() << "版本数据包太小:" << data.size();
+        qWarning() << tr("Version data packet too small:") << data.size();
         return QString();
     }
 
@@ -779,8 +780,6 @@ QString XRayProtocol::parseVersion(const QByteArray &data)
 
     QByteArray versionData = data.mid(start, end - start);
     QString version = QString::fromLatin1(versionData);
-
-    qDebug() << "版本号解析:" << version;
 
     return version;
 }
@@ -814,7 +813,6 @@ ADCValues XRayProtocol::getADCValues()
 
 bool XRayProtocol::setExposureParams(const ExposureParams &params)
 {
-
     // 构建参数数据包
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
@@ -863,7 +861,7 @@ bool XRayProtocol::checkExposureStatus(ExposureStatus &status)
         return false;
     }
 
-    qDebug() << "曝光查询响应HEX:" << queryResponse.toHex(' ').toUpper();
+    qDebug() << tr("Exposure query response HEX:") << queryResponse.toHex(' ').toUpper();
 
     // 解析状态 - 从第16字节开始
     QDataStream stream(queryResponse.mid(16));
@@ -877,18 +875,19 @@ bool XRayProtocol::checkExposureStatus(ExposureStatus &status)
     stream >> status.cooldownTime;
     stream >> status.exposureStep;
 
-    qDebug() << "解析曝光状态:";
-    qDebug() << "  曝光使能:" << status.exposureEnable;
-    qDebug() << "  曝光模式:" << status.exposureMode;
-    qDebug() << "  低电量:" << status.lowBattery;
-    qDebug() << "  硬件检测:" << status.hardwareCheck;
-    qDebug() << "  延迟关机:" << status.delayShutdown << "ms";
-    qDebug() << "  冷却时间:" << status.cooldownTime << "s";
-    qDebug() << "  曝光步骤:" << status.exposureStep;
+    qDebug() << tr("Parsed exposure status:");
+    qDebug() << tr("  Exposure enable:") << status.exposureEnable;
+    qDebug() << tr("  Exposure mode:") << status.exposureMode;
+    qDebug() << tr("  Low battery:") << status.lowBattery;
+    qDebug() << tr("  Hardware check:") << status.hardwareCheck;
+    qDebug() << tr("  Delay shutdown:") << status.delayShutdown << "ms";
+    qDebug() << tr("  Cooldown time:") << status.cooldownTime << "s";
+    qDebug() << tr("  Exposure step:") << status.exposureStep;
 
     // 检查异常状态
     if (status.exposureEnable == 0xFFFF) {
-        qWarning() << "⚠️ 设备返回异常状态 (曝光使能=65535)，需要重置设备";
+        qWarning() << tr(
+            "⚠️ Device returns abnormal status (exposure enable=65535), need to reset device");
         return false;
     }
 
@@ -907,7 +906,7 @@ bool XRayProtocol::clearFaults()
         return false;
     }
 
-    qDebug() << "故障清除成功";
+    qDebug() << tr("Fault cleared successfully");
 
     return true;
 }
@@ -929,22 +928,22 @@ XRayErrorCode XRayProtocol::getLastError() const
 
 QString XRayProtocol::getErrorString(XRayErrorCode error) const
 {
-    static QMap<XRayErrorCode, QString> errorStrings = {{XRAY_SUCCESS, "成功"},
-                                                        {XRAY_ERROR_OVER_KV, "KV过高"},
-                                                        {XRAY_ERROR_LOW_MA, "mA过低"},
-                                                        {XRAY_ERROR_OVER_MA, "mA过高"},
-                                                        {XRAY_ERROR_OVER_CURRENT, "过流"},
-                                                        {XRAY_ERROR_LOW_FIL_I, "灯丝电流过低"},
-                                                        {XRAY_ERROR_OVER_KV_S, "KV设置过高"},
-                                                        {XRAY_ERROR_KEY_RELEASE, "按键释放错误"},
-                                                        {XRAY_ERROR_KEY_NO_RELEASE,
-                                                         "按键不释放错误"},
-                                                        {XRAY_ERROR_LOW_BATTERY, "低电量"},
-                                                        {XRAY_ERROR_HARDWARE_CHECK, "硬件检测异常"},
-                                                        {XRAY_ERROR_COOLING, "冷却中"},
-                                                        {XRAY_ERROR_EXPOSURE_TIMEOUT, "曝光超时"}};
+    static QMap<XRayErrorCode, QString> errorStrings
+        = {{XRAY_SUCCESS, tr("Success")},
+           {XRAY_ERROR_OVER_KV, tr("KV too high")},
+           {XRAY_ERROR_LOW_MA, tr("mA too low")},
+           {XRAY_ERROR_OVER_MA, tr("mA too high")},
+           {XRAY_ERROR_OVER_CURRENT, tr("Over current")},
+           {XRAY_ERROR_LOW_FIL_I, tr("Filament current too low")},
+           {XRAY_ERROR_OVER_KV_S, tr("KV setting too high")},
+           {XRAY_ERROR_KEY_RELEASE, tr("Key release error")},
+           {XRAY_ERROR_KEY_NO_RELEASE, tr("Key not release error")},
+           {XRAY_ERROR_LOW_BATTERY, tr("Low battery")},
+           {XRAY_ERROR_HARDWARE_CHECK, tr("Hardware check abnormal")},
+           {XRAY_ERROR_COOLING, tr("Cooling")},
+           {XRAY_ERROR_EXPOSURE_TIMEOUT, tr("Exposure timeout")}};
 
-    return errorStrings.value(error, "未知错误");
+    return errorStrings.value(error, tr("Unknown error"));
 }
 
 // 设备状态查询

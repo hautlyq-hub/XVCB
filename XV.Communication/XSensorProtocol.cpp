@@ -1,5 +1,4 @@
-﻿
-#include "XSensorProtocol.h"
+﻿#include "XSensorProtocol.h"
 #include <QCoreApplication>
 #include <QDebug>
 #include <QElapsedTimer>
@@ -78,12 +77,11 @@ bool XSensorProtocol::initSerialPort(const QString& portName)
         }
 
     } else {
-        qWarning() << "Failed to open port:" << portName;
+        qWarning() << tr("Failed to open port:") << portName;
         delete m_serialPort;
         return false;
     }
 
-    emit statusChanged("Sensor initialization successful");
     return true;
 }
 
@@ -113,7 +111,7 @@ bool XSensorProtocol::echoSerialPort()
 
 void XSensorProtocol::closeSerialPort()
 {
-    qInfo() << "=== 关闭传感器串口 ===";
+    qInfo() << tr("=== Closing sensor serial port ===");
 
     m_exposing = false;
     m_poweredOn = false;
@@ -126,7 +124,7 @@ void XSensorProtocol::closeSerialPort()
         m_isBusy = true;
 
         if (m_serialPort) {
-            qWarning() << "Actively close port" << m_serialPort->portName();
+            qWarning() << tr("Actively close port") << m_serialPort->portName();
 
             if (m_serialPort->isOpen()) {
                 m_serialPort->close();
@@ -137,8 +135,8 @@ void XSensorProtocol::closeSerialPort()
         }
     } catch (const std::exception& e) {
         m_isBusy = false;
-        qCritical() << "Error in closeSerialPort:" << e.what();
-        m_lastError = QString("Close port error: %1").arg(e.what());
+        qCritical() << tr("Error in closeSerialPort:") << e.what();
+        m_lastError = QString(tr("Close port error: %1")).arg(e.what());
         emit errorOccurred(m_lastError);
     }
 
@@ -195,7 +193,7 @@ bool XSensorProtocol::sendExposureF6(bool wait, bool isCalibration)
         emit exposureF6Ready(m_serialPort->portName());
     } else {
         if (!response.isEmpty()) {
-            qWarning() << "[" << m_serialPort->portName() << "] 响应头: 0x"
+            qWarning() << "[" << m_serialPort->portName() << tr("] Response header: 0x")
                        << QString::number(static_cast<quint8>(response[0]), 16).toUpper() << "0x"
                        << QString::number(static_cast<quint8>(response[1]), 16).toUpper();
         }
@@ -212,13 +210,13 @@ bool XSensorProtocol::sendExposureF6(bool wait, bool isCalibration)
 void XSensorProtocol::acquireImage()
 {
     if (m_isBusy) {
-        m_lastError = "Device is busy";
+        m_lastError = tr("Device is busy");
         emit statusChanged(m_lastError);
         return;
     }
 
     if (!m_exposing) {
-        m_lastError = "Device not connected or not exposing";
+        m_lastError = tr("Device not connected or not exposing");
         emit statusChanged(m_lastError);
         return;
     }
@@ -229,7 +227,7 @@ void XSensorProtocol::acquireImage()
     bool allGot = true;
 
     try {
-        emit statusChanged("Acquiring image...");
+        emit statusChanged(tr("Acquiring image..."));
 
         int cols = 352, rows = 425, bitsAllocated = 16;
         int rawImgTotalBytes = cols * rows * bitsAllocated / 8;
@@ -272,7 +270,7 @@ void XSensorProtocol::acquireImage()
                     }
                 } else {
                     allGot = false;
-                    qWarning() << "[" << m_serialPort->portName() << "] Failed to get package"
+                    qWarning() << "[" << m_serialPort->portName() << tr("] Failed to get package")
                                << (i + 1) << ":" << errorCode;
                     break;
                 }
@@ -285,11 +283,11 @@ void XSensorProtocol::acquireImage()
                 imgRetrieved = true;
             } else {
                 qWarning() << "[" << m_serialPort->portName()
-                           << "] Failed to retrieve image data:" << errorCode;
+                           << tr("] Failed to retrieve image data:") << errorCode;
             }
         } catch (const std::exception& ex) {
-            qCritical() << "[" << m_serialPort->portName()
-                        << "] Image acquisition error:" << ex.what();
+            qCritical() << "[" << m_serialPort->portName() << tr("] Image acquisition error:")
+                        << ex.what();
             allGot = false;
         }
 
@@ -297,23 +295,24 @@ void XSensorProtocol::acquireImage()
             QByteArray processedImage = processImageData(validRawDataInByte, cols, rows);
             if (!processedImage.isEmpty()) {
                 emit imageReady(processedImage);
-                emit statusChanged("Image acquired successfully");
+                emit statusChanged(tr("Image acquired successfully"));
             } else {
                 allGot = false;
-                qWarning() << "[" << m_serialPort->portName() << "] Image processing failed";
+                qWarning() << "[" << m_serialPort->portName() << tr("] Image processing failed");
             }
         } else {
             allGot = false;
         }
 
     } catch (const std::exception& ex) {
-        qCritical() << "[" << m_serialPort->portName() << "] AcquireImage exception:" << ex.what();
+        qCritical() << "[" << m_serialPort->portName() << tr("] AcquireImage exception:")
+                    << ex.what();
         allGot = false;
     }
 
     if (!allGot) {
         qWarning() << "[" << m_serialPort->portName()
-                   << "] Image acquisition failed, cleaning up...";
+                   << tr("] Image acquisition failed, cleaning up...");
         if (m_serialPort && m_poweredOn) {
             powerOff();
         }
@@ -331,7 +330,7 @@ QByteArray XSensorProtocol::retrieveImageByte(QString& errorCode, int& realGetBa
     timer.start();
 
     if (!sendCommand(Commands::F8_REQUEST_IMAGE)) {
-        errorCode = QString("Failed to request package %1").arg(packageIndex + 1);
+        errorCode = QString(tr("Failed to request package %1")).arg(packageIndex + 1);
         qWarning() << "[" << m_serialPort->portName() << "]" << errorCode;
         return QByteArray();
     }
@@ -363,20 +362,21 @@ QByteArray XSensorProtocol::retrieveImageByte(QString& errorCode, int& realGetBa
 
                 if (startIndex >= 0) {
                     if (startIndex > 0) {
-                        qDebug() << "[" << m_serialPort->portName() << "] Skipping" << startIndex
-                                 << "bytes before F8 F8 header";
+                        qDebug() << "[" << m_serialPort->portName() << tr("] Skipping")
+                                 << startIndex << tr("bytes before F8 F8 header");
                         data = data.mid(startIndex);
                     }
                 } else {
                     qWarning() << "[" << m_serialPort->portName()
-                               << "] No F8 F8 header found, skipping" << data.size() << "bytes";
+                               << tr("] No F8 F8 header found, skipping") << data.size()
+                               << tr("bytes");
                     continue;
                 }
             }
 
             package.append(data);
-            qDebug() << "[" << m_serialPort->portName() << "] Read" << data.size()
-                     << "bytes, total:" << package.size();
+            qDebug() << "[" << m_serialPort->portName() << tr("] Read") << data.size()
+                     << tr("bytes, total:") << package.size();
 
             if (package.size() >= maxPackageSize) {
                 break;
@@ -393,7 +393,7 @@ QByteArray XSensorProtocol::retrieveImageByte(QString& errorCode, int& realGetBa
     }
 
     if (package.size() < maxPackageSize) {
-        errorCode = QString("Incomplete package %1: %2 bytes, expected %3 (timeout: %4ms)")
+        errorCode = QString(tr("Incomplete package %1: %2 bytes, expected %3 (timeout: %4ms)"))
                         .arg(packageIndex + 1)
                         .arg(package.size())
                         .arg(maxPackageSize)
@@ -401,7 +401,7 @@ QByteArray XSensorProtocol::retrieveImageByte(QString& errorCode, int& realGetBa
         qWarning() << "[" << m_serialPort->portName() << "]" << errorCode;
 
         if (!package.isEmpty()) {
-            qDebug() << "[" << m_serialPort->portName() << "] Received data (first 32 bytes):"
+            qDebug() << "[" << m_serialPort->portName() << tr("] Received data (first 32 bytes):")
                      << package.left(qMin(32, package.size())).toHex(' ');
         }
 
@@ -409,7 +409,7 @@ QByteArray XSensorProtocol::retrieveImageByte(QString& errorCode, int& realGetBa
     }
 
     if (static_cast<quint8>(package[0]) != 0xF8 || static_cast<quint8>(package[1]) != 0xF8) {
-        errorCode = QString("Invalid package %1 header: 0x%2 0x%3")
+        errorCode = QString(tr("Invalid package %1 header: 0x%2 0x%3"))
                         .arg(packageIndex + 1)
                         .arg(QString::number(static_cast<quint8>(package[0]), 16).toUpper())
                         .arg(QString::number(static_cast<quint8>(package[1]), 16).toUpper());
@@ -552,14 +552,13 @@ bool XSensorProtocol::powerOff()
 
 bool XSensorProtocol::setupWorkMode(bool b)
 {
-
     if (!isConnected()) {
-        m_lastError = "Device not connected";
+        m_lastError = tr("Device not connected");
         return false;
     }
 
     if (m_isBusy) {
-        m_lastError = "Device is busy";
+        m_lastError = tr("Device is busy");
         qWarning() << m_lastError;
         return false;
     }
@@ -567,7 +566,7 @@ bool XSensorProtocol::setupWorkMode(bool b)
     m_isBusy = true;
 
     try {
-        emit statusChanged("Setting up work mode...");
+        emit statusChanged(tr("Setting up work mode..."));
 
         m_exposing = true;
 
@@ -578,13 +577,13 @@ bool XSensorProtocol::setupWorkMode(bool b)
         }
 
         if (m_poweredOn) {
-            qDebug() << "Device is already powered on, turning off first...";
+            qDebug() << tr("Device is already powered on, turning off first...");
             powerOff();
             QThread::msleep(1000);
         }
 
         if (!powerOn()) {
-            m_lastError = "Failed to power on device";
+            m_lastError = tr("Failed to power on device");
             qWarning() << m_lastError;
             m_isBusy = false;
             m_exposing = false;
@@ -594,14 +593,14 @@ bool XSensorProtocol::setupWorkMode(bool b)
         QThread::msleep(500);
 
         if (!sendF5Config()) {
-            qWarning() << "F5 config failed";
+            qWarning() << tr("F5 config failed");
             powerOff();
         } else {
-            emit statusChanged("Work mode setup successful");
+            emit statusChanged(tr("Work mode setup successful"));
         }
 
     } catch (...) {
-        qCritical() << "Exception in setupWorkMode";
+        qCritical() << tr("Exception in setupWorkMode");
         if (m_poweredOn) {
             powerOff();
         }
@@ -628,7 +627,7 @@ bool XSensorProtocol::sendCommand(const QByteArray& cmd)
 {
     QByteArray fullCommand = buildCommand(cmd, '\x0D', '\x0A');
     if (fullCommand.isEmpty()) {
-        m_lastError = "Failed to build command";
+        m_lastError = tr("Failed to build command");
         return false;
     }
 
@@ -638,7 +637,7 @@ bool XSensorProtocol::sendCommand(const QByteArray& cmd)
     m_serialPort->write(fullCommand);
 
     if (!m_serialPort->waitForBytesWritten(m_writeTimeout)) {
-        m_lastError = "Write timeout";
+        m_lastError = tr("Write timeout");
         qWarning() << m_lastError;
         return false;
     }
@@ -649,7 +648,6 @@ bool XSensorProtocol::sendCommand(const QByteArray& cmd)
 
 QByteArray XSensorProtocol::readResponse(int timeout)
 {
-
     QByteArray response;
     QElapsedTimer timer;
     timer.start();
@@ -677,9 +675,7 @@ QByteArray XSensorProtocol::readResponse(int timeout)
 
 void XSensorProtocol::cleanupAfterImageAcquisition(bool success)
 {
-
     try {
-
         m_exposing = false;
         m_isBusy = false;
 
@@ -691,10 +687,10 @@ void XSensorProtocol::cleanupAfterImageAcquisition(bool success)
             emit exposureCompleted();
         } else {
             emit exposureCompleted();
-            emit statusChanged("Image acquisition failed");
+            emit statusChanged(tr("Image acquisition failed"));
         }
     } catch (const std::exception& ex) {
-        qCritical() << "Exception in cleanupAfterImageAcquisition:" << ex.what();
+        qCritical() << tr("Exception in cleanupAfterImageAcquisition:") << ex.what();
         m_isBusy = false;
         m_exposing = false;
         m_poweredOn = false;
@@ -705,13 +701,13 @@ bool XSensorProtocol::sendF5Config()
 {
     // 1. 主配置命令
     if (!sendCommand(Commands::F5_CONFIG)) {
-        qWarning() << "Failed to send F5 config command";
+        qWarning() << tr("Failed to send F5 config command");
         return false;
     }
 
     QByteArray response = readResponse(m_readTimeout);
     if (response.isEmpty()) {
-        qWarning() << "No response to F5 config";
+        qWarning() << tr("No response to F5 config");
         return false;
     }
 
@@ -744,13 +740,13 @@ bool XSensorProtocol::sendF5Config()
         voltageCmd.append(static_cast<char>((vref3 >> 8) & 0xFF));
 
         if (!sendCommand(voltageCmd)) {
-            qWarning() << "Failed to send voltage config command";
+            qWarning() << tr("Failed to send voltage config command");
             return false;
         }
 
         QByteArray response = readResponse(m_readTimeout);
         if (response.isEmpty()) {
-            qWarning() << "No response to voltage config";
+            qWarning() << tr("No response to voltage config");
             return false;
         }
 
@@ -759,7 +755,7 @@ bool XSensorProtocol::sendF5Config()
 
     if (response.size() >= 2 && static_cast<quint8>(response[0]) == 0xF5
         && static_cast<quint8>(response[1]) == 0xF5) {
-        qDebug() << "F5 config successful!";
+        qDebug() << tr("F5 config successful!");
     } else {
         qDebug() << "resp" << response.toHex(' ');
         return false;
@@ -787,7 +783,7 @@ bool XSensorProtocol::sendF8ImageRequest()
     if (sendCommand(Commands::F8_REQUEST_IMAGE)) {
         QByteArray response = readResponse(m_readTimeout);
     } else {
-        m_lastError = "Failed to send image request";
+        m_lastError = tr("Failed to send image request");
         return false;
     }
     return true;
@@ -842,8 +838,8 @@ bool XSensorProtocol::validateCRC(const QByteArray& data)
         if (calculatedCRC == receivedCRC) {
             return true;
         } else {
-            qDebug() << "Expected:" << calculatedCRC.toHex(' ');
-            qDebug() << "Received:" << receivedCRC.toHex(' ');
+            qDebug() << tr("Expected:") << calculatedCRC.toHex(' ');
+            qDebug() << tr("Received:") << receivedCRC.toHex(' ');
 
             return false;
         }
@@ -864,7 +860,6 @@ QByteArray XSensorProtocol::calculateCRC(const QByteArray& data)
 {
     return SensorCRC16::calculate(data);
 }
-
 
 QString XSensorProtocol::bytesToHexString(const QByteArray& bytes)
 {
