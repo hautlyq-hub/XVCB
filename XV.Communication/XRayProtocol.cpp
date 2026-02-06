@@ -60,8 +60,6 @@ XRayProtocol::~XRayProtocol()
 
 bool XRayProtocol::initSerialPort(const QString &portName, int baudRate)
 {
-    qInfo() << "XRay Opening port:" << portName;
-
     m_serialPort = new QSerialPort();
 
     m_serialPort->setPortName(portName);
@@ -795,8 +793,6 @@ QString XRayProtocol::getVersion()
     QByteArray response;
     if (sendCommand(0x0C, QByteArray())) {
         response = readResponse(m_respTimeout);
-    } else {
-        qDebug() << "1111111111111";
     }
     return parseVersion(response);
 }

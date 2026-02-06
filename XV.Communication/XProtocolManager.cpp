@@ -507,7 +507,7 @@ bool XProtocolManager::setupWorkMode(bool calibrationBefore, int xRayIndex)
     m_xRayIndex = xRayIndex;
 
     if (m_isExposing.loadAcquire() != 0) {
-        qWarning() << "SetupWorkMode repeat";
+        qWarning() << "setupWorkMode repeat";
         return false;
     }
 
@@ -896,7 +896,7 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
 #ifdef DEBUG_SINGLE_DEVICE
     if (m_sensor1) {
         QMetaObject::invokeMethod(
-            m_sensor1, [this]() { m_sensor1->enableExposure(true, false); }, Qt::QueuedConnection);
+            m_sensor1, [this]() { m_sensor1->sendExposureF6(true, false); }, Qt::QueuedConnection);
     }
 
     if (m_xrayProtocol1 && m_xrayProtocol1->isConnected()) {
@@ -932,7 +932,7 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
         if (m_sensor1) {
             QMetaObject::invokeMethod(
                 m_sensor1,
-                [this, isXmain]() { m_sensor1->enableExposure(isXmain, m_xRayIndex != 0); },
+                [this, isXmain]() { m_sensor1->sendExposureF6(isXmain, m_xRayIndex != 0); },
                 Qt::QueuedConnection);
         }
 
@@ -941,7 +941,7 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
         if (m_sensor2) {
             QMetaObject::invokeMethod(
                 m_sensor2,
-                [this, isXmain]() { m_sensor2->enableExposure(!isXmain, m_xRayIndex != 0); },
+                [this, isXmain]() { m_sensor2->sendExposureF6(!isXmain, m_xRayIndex != 0); },
                 Qt::QueuedConnection);
         }
 
@@ -982,24 +982,20 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
 
 void XProtocolManager::onExposureF6Ready(const QString& portName)
 {
-    QString normalizedPortName = portName;
-    if (!normalizedPortName.startsWith("/dev/")) {
-        normalizedPortName = "/dev/" + normalizedPortName;
-    }
 
     // 在线程池中执行图像采集
-    QtConcurrent::run(m_threadPool, [this, normalizedPortName]() {
+    QtConcurrent::run(m_threadPool, [this, portName]() {
         // 查找对应的设备
         QString deviceKey;
         for (const auto& setting : m_portSettings) {
-            if (setting.portName == normalizedPortName) {
+            if (setting.portName.contains(portName)) {
                 deviceKey = setting.deviceKey;
                 break;
             }
         }
 
         if (deviceKey.isEmpty()) {
-            qWarning() << "Unknown port for image acquisition:" << normalizedPortName;
+            qWarning() << "Unknown port for image acquisition:" << portName;
             return;
         }
 

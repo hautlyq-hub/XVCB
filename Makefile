@@ -466,6 +466,7 @@ DIST          = /usr/local/Qt-6.5.6/mkspecs/features/spec_pre.prf \
 		/usr/local/Qt-6.5.6/mkspecs/features/qt_config.prf \
 		/usr/local/Qt-6.5.6/mkspecs/linux-g++/qmake.conf \
 		/usr/local/Qt-6.5.6/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/local/Qt-6.5.6/mkspecs/features/exclusive_builds.prf \
 		/usr/local/Qt-6.5.6/mkspecs/features/toolchain.prf \
 		/usr/local/Qt-6.5.6/mkspecs/features/default_pre.prf \
@@ -860,6 +861,7 @@ Makefile: XVBVThickness.pro /usr/local/Qt-6.5.6/mkspecs/linux-g++/qmake.conf /us
 		/usr/local/Qt-6.5.6/mkspecs/features/qt_config.prf \
 		/usr/local/Qt-6.5.6/mkspecs/linux-g++/qmake.conf \
 		/usr/local/Qt-6.5.6/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/local/Qt-6.5.6/mkspecs/features/exclusive_builds.prf \
 		/usr/local/Qt-6.5.6/mkspecs/features/toolchain.prf \
 		/usr/local/Qt-6.5.6/mkspecs/features/default_pre.prf \
@@ -1154,6 +1156,7 @@ Makefile: XVBVThickness.pro /usr/local/Qt-6.5.6/mkspecs/linux-g++/qmake.conf /us
 /usr/local/Qt-6.5.6/mkspecs/features/qt_config.prf:
 /usr/local/Qt-6.5.6/mkspecs/linux-g++/qmake.conf:
 /usr/local/Qt-6.5.6/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /usr/local/Qt-6.5.6/mkspecs/features/exclusive_builds.prf:
 /usr/local/Qt-6.5.6/mkspecs/features/toolchain.prf:
 /usr/local/Qt-6.5.6/mkspecs/features/default_pre.prf:
@@ -5239,30 +5242,28 @@ build/debug/.moc/moc_mainwindow.cpp: mainwindow.h \
 		mvaboutwidget.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QBitmap \
 		build/debug/.ui/ui_mvaboutwidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QSpacerItem \
 		mvloginwindow.h \
 		XV.Tool/mvSimpleCrypto.h \
 		XV.Tool/mvharddiskinformation.h \
 		build/debug/.ui/ui_mvloginwindow.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QCheckBox \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qcheckbox.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QFrame \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QImage \
 		/usr/local/Qt-6.5.6/include/QtCore/QSettings \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QCheckBox \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qcheckbox.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidget \
 		/usr/local/Qt-6.5.6/include/QtGui/QGuiApplication \
+		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QKeyEvent \
 		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
 		/usr/local/Qt-6.5.6/include/QtCore/QUuid \
 		/usr/local/Qt-6.5.6/include/QtCore/QtMath \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
 		mvexitappdialog.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QInternal \
 		build/debug/.ui/ui_mvexitappdialog.h \
@@ -5434,55 +5435,6 @@ build/debug/.moc/moc_mvaboutwidget.cpp: mvaboutwidget.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
 		build/debug/.ui/ui_mvaboutwidget.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QVariant \
-		/usr/local/Qt-6.5.6/include/QtGui/QIcon \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qcoreapplication.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qeventloop.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qcoreapplication_platform.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qfuture.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qfutureinterface.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qmutex.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qtsan_impl.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qresultstore.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qfuture_impl.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qthreadpool.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qthread.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qdeadlinetimer.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qelapsedtimer.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qrunnable.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qexception.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qpromise.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qlocale.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qgridlayout.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlayout.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlayoutitem.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qboxlayout.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QHBoxLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLabel \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlabel.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qframe.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpicture.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextdocument.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QPushButton \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qpushbutton.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractbutton.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QSpacerItem \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QStackedWidget \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qstackedwidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QTextBrowser \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtextbrowser.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtextedit.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractscrollarea.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextcursor.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextformat.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QVBoxLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QWidget \
 		build/debug/.moc/moc_predefs.h \
 		/usr/local/Qt-6.5.6/libexec/moc
 	/usr/local/Qt-6.5.6/libexec/moc $(DEFINES) --include /home/pi/XVBVThiness/build/debug/.moc/moc_predefs.h -I/usr/local/Qt-6.5.6/mkspecs/linux-g++ -I/home/pi/XVBVThiness -I/usr/include -I/home/pi/algorithm/DataProc/include -I/home/pi/XVBVThiness -I/home/pi/XVBVThiness/XV.Control -I/home/pi/XVBVThiness/XV.Communication -I/home/pi/XVBVThiness/XV.DataAccess -I/home/pi/XVBVThiness/XV.Model -I/home/pi/XVBVThiness/XV.Tool -I/home/pi/XVBVThiness/algorithms -I/usr/local/Qt-6.5.6/include -I/usr/local/Qt-6.5.6/include/QtWidgets -I/usr/local/Qt-6.5.6/include/QtGui -I/usr/local/Qt-6.5.6/include/QtSql -I/usr/local/Qt-6.5.6/include/QtXml -I/usr/local/Qt-6.5.6/include/QtSerialPort -I/usr/local/Qt-6.5.6/include/QtConcurrent -I/usr/local/Qt-6.5.6/include/QtCore -I/usr/include/c++/12 -I/usr/include/aarch64-linux-gnu/c++/12 -I/usr/include/c++/12/backward -I/usr/lib/gcc/aarch64-linux-gnu/12/include -I/usr/local/include -I/usr/include/aarch64-linux-gnu -I/usr/include mvaboutwidget.h -o build/debug/.moc/moc_mvaboutwidget.cpp
@@ -5673,28 +5625,6 @@ build/debug/.moc/moc_mvexitappdialog.cpp: mvexitappdialog.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
 		build/debug/.ui/ui_mvexitappdialog.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QVariant \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qlocale.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QHBoxLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qboxlayout.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlayout.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlayoutitem.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qgridlayout.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLabel \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlabel.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qframe.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpicture.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextdocument.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QPushButton \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qpushbutton.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractbutton.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QSpacerItem \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QVBoxLayout \
 		build/debug/.moc/moc_predefs.h \
 		/usr/local/Qt-6.5.6/libexec/moc
 	/usr/local/Qt-6.5.6/libexec/moc $(DEFINES) --include /home/pi/XVBVThiness/build/debug/.moc/moc_predefs.h -I/usr/local/Qt-6.5.6/mkspecs/linux-g++ -I/home/pi/XVBVThiness -I/usr/include -I/home/pi/algorithm/DataProc/include -I/home/pi/XVBVThiness -I/home/pi/XVBVThiness/XV.Control -I/home/pi/XVBVThiness/XV.Communication -I/home/pi/XVBVThiness/XV.DataAccess -I/home/pi/XVBVThiness/XV.Model -I/home/pi/XVBVThiness/XV.Tool -I/home/pi/XVBVThiness/algorithms -I/usr/local/Qt-6.5.6/include -I/usr/local/Qt-6.5.6/include/QtWidgets -I/usr/local/Qt-6.5.6/include/QtGui -I/usr/local/Qt-6.5.6/include/QtSql -I/usr/local/Qt-6.5.6/include/QtXml -I/usr/local/Qt-6.5.6/include/QtSerialPort -I/usr/local/Qt-6.5.6/include/QtConcurrent -I/usr/local/Qt-6.5.6/include/QtCore -I/usr/include/c++/12 -I/usr/include/aarch64-linux-gnu/c++/12 -I/usr/include/c++/12/backward -I/usr/lib/gcc/aarch64-linux-gnu/12/include -I/usr/local/include -I/usr/include/aarch64-linux-gnu -I/usr/include mvexitappdialog.h -o build/debug/.moc/moc_mvexitappdialog.cpp
@@ -6257,15 +6187,38 @@ build/debug/.moc/moc_mvloginwindow.cpp: mvloginwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qstandardpaths.h \
 		XV.Tool/mvharddiskinformation.h \
 		build/debug/.ui/ui_mvloginwindow.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QBitmap \
+		/usr/local/Qt-6.5.6/include/QtGui/QImage \
+		/usr/local/Qt-6.5.6/include/QtGui/QPainter \
+		/usr/local/Qt-6.5.6/include/QtGui/qpainter.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QPixmap \
+		/usr/local/Qt-6.5.6/include/QtCore/QSettings \
+		/usr/local/Qt-6.5.6/include/QtCore/qsettings.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QFile \
+		/usr/local/Qt-6.5.6/include/QtCore/QTimer \
+		/usr/local/Qt-6.5.6/include/QtCore/qtimer.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qbasictimer.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QCheckBox \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qcheckbox.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QComboBox \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qcombobox.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QHBoxLayout \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QLabel \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qlabel.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qframe.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpicture.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qtextdocument.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qtextcursor.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qtextformat.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidget \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qtablewidget.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qtableview.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemview.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractscrollarea.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qitemselectionmodel.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemdelegate.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qstyleoption.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractspinbox.h \
@@ -6277,44 +6230,18 @@ build/debug/.moc/moc_mvloginwindow.cpp: mvloginwindow.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qtabbar.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qtabwidget.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qrubberband.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qframe.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QFrame \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QHBoxLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLabel \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlabel.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpicture.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextdocument.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextcursor.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextformat.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QBitmap \
-		/usr/local/Qt-6.5.6/include/QtGui/QImage \
-		/usr/local/Qt-6.5.6/include/QtGui/QPainter \
-		/usr/local/Qt-6.5.6/include/QtGui/qpainter.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QPixmap \
-		/usr/local/Qt-6.5.6/include/QtCore/QSettings \
-		/usr/local/Qt-6.5.6/include/QtCore/qsettings.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QFile \
-		/usr/local/Qt-6.5.6/include/QtCore/QTimer \
-		/usr/local/Qt-6.5.6/include/QtCore/qtimer.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qbasictimer.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidget \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtablewidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtableview.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemview.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractscrollarea.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qitemselectionmodel.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QGuiApplication \
+		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QScreen \
 		/usr/local/Qt-6.5.6/include/QtGui/QKeyEvent \
 		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
 		/usr/local/Qt-6.5.6/include/QtCore/QUuid \
 		/usr/local/Qt-6.5.6/include/QtCore/quuid.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QtMath \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QListView \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qlistview.h \
 		build/debug/.moc/moc_predefs.h \
@@ -10768,14 +10695,7 @@ build/debug/.obj/XDThumbnailLabel.o: XV.Control/XDThumbnailLabel.cpp /usr/local/
 		/usr/local/Qt-6.5.6/include/QtWidgets/QWidget \
 		/usr/local/Qt-6.5.6/include/QtCore/QModelIndex \
 		/usr/local/Qt-6.5.6/include/QtCore/qabstractitemmodel.h \
-		build/debug/.ui/ui_XDThumbnailLabel.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QVariant \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLabel \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlabel.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qframe.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpicture.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextdocument.h
+		build/debug/.ui/ui_XDThumbnailLabel.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o build/debug/.obj/XDThumbnailLabel.o XV.Control/XDThumbnailLabel.cpp
 
 build/debug/.obj/XDThumbnailListWidget.o: XV.Control/XDThumbnailListWidget.cpp XV.Control/XDThumbnailListWidget.h \
@@ -10945,37 +10865,10 @@ build/debug/.obj/XDThumbnailListWidget.o: XV.Control/XDThumbnailListWidget.cpp X
 		/usr/local/Qt-6.5.6/include/QtCore/QModelIndex \
 		/usr/local/Qt-6.5.6/include/QtCore/qabstractitemmodel.h \
 		build/debug/.ui/ui_XDThumbnailListWidget.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QVariant \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qcoreapplication.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qeventloop.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qcoreapplication_platform.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qfuture.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qfutureinterface.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qmutex.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qtsan_impl.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qresultstore.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qfuture_impl.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qthreadpool.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qthread.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qdeadlinetimer.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qelapsedtimer.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qrunnable.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qexception.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qpromise.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qlocale.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QScrollArea \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qscrollarea.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractscrollarea.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qframe.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QVBoxLayout \
 		/usr/local/Qt-6.5.6/include/QtCore/QDateTime \
 		/usr/local/Qt-6.5.6/include/QtCore/qdatetime.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcalendar.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qlocale.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QDir \
 		/usr/local/Qt-6.5.6/include/QtCore/qdir.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qfile.h \
@@ -11006,7 +10899,8 @@ build/debug/.obj/XDThumbnailListWidget.o: XV.Control/XDThumbnailListWidget.cpp X
 		/usr/local/Qt-6.5.6/include/QtWidgets/QScrollerProperties \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qscrollerproperties.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QScopedPointer \
-		/usr/local/Qt-6.5.6/include/QtCore/QMetaType
+		/usr/local/Qt-6.5.6/include/QtCore/QMetaType \
+		/usr/local/Qt-6.5.6/include/QtCore/QVariant
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o build/debug/.obj/XDThumbnailListWidget.o XV.Control/XDThumbnailListWidget.cpp
 
 build/debug/.obj/XDTitleBar.o: XV.Control/XDTitleBar.cpp /usr/local/Qt-6.5.6/include/QtWidgets/QLabel \
@@ -14200,30 +14094,28 @@ build/debug/.obj/main.o: main.cpp mainwindow.h \
 		mvaboutwidget.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QBitmap \
 		build/debug/.ui/ui_mvaboutwidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QSpacerItem \
 		mvloginwindow.h \
 		XV.Tool/mvSimpleCrypto.h \
 		XV.Tool/mvharddiskinformation.h \
 		build/debug/.ui/ui_mvloginwindow.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QCheckBox \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qcheckbox.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QFrame \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QImage \
 		/usr/local/Qt-6.5.6/include/QtCore/QSettings \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QCheckBox \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qcheckbox.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidget \
 		/usr/local/Qt-6.5.6/include/QtGui/QGuiApplication \
+		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QKeyEvent \
 		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
 		/usr/local/Qt-6.5.6/include/QtCore/QUuid \
 		/usr/local/Qt-6.5.6/include/QtCore/QtMath \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
 		mvexitappdialog.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QInternal \
 		build/debug/.ui/ui_mvexitappdialog.h \
@@ -14718,30 +14610,28 @@ build/debug/.obj/mainwindow.o: mainwindow.cpp mainwindow.h \
 		mvaboutwidget.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QBitmap \
 		build/debug/.ui/ui_mvaboutwidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QSpacerItem \
 		mvloginwindow.h \
 		XV.Tool/mvSimpleCrypto.h \
 		XV.Tool/mvharddiskinformation.h \
 		build/debug/.ui/ui_mvloginwindow.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QCheckBox \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qcheckbox.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QFrame \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QImage \
 		/usr/local/Qt-6.5.6/include/QtCore/QSettings \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QCheckBox \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qcheckbox.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidget \
 		/usr/local/Qt-6.5.6/include/QtGui/QGuiApplication \
+		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QKeyEvent \
 		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
 		/usr/local/Qt-6.5.6/include/QtCore/QUuid \
 		/usr/local/Qt-6.5.6/include/QtCore/QtMath \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
 		mvexitappdialog.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QInternal \
 		build/debug/.ui/ui_mvexitappdialog.h
@@ -14911,55 +14801,6 @@ build/debug/.obj/mvaboutwidget.o: mvaboutwidget.cpp mvaboutwidget.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
 		build/debug/.ui/ui_mvaboutwidget.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QVariant \
-		/usr/local/Qt-6.5.6/include/QtGui/QIcon \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qcoreapplication.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qeventloop.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qcoreapplication_platform.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qfuture.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qfutureinterface.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qmutex.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qtsan_impl.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qresultstore.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qfuture_impl.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qthreadpool.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qthread.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qdeadlinetimer.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qelapsedtimer.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qrunnable.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qexception.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qpromise.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qlocale.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qgridlayout.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlayout.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlayoutitem.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qboxlayout.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QHBoxLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLabel \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlabel.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qframe.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpicture.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextdocument.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QPushButton \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qpushbutton.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractbutton.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QSpacerItem \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QStackedWidget \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qstackedwidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QTextBrowser \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtextbrowser.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtextedit.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractscrollarea.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextcursor.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextformat.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QVBoxLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QWidget \
 		/usr/local/Qt-6.5.6/include/QtGui/QDesktopServices \
 		/usr/local/Qt-6.5.6/include/QtGui/qdesktopservices.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QUrl
@@ -15151,28 +14992,6 @@ build/debug/.obj/mvexitappdialog.o: mvexitappdialog.cpp mvexitappdialog.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
 		build/debug/.ui/ui_mvexitappdialog.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QVariant \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qlocale.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QHBoxLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qboxlayout.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlayout.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlayoutitem.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qgridlayout.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLabel \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlabel.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qframe.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpicture.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextdocument.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QPushButton \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qpushbutton.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractbutton.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QSpacerItem \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QVBoxLayout \
 		/usr/local/Qt-6.5.6/include/QtGui/QPainterPath \
 		/usr/local/Qt-6.5.6/include/QtGui/qpainterpath.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o build/debug/.obj/mvexitappdialog.o mvexitappdialog.cpp
@@ -15484,26 +15303,6 @@ build/debug/.obj/mvimageacquisitwidget.o: mvimageacquisitwidget.cpp mvimageacqui
 		/usr/local/Qt-6.5.6/include/QtWidgets/qtabwidget.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qrubberband.h \
 		build/debug/.ui/ui_mvimageacquisitwidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QFrame \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLabel \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlabel.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpicture.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QSlider \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QSpacerItem \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QStackedWidget \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qstackedwidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QToolButton \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtoolbutton.h \
-		XV.Control/XDDiameterHistoryWidget.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QVector \
-		/usr/local/Qt-6.5.6/include/QtCore/qvector.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QPair \
-		XV.Control/XDThumbnailListWidget.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QDesktopServices \
 		/usr/local/Qt-6.5.6/include/QtGui/qdesktopservices.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QImageReader \
@@ -15534,6 +15333,9 @@ build/debug/.obj/mvimageacquisitwidget.o: mvimageacquisitwidget.cpp mvimageacqui
 		/usr/local/Qt-6.5.6/include/QtCore/QScopedPointer \
 		/usr/local/Qt-6.5.6/include/QtCore/QMetaType \
 		/usr/local/Qt-6.5.6/include/QtGui/QGuiApplication \
+		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QScreen
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o build/debug/.obj/mvimageacquisitwidget.o mvimageacquisitwidget.cpp
 
@@ -15785,15 +15587,38 @@ build/debug/.obj/mvloginwindow.o: mvloginwindow.cpp mvloginwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qstandardpaths.h \
 		XV.Tool/mvharddiskinformation.h \
 		build/debug/.ui/ui_mvloginwindow.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QBitmap \
+		/usr/local/Qt-6.5.6/include/QtGui/QImage \
+		/usr/local/Qt-6.5.6/include/QtGui/QPainter \
+		/usr/local/Qt-6.5.6/include/QtGui/qpainter.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QPixmap \
+		/usr/local/Qt-6.5.6/include/QtCore/QSettings \
+		/usr/local/Qt-6.5.6/include/QtCore/qsettings.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QFile \
+		/usr/local/Qt-6.5.6/include/QtCore/QTimer \
+		/usr/local/Qt-6.5.6/include/QtCore/qtimer.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qbasictimer.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QCheckBox \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qcheckbox.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QComboBox \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qcombobox.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QHBoxLayout \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QLabel \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qlabel.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qframe.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpicture.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qtextdocument.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qtextcursor.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qtextformat.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidget \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qtablewidget.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qtableview.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemview.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractscrollarea.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qitemselectionmodel.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemdelegate.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qstyleoption.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractspinbox.h \
@@ -15805,54 +15630,22 @@ build/debug/.obj/mvloginwindow.o: mvloginwindow.cpp mvloginwindow.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qtabbar.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qtabwidget.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qrubberband.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qframe.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QFrame \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QHBoxLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLabel \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlabel.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpicture.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextdocument.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextcursor.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextformat.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QBitmap \
-		/usr/local/Qt-6.5.6/include/QtGui/QImage \
-		/usr/local/Qt-6.5.6/include/QtGui/QPainter \
-		/usr/local/Qt-6.5.6/include/QtGui/qpainter.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QPixmap \
-		/usr/local/Qt-6.5.6/include/QtCore/QSettings \
-		/usr/local/Qt-6.5.6/include/QtCore/qsettings.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QFile \
-		/usr/local/Qt-6.5.6/include/QtCore/QTimer \
-		/usr/local/Qt-6.5.6/include/QtCore/qtimer.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qbasictimer.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidget \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtablewidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtableview.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemview.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractscrollarea.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qitemselectionmodel.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QGuiApplication \
+		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QScreen \
 		/usr/local/Qt-6.5.6/include/QtGui/QKeyEvent \
 		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
 		/usr/local/Qt-6.5.6/include/QtCore/QUuid \
 		/usr/local/Qt-6.5.6/include/QtCore/quuid.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QtMath \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QListView \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qlistview.h \
 		mvaboutwidget.h \
 		build/debug/.ui/ui_mvaboutwidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QSpacerItem \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QStackedWidget \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qstackedwidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QTextBrowser \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtextbrowser.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtextedit.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QPainterPath \
 		/usr/local/Qt-6.5.6/include/QtGui/qpainterpath.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o build/debug/.obj/mvloginwindow.o mvloginwindow.cpp
@@ -16102,46 +15895,17 @@ build/debug/.obj/mvnewpatientdialog.o: mvnewpatientdialog.cpp mvnewpatientdialog
 		/usr/local/Qt-6.5.6/include/QtCore/QStandardPaths \
 		/usr/local/Qt-6.5.6/include/QtCore/qstandardpaths.h \
 		build/debug/.ui/ui_mvnewpatientdialog.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QDateEdit \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qdatetimeedit.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractspinbox.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qvalidator.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qregularexpression.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QFrame \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qframe.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QHBoxLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLabel \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlabel.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpicture.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextdocument.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextcursor.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QKeyEvent \
+		/usr/local/Qt-6.5.6/include/QtGui/QTextCharFormat \
 		/usr/local/Qt-6.5.6/include/QtGui/qtextformat.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QPlainTextEdit \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qplaintextedit.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtextedit.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractscrollarea.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qabstracttextdocumentlayout.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextlayout.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qglyphrun.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qrawfont.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qfontdatabase.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QSpacerItem \
-		/usr/local/Qt-6.5.6/include/QtGui/QKeyEvent \
-		/usr/local/Qt-6.5.6/include/QtGui/QTextCharFormat \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QCalendarWidget \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qcalendarwidget.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QRegularExpression \
-		/usr/local/Qt-6.5.6/include/QtGui/QRegularExpressionValidator
+		/usr/local/Qt-6.5.6/include/QtCore/qregularexpression.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QRegularExpressionValidator \
+		/usr/local/Qt-6.5.6/include/QtGui/qvalidator.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o build/debug/.obj/mvnewpatientdialog.o mvnewpatientdialog.cpp
 
 build/debug/.obj/mvpatientrecordwidget.o: mvpatientrecordwidget.cpp mvpatientrecordwidget.h \
@@ -16433,41 +16197,7 @@ build/debug/.obj/mvpatientrecordwidget.o: mvpatientrecordwidget.cpp mvpatientrec
 		/usr/local/Qt-6.5.6/include/QtCore/QFileInfo \
 		/usr/local/Qt-6.5.6/include/QtCore/QStandardPaths \
 		/usr/local/Qt-6.5.6/include/QtCore/qstandardpaths.h \
-		build/debug/.ui/ui_mvpatientrecordwidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QCheckBox \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qcheckbox.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QComboBox \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qcombobox.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QDateEdit \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qdatetimeedit.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QFrame \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QGroupBox \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qgroupbox.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QHBoxLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QHeaderView \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qheaderview.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLabel \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlabel.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpicture.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextdocument.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextcursor.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextformat.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QSpacerItem \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QStackedWidget \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qstackedwidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QTableView \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QToolButton \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtoolbutton.h
+		build/debug/.ui/ui_mvpatientrecordwidget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o build/debug/.obj/mvpatientrecordwidget.o mvpatientrecordwidget.cpp
 
 build/debug/.obj/mvstatusbar.o: mvstatusbar.cpp mvstatusbar.h \
@@ -17073,36 +16803,7 @@ build/debug/.obj/mvsystemsettings.o: mvsystemsettings.cpp mvsystemsettings.h \
 		/usr/local/Qt-6.5.6/include/QtConcurrent/qtconcurrentrun.h \
 		/usr/local/Qt-6.5.6/include/QtConcurrent/qtconcurrenttask.h \
 		/usr/local/Qt-6.5.6/include/QtConcurrent/qtconcurrentversion.h \
-		build/debug/.ui/ui_mvsystemsettings.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QApplication \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qinputmethod.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qguiapplication_platform.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QFrame \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QGridLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qgridlayout.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlayout.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlayoutitem.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qboxlayout.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QHBoxLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextcursor.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextformat.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QSpacerItem \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QTabWidget \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QVBoxLayout \
-		XV.Control/InteractiveImageLabel.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QImage \
-		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
-		/usr/local/Qt-6.5.6/include/QtGui/QPainter \
-		/usr/local/Qt-6.5.6/include/QtGui/qpainter.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QPixmap \
-		/usr/local/Qt-6.5.6/include/QtCore/QPoint \
-		/usr/local/Qt-6.5.6/include/QtGui/QWheelEvent
+		build/debug/.ui/ui_mvsystemsettings.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o build/debug/.obj/mvsystemsettings.o mvsystemsettings.cpp
 
 build/debug/.obj/qrc_mvResources.o: build/debug/.rcc/qrc_mvResources.cpp 

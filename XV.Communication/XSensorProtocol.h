@@ -36,7 +36,7 @@ public:
     void cleanupAfterImageAcquisition(bool success);
 
     // 曝光相关方法
-    bool enableExposure(bool isMainSensor, bool waitXray);
+    bool sendExposureF6(bool isMainSensor, bool waitXray);
     void acquireImage();
     QByteArray retrieveImageByte(QString& errorCode, int& expectedBagNum, int packageIndex);
     QByteArray processImageData(const QByteArray& rawData, int cols, int rows);
@@ -51,6 +51,7 @@ public:
     QString portName() const;
 
     // 设备控制
+    bool getVersion();
     bool powerOn();
     bool powerOff();
     bool setupWorkMode(bool callbackF5F5 = true);
@@ -58,21 +59,7 @@ public:
     // 曝光控制
     void stopExposure();
 
-    // 设备信息
-    DeviceInfo getDeviceInfo() const;
     QString getLastError() const;
-
-    // 自动初始化
-    bool autoInitialize(const QString& preferredPort = "", int timeoutMs = 5000);
-    bool isInitialized() const;
-
-    // 配置
-    void setBaudRate(int baudRate);
-    void setTimeouts(int readTimeout, int writeTimeout, int echoTimeout, int exposureTimeout);
-
-    // 端口相关
-    QStringList findAvailablePorts();
-    QString detectDevicePort(int timeoutMs = 3000);
 
     QByteArray buildCommand(const QByteArray& cmdData,
                             char endChar1 = '\x0D',
@@ -103,8 +90,6 @@ signals:
     void calibrationRequired();
 
 protected slots:
-    void onSerialReadyRead();
-    void onSerialError(QSerialPort::SerialPortError error);
 
     void closeSerialPort();
 
@@ -129,21 +114,16 @@ private:
 
     // 内部方法（对应C# GetTranducertCOM）
     QSerialPort* internalGetTransducerCOM(const QString& comPort);
-    bool echoSerialPort(QSerialPort* serialPort);
-    void setupSerialPortCallbacks(QSerialPort* serialPort);
+    bool echoSerialPort();
     void releaseCOM(QSerialPort* serialPort);
 
-    bool echoDevice();
     bool sendCommand(const QByteArray& cmd);
     QByteArray readResponse(int timeout);
     bool validateCRC(const QByteArray& data);
     QByteArray calculateCRC(const QByteArray& data);
-    bool validatePowerOffResponse(const QByteArray& response);
-    QByteArray cropImage(
-        const QByteArray& image, int cols, int rows, int top, int right, int bottom, int left);
 
     // 协议处理
-    DeviceInfo parseDeviceInfo(const QByteArray& data);
+    bool parseDeviceInfo(const QByteArray& data);
     bool sendF5Config();
     bool sendF8ImageRequest();
 
@@ -154,7 +134,7 @@ private:
     static quint32 bytesToUInt32(const QByteArray& bytes, bool littleEndian = true);
 
 private:
-    QSerialPort* m_serial;
+    QSerialPort* m_serialPort;
     QRecursiveMutex m_mutex;
 
     bool m_deviceInitialized;
