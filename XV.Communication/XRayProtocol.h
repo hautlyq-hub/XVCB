@@ -102,7 +102,6 @@ public:
 
     // 设备连接管理
     bool initSerialPort(const QString &portName, int baudRate = 921600);
-    void closeSerialPort();
     bool isConnected() const;
     QString portName() const;
 
@@ -155,6 +154,7 @@ private slots:
     void onErrorOccurred(QSerialPort::SerialPortError error);
     void onExposureTimeout();
     void updateDeviceStatus();
+    void closeSerialPort();
 
 private:
     // 串口通信

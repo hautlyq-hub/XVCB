@@ -503,29 +503,34 @@ bool XProtocolManager::setupWorkMode(bool calibrationBefore, int xRayIndex)
     m_isExposing = 1;
     m_cancelRequested = 0;
 
-    QtConcurrent::run(m_threadPool, [this, calibrationBefore]() {
-        try {
-            if (!checkConnected()) {
-                emit errorOccurred("设备未连接");
-                return;
-            }
-
-            m_imageBuffer.clear();
-            m_exposureWait = 0;
-            bool success = startExposure();
-
-            if (success) {
-                emit info("工作模式设置完成");
-            } else {
-                emit errorOccurred("工作模式设置失败");
-            }
-
-        } catch (const std::exception& ex) {
-            emit errorOccurred(QString("设置错误: %1").arg(ex.what()));
+    // 直接在当前线程同步执行，不使用线程池
+    try {
+        if (!checkConnected()) {
+            emit errorOccurred("设备未连接");
+            m_isExposing = 0; // 重置状态
+            return false;
         }
-    });
 
-    return true;
+        m_imageBuffer.clear();
+        m_exposureWait = 0;
+
+        // 直接调用 startExposure()，它会阻塞直到完成
+        bool success = startExposure();
+
+        if (success) {
+            emit info("工作模式设置完成");
+            return true;
+        } else {
+            emit errorOccurred("工作模式设置失败");
+            m_isExposing = 0;
+            return false;
+        }
+
+    } catch (const std::exception& ex) {
+        emit errorOccurred(QString("设置错误: %1").arg(ex.what()));
+        m_isExposing = 0;
+        return false;
+    }
 }
 
 void XProtocolManager::stopWorkMode()
@@ -660,8 +665,6 @@ bool XProtocolManager::startExposure()
         QMetaObject::invokeMethod(
             m_sensor1,
             [this, &success1]() {
-                qDebug() << "[m_sensor1] Current thread:" << QThread::currentThread();
-
                 success1 = m_sensor1->setupWorkMode(true);
             },
             Qt::BlockingQueuedConnection);

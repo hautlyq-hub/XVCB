@@ -28,7 +28,6 @@ public:
 
     // 设备连接管理
     bool initSerialPort(const QString& portName);
-    void closeSerialPort();
     bool isConnected() const;
     void resetDeviceState();
 
@@ -65,6 +64,9 @@ signals:
     void exposureCompleted();
     void exposureF5Ready(const QString& serial);
     void exposureF6Ready(const QString& serial);
+
+private slots:
+    void closeSerialPort();
 
 private:
     // 协议命令

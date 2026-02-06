@@ -783,10 +783,6 @@ void mvsystemsettings::onAutoExposureTimeout()
 void mvsystemsettings::onImageReceived(const QVector<HWImageData>& images)
 {
     AcceptImage(images);
-
-    QTimer::singleShot(200, this, [this]() {
-        AutoNextExposure();
-    });
 }
 
 void mvsystemsettings::onInfoReceived(const QString& message)
@@ -833,7 +829,7 @@ void mvsystemsettings::onExposureFinished()
     // 重置UI状态
     resetUI();
 
-    // 延迟一小段时间后检查是否需要继续曝光
+    延迟一小段时间后检查是否需要继续曝光
     QTimer::singleShot(300, this, [this]() {
         // 确保UI已重置后再检查
         if (!mIsExposing) {
