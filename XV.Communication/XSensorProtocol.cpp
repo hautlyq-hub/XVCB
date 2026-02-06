@@ -662,11 +662,11 @@ QByteArray XSensorProtocol::readResponse(int timeout)
 
 void XSensorProtocol::cleanupAfterImageAcquisition(bool success)
 {
-    QMutexLocker locker(&m_mutex);
 
     try {
 
         m_exposing = false;
+        m_isBusy = false;
 
         if (m_poweredOn) {
             powerOff();
