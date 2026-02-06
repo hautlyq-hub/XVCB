@@ -98,12 +98,29 @@ bool XProtocolManager::isHardwareReady() const
 
 bool XProtocolManager::initSerialPort()
 {
+    // 1. 先加载配置
     loadConfig();
 
-    initializeSensors();
+    // 2. 检查端口配置是否重复
+    QMap<QString, QString> portMap;
+    for (const auto& setting : m_portSettings) {
+        if (setting.portName.isEmpty())
+            continue;
 
+        if (portMap.contains(setting.portName)) {
+            qCritical() << "错误：端口" << setting.portName << "被多个设备配置使用："
+                        << portMap[setting.portName] << "和" << setting.deviceKey;
+            emit errorOccurred(QString("端口 %1 配置重复，请检查配置文件").arg(setting.portName));
+            return false; // 直接返回，不要继续
+        }
+        portMap[setting.portName] = setting.deviceKey;
+    }
+
+    // 3. 初始化设备（只创建实例，不连接）
+    initializeSensors();
     initializeXray();
 
+    // 4. 启动线程
     if (m_sensor1Thread)
         m_sensor1Thread->start();
     if (m_sensor2Thread)
