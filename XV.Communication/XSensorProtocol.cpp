@@ -96,6 +96,12 @@ bool XSensorProtocol::echoSerialPort()
 
     QThread::msleep(200);
 
+    if (!powerOn()) {
+        return false;
+    }
+
+    QThread::msleep(500);
+
     if (!getVersion())
         return false;
 
@@ -572,7 +578,7 @@ bool XSensorProtocol::getVersion()
 bool XSensorProtocol::powerOn()
 {
     if (sendCommand(Commands::F4_POWER_ON_3V3)) {
-        QByteArray response = readResponse(m_echoTimeout);
+        QByteArray response = readResponse(1000);
     } else {
         return false;
     }
@@ -580,7 +586,7 @@ bool XSensorProtocol::powerOn()
     QThread::msleep(300);
 
     if (sendCommand(Commands::F4_POWER_ON)) {
-        QByteArray response = readResponse(m_echoTimeout);
+        QByteArray response = readResponse(1000);
     } else {
         return false;
     }
