@@ -1,4 +1,4 @@
-// XSensorProtocol.h - 精简版本
+// XSensorProtocol.h - 更新版本
 #ifndef XSENSORPROTOCOL_H
 #define XSENSORPROTOCOL_H
 
@@ -28,24 +28,23 @@ public:
 
     // 设备连接管理
     bool initSerialPort(const QString& portName);
+    void closeSerialPort();
     bool isConnected() const;
-    bool checkActive();
     void resetDeviceState();
 
-    void rectifyDeviceParam();
-    void cleanupAfterImageAcquisition(bool success);
-
-    // 曝光相关方法
-    bool sendExposureF6(bool isMainSensor, bool waitXray);
+    // 图像采集相关
     void acquireImage();
     QByteArray retrieveImageByte(QString& errorCode, int& expectedBagNum, int packageIndex);
     QByteArray processImageData(const QByteArray& rawData, int cols, int rows);
+    void cleanupAfterImageAcquisition(bool success);
+
+    // 曝光相关方法
+    bool sendExposureF6(bool wait = false, bool isCalibration = false);
+    void stopExposure();
+    bool stopWorkMode();
 
     // 校准相关
     void setCalibrationBefore();
-
-    // 工作模式控制
-    bool stopWorkMode(); // 停止工作模式
 
     // 获取端口名
     QString portName() const;
@@ -54,43 +53,18 @@ public:
     bool getVersion();
     bool powerOn();
     bool powerOff();
-    bool setupWorkMode(bool callbackF5F5 = true);
+    bool setupWorkMode(bool b = true);
 
-    // 曝光控制
-    void stopExposure();
-
+    // 错误信息
     QString getLastError() const;
 
-    QByteArray buildCommand(const QByteArray& cmdData,
-                            char endChar1 = '\x0D',
-                            char endChar2 = '\x0A');
-
 signals:
-    void deviceConnected();
-    void deviceDisconnected();
-    void deviceReady();
-    void deviceInitialized(bool success);
-    void exposureStarted();
-    void exposureCompleted();
-    void imageReady(const QByteArray& imageData);
-    void errorOccurred(const QString& errorMessage);
-    void warningOccurred(const QString& warningMessage);
-    void commandExecuted(quint32 commandCode);
     void statusChanged(const QString& status);
-    void cmdExecuted(uint32_t cmd);
-
-    void exposureF5Ready(QString serial);
-    void exposureF6Ready(QString serial);
-
-    // 添加缺失的信号
-    void commandFeedback(uint32_t cmd);
-    void comError(const QString& msgID);
-    void imageAvailable(const QByteArray& image);
-    void calibrationRequired();
-
-protected slots:
-
-    void closeSerialPort();
+    void errorOccurred(const QString& errorMessage);
+    void imageReady(const QByteArray& imageData);
+    void exposureCompleted();
+    void exposureF5Ready(const QString& serial);
+    void exposureF6Ready(const QString& serial);
 
 private:
     // 协议命令
@@ -106,67 +80,51 @@ private:
         static QByteArray F6_ENABLE_EXPOSE_02;
         static QByteArray F6_ENABLE_EXPOSE_CALI;
         static QByteArray F6_ENABLE_EXPOSE_1MIN;
-
         static QByteArray F8_REQUEST_IMAGE;
         static QByteArray F8_TO_LOWER_POWER;
     };
 
-    // 内部方法（对应C# GetTranducertCOM）
-    QSerialPort* internalGetTransducerCOM(const QString& comPort);
+    // 串口通信
     bool echoSerialPort();
-    void releaseCOM(QSerialPort* serialPort);
-
     bool sendCommand(const QByteArray& cmd);
     QByteArray readResponse(int timeout);
-    bool validateCRC(const QByteArray& data);
-    QByteArray calculateCRC(const QByteArray& data);
+    QByteArray buildCommand(const QByteArray& cmdData,
+                            char endChar1 = '\x0D',
+                            char endChar2 = '\x0A');
 
     // 协议处理
     bool parseDeviceInfo(const QByteArray& data);
     bool sendF5Config();
     bool sendF8ImageRequest();
 
+    // CRC校验
+    bool validateCRC(const QByteArray& data);
+    QByteArray calculateCRC(const QByteArray& data);
+
     // 工具方法
-    static QByteArray hexStringToBytes(const QString& hexStr);
     static QString bytesToHexString(const QByteArray& bytes);
-    static quint16 bytesToUInt16(const QByteArray& bytes, bool littleEndian = true);
-    static quint32 bytesToUInt32(const QByteArray& bytes, bool littleEndian = true);
 
 private:
     QSerialPort* m_serialPort;
-    QRecursiveMutex m_mutex;
-
-    bool m_deviceInitialized;
-    bool m_exposing;
-    bool m_poweredOn;
-    bool m_autoInitialized;
+    mutable QMutex m_mutex;
 
     DeviceInfo m_deviceInfo;
     QString m_lastError;
 
-    bool m_initInProgress = false; // 互斥标志
-    QMutex m_initMutex;
+    // 状态标志
+    bool m_deviceInitialized;
+    bool m_exposing;
+    bool m_poweredOn;
+    bool m_autoInitialized;
+    bool m_cancelRequested;
+    std::atomic<bool> m_isBusy;
 
     // 配置参数
     int m_baudRate;
-    int m_readTimeout = 1000;
-    int m_openTimeout = 500;
-    int m_retryTimes = 3;
-    int m_echoTimeout = 500;
-    int m_normalCmdTimeout = 2000;
-    int m_acquireImageDelay = 0;
-    bool m_rectifyF5Enabled = false;
-    bool m_rectifyAECEnabled = false;
-    bool m_imageLogEnabled = false;
-
-    // 超时配置
+    int m_readTimeout;
     int m_writeTimeout;
+    int m_echoTimeout;
     int m_exposureTimeout;
-
-    bool m_cancelRequested;
-
-    // 状态标志
-    std::atomic<bool> m_isBusy;
 };
 
 #endif // XSENSORPROTOCOL_H

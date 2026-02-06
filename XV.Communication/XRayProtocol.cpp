@@ -48,8 +48,6 @@ XRayProtocol::XRayProtocol(QObject *parent)
     // connect(m_statusTimer, &QTimer::timeout, this, &XRayProtocol::updateDeviceStatus);
     // m_statusTimer->start(1000); // 每秒更新一次状态
 
-    qDebug() << "XRayProtocol 构造函数，线程:" << QThread::currentThreadId()
-             << "对象线程:" << this->thread();
 }
 
 XRayProtocol::~XRayProtocol()
@@ -132,7 +130,6 @@ bool XRayProtocol::isConnected() const
 bool XRayProtocol::startExposure()
 {
     QMutexLocker locker(&m_serialMutex);
-    qDebug() << "=== 开始曝光流程 ===";
 
     // 构建开始曝光数据
     m_exposureStartData.clear();
