@@ -67,10 +67,10 @@ XProtocolManager::XProtocolManager(QObject* parent)
     connect(m_xrayCheckTimer, &QTimer::timeout, this, &XProtocolManager::updateConnectionStatus);
 
     // 初始化默认参数
-    m_exposureParams.kv_val = 50.0f;
-    m_exposureParams.exp_time_ms = 500;
-    m_exposureParams.ma_val = 0.5f;
-    m_exposureParams.waitXray = true;
+    // m_exposureParams.kv_val = 50.0f;
+    // m_exposureParams.exp_time_ms = 600;
+    // m_exposureParams.ma_val = 2.5f;
+    // m_exposureParams.waitXray = true;
 }
 
 XProtocolManager::~XProtocolManager()
@@ -950,12 +950,12 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
             QMetaObject::invokeMethod(
                 m_xrayProtocol1,
                 [this]() {
-                    ExposureParams xrayParams;
-                    xrayParams.kv_val = m_exposureParams.kv_val;
-                    xrayParams.ma_val = m_exposureParams.ma_val;
-                    xrayParams.exp_time_ms = m_exposureParams.exp_time_ms;
+                    // ExposureParams xrayParams;
+                    // xrayParams.kv_val = m_exposureParams.kv_val;
+                    // xrayParams.ma_val = m_exposureParams.ma_val;
+                    // xrayParams.exp_time_ms = m_exposureParams.exp_time_ms;
 
-                    m_xrayProtocol1->setExposureParams(xrayParams);
+                    m_xrayProtocol1->setExposureParams(m_exposureParams);
                     m_xrayProtocol1->startExposure();
                 },
                 Qt::QueuedConnection);
@@ -964,12 +964,12 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
             QMetaObject::invokeMethod(
                 m_xrayProtocol2,
                 [this]() {
-                    ExposureParams xrayParams;
-                    xrayParams.kv_val = m_exposureParams.kv_val;
-                    xrayParams.ma_val = m_exposureParams.ma_val;
-                    xrayParams.exp_time_ms = m_exposureParams.exp_time_ms;
+                    // ExposureParams xrayParams;
+                    // xrayParams.kv_val = m_exposureParams.kv_val;
+                    // xrayParams.ma_val = m_exposureParams.ma_val;
+                    // xrayParams.exp_time_ms = m_exposureParams.exp_time_ms;
 
-                    m_xrayProtocol2->setExposureParams(xrayParams);
+                    m_xrayProtocol2->setExposureParams(m_exposureParams);
                     m_xrayProtocol2->startExposure();
                 },
                 Qt::QueuedConnection);
@@ -1134,6 +1134,8 @@ void XProtocolManager::checkAllImagesReceived()
     int requiredImages = 2;
 #endif
 
+    qDebug() << "requiredImages : " + QString::number(requiredImages);
+
     if (m_imageBuffer.size() >= requiredImages) {
         // 收到所有图像，准备发送
         QList<HWImageData> images;
@@ -1141,10 +1143,12 @@ void XProtocolManager::checkAllImagesReceived()
         // 按传感器顺序添加图像
         if (m_imageBuffer.contains(SENSOR1_KEY)) {
             images.append(m_imageBuffer[SENSOR1_KEY]);
+            qDebug() << "1111111111111111";
         }
 
         if (m_imageBuffer.contains(SENSOR2_KEY)) {
             images.append(m_imageBuffer[SENSOR2_KEY]);
+            qDebug() << "2222222222222222";
         }
 
         if (images.size() == requiredImages) {

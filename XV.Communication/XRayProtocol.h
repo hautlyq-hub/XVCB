@@ -60,7 +60,7 @@ struct ExposureParams
         kvs_max = 2.60f;
         kv_min = 0.01f;
         kv_max = 2.50f;
-        kv_val = 1.6666f; // 对应50KV
+        kv_val = 1.6666f;
         exp_time_ms = 1000;
         waitXray = true;
     }
@@ -180,6 +180,8 @@ private:
     ADCValues parseADCValues(const QByteArray &data);
     QString parseVersion(const QByteArray &data);
     QString parseSerialNumber(const QByteArray &data);
+    ExposureParams parseExposureParams(const QByteArray &data);
+
     bool verifyCRC(const QByteArray &data);
     void handleExposureResponse(const QByteArray &response);
 

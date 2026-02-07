@@ -784,6 +784,67 @@ QString XRayProtocol::parseVersion(const QByteArray &data)
     return version;
 }
 
+ExposureParams XRayProtocol::parseExposureParams(const QByteArray &data)
+{
+    ExposureParams params;
+
+    if (data.size() < 54) {
+        qWarning() << tr("Exposure parameter response too small:") << data.size();
+        return params;
+    }
+
+    if (static_cast<quint8>(data[0]) != 0x55 || static_cast<quint8>(data[1]) != 0xAA) {
+        qWarning() << tr("Invalid exposure parameter response header");
+        return params;
+    }
+
+    quint16 cmd = static_cast<quint8>(data[4]) | (static_cast<quint8>(data[5]) << 8);
+    if (cmd != 0x1C) {
+        qWarning() << tr("Invalid command code in response:") << QString::number(cmd, 16);
+        return params;
+    }
+
+    quint8 operate = static_cast<quint8>(data[6]);
+    if (operate != 0x03) {
+        qWarning() << tr("Invalid operate code in response: expected 0x03, got")
+                   << QString::number(operate, 16);
+    }
+
+    const char *ptr = data.constData() + 16;
+
+    memcpy(&params.ma_min, ptr, 4);
+    ptr += 4;
+    memcpy(&params.ma_max, ptr, 4);
+    ptr += 4;
+    memcpy(&params.ma_val, ptr, 4);
+    ptr += 4;
+    memcpy(&params.kvs_min, ptr, 4);
+    ptr += 4;
+    memcpy(&params.kvs_max, ptr, 4);
+    ptr += 4;
+    memcpy(&params.kv_min, ptr, 4);
+    ptr += 4;
+    memcpy(&params.kv_max, ptr, 4);
+    ptr += 4;
+    memcpy(&params.kv_val, ptr, 4);
+    ptr += 4;
+    memcpy(&params.exp_time_ms, ptr, 4);
+
+    qDebug() << tr("Exposure parameters parsed:");
+    qDebug() << tr("  OPERATE:") << QString::number(operate, 16);
+    qDebug() << tr("  MA min:") << params.ma_min;
+    qDebug() << tr("  MA max:") << params.ma_max;
+    qDebug() << tr("  MA val:") << params.ma_val;
+    qDebug() << tr("  KVS min:") << params.kvs_min;
+    qDebug() << tr("  KVS max:") << params.kvs_max;
+    qDebug() << tr("  KV min:") << params.kv_min;
+    qDebug() << tr("  KV max:") << params.kv_max;
+    qDebug() << tr("  KV val:") << params.kv_val;
+    qDebug() << tr("  Exposure time:") << params.exp_time_ms << "ms";
+
+    return params;
+}
+
 QString XRayProtocol::getVersion()
 {
     QByteArray response;
@@ -813,40 +874,113 @@ ADCValues XRayProtocol::getADCValues()
 
 bool XRayProtocol::setExposureParams(const ExposureParams &params)
 {
-    // 构建参数数据包
+    // 构建参数数据包 (9个参数 × 4字节 = 36字节)
     QByteArray data;
-    QDataStream stream(&data, QIODevice::WriteOnly);
-    stream.setFloatingPointPrecision(QDataStream::SinglePrecision);
-    stream.setByteOrder(QDataStream::LittleEndian);
+    data.resize(36);
+    char *ptr = data.data();
 
-    stream << params.ma_min;
-    stream << params.ma_max;
-    stream << params.ma_val;
-    stream << params.kvs_min;
-    stream << params.kvs_max;
-    stream << params.kv_min;
-    stream << params.kv_max;
-    stream << params.kv_val;
-    stream << params.exp_time_ms;
+    // 使用memcpy确保数据正确拷贝
+    memcpy(ptr, &params.ma_min, 4);
+    ptr += 4;
+    memcpy(ptr, &params.ma_max, 4);
+    ptr += 4;
+    memcpy(ptr, &params.ma_val, 4);
+    ptr += 4;
+    memcpy(ptr, &params.kvs_min, 4);
+    ptr += 4;
+    memcpy(ptr, &params.kvs_max, 4);
+    ptr += 4;
+    memcpy(ptr, &params.kv_min, 4);
+    ptr += 4;
+    memcpy(ptr, &params.kv_max, 4);
+    ptr += 4;
+    memcpy(ptr, &params.kv_val, 4);
+    ptr += 4;
+    memcpy(ptr, &params.exp_time_ms, 4);
 
+    // 保存设置的曝光时间
     m_expTimeMs = params.exp_time_ms;
+
+    // 发送命令
     QByteArray response;
     if (sendCommand(0x1C, data)) {
         response = readResponse(m_respTimeout);
     }
 
     if (response.isEmpty()) {
+        qWarning() << tr("No response to exposure parameter setting");
         return false;
     }
 
-    // 解析响应，验证参数设置成功
-    if (response.size() >= 44) {
-        // 可以解析返回的参数进行验证
-        m_currentParams = params;
-        return true;
+    // 解析响应数据
+    ExposureParams responseParams = parseExposureParams(response);
+
+    // 验证参数
+    bool success = true;
+    const float epsilon = 0.001f;
+
+    if (qAbs(responseParams.ma_min - params.ma_min) > epsilon) {
+        qWarning() << tr("MA min mismatch: set") << params.ma_min << tr("got")
+                   << responseParams.ma_min;
+        success = false;
     }
 
-    return false;
+    if (qAbs(responseParams.ma_max - params.ma_max) > epsilon) {
+        qWarning() << tr("MA max mismatch: set") << params.ma_max << tr("got")
+                   << responseParams.ma_max;
+        success = false;
+    }
+
+    if (qAbs(responseParams.ma_val - params.ma_val) > epsilon) {
+        qWarning() << tr("MA val mismatch: set") << params.ma_val << tr("got")
+                   << responseParams.ma_val;
+        success = false;
+    }
+
+    if (qAbs(responseParams.kvs_min - params.kvs_min) > epsilon) {
+        qWarning() << tr("KVS min mismatch: set") << params.kvs_min << tr("got")
+                   << responseParams.kvs_min;
+        success = false;
+    }
+
+    if (qAbs(responseParams.kvs_max - params.kvs_max) > epsilon) {
+        qWarning() << tr("KVS max mismatch: set") << params.kvs_max << tr("got")
+                   << responseParams.kvs_max;
+        success = false;
+    }
+
+    if (qAbs(responseParams.kv_min - params.kv_min) > epsilon) {
+        qWarning() << tr("KV min mismatch: set") << params.kv_min << tr("got")
+                   << responseParams.kv_min;
+        success = false;
+    }
+
+    if (qAbs(responseParams.kv_max - params.kv_max) > epsilon) {
+        qWarning() << tr("KV max mismatch: set") << params.kv_max << tr("got")
+                   << responseParams.kv_max;
+        success = false;
+    }
+
+    if (qAbs(responseParams.kv_val - params.kv_val) > epsilon) {
+        qWarning() << tr("KV val mismatch: set") << params.kv_val << tr("got")
+                   << responseParams.kv_val;
+        success = false;
+    }
+
+    if (responseParams.exp_time_ms != params.exp_time_ms) {
+        qWarning() << tr("Exposure time mismatch: set") << params.exp_time_ms << tr("got")
+                   << responseParams.exp_time_ms;
+        success = false;
+    }
+
+    if (success) {
+        qDebug() << tr("Exposure parameters set and verified successfully");
+        m_currentParams = responseParams;
+    } else {
+        qWarning() << tr("Exposure parameter verification failed");
+    }
+
+    return success;
 }
 
 // 提取曝光状态检查方法

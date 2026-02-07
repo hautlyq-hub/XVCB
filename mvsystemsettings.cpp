@@ -82,6 +82,10 @@ mvsystemsettings::~mvsystemsettings()
 
 void mvsystemsettings::initData()
 {
+    QString procfile = DataLocations::getRootConfigPath() + "/Conf/DataProcFeature.xml";
+    auto algorithmic = XPectAlgorithmic::Instance();
+    algorithmic->LoadConfig(procfile);
+
     // 初始化校准数据
     CleanupEnv();
 
@@ -122,13 +126,13 @@ void mvsystemsettings::initializeOrientationButtons()
 
     connect(ui->mRBtnSensor1, &QRadioButton::toggled, this, [this](bool checked) {
         if (checked) {
-            // onComboBoxChanged(); // 保存配置
+            onComboBoxChanged(); // 保存配置
         }
     });
 
     connect(ui->mRBtnSensor2, &QRadioButton::toggled, this, [this](bool checked) {
         if (checked) {
-            // onComboBoxChanged(); // 保存配置
+            onComboBoxChanged(); // 保存配置
         }
     });
 
@@ -400,10 +404,6 @@ void mvsystemsettings::StartExposure()
 
 void mvsystemsettings::StopExposure()
 {
-    if (mAutoExposureTimer && mAutoExposureTimer->isActive()) {
-        mAutoExposureTimer->stop();
-    }
-
     if (mManager) {
         mManager->stopExposure();
     }
@@ -428,11 +428,11 @@ void mvsystemsettings::AutoNextExposure()
     }
 
     if (correctRelationView) {
-        // 延迟1秒后自动曝光
+        // 延迟10秒后自动曝光
         qDebug() << tr(
             "Found unexposed position, will start auto exposure after 1 second, position ID:")
                  << correctRelationView->ViewId;
-        mAutoExposureTimer->start(1000);
+        mAutoExposureTimer->start(10000);
     } else {
         // 所有位置都已完成
         updateInfoPanel(tr("All positions exposure completed"), Normal);
@@ -883,6 +883,18 @@ void mvsystemsettings::onImagesReady(const QVector<HWImageData>& images)
 {
     updateInfoPanel(QString(tr("Received %1 images")).arg(images.size()), Normal);
     updateDeviceState(ExposureState::Processing);
+
+    imageReadyCount++;
+
+    // 执行4次后切换
+    if (imageReadyCount >= 5) {
+        mRBtnXChecked = false;
+        ui->mRBtnY->setChecked(true); // 切换到Y轴
+        if (imageReadyCount >= 8) {
+            imageReadyCount = 0;
+        }
+        qDebug() << tr("Switched to Y-axis after 4 exposures");
+    }
 
     // 延迟处理，确保状态已更新
     QTimer::singleShot(100, [this, images]() { onImageReceived(images); });

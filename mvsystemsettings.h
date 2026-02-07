@@ -102,6 +102,7 @@ private:
     int mImageWidth = 0;
     int mImageHeight = 0;
     int mImageBit = 16;
+    int imageReadyCount = 0;
 
     QTimer* mSaveSettingsTimer;
     QTimer* mPortMonitorTimer;

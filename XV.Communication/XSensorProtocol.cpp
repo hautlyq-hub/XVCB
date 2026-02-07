@@ -16,10 +16,11 @@ QByteArray XSensorProtocol::Commands::FA_FIND_DEVICE = QByteArray::fromHex("FAFA
 QByteArray XSensorProtocol::Commands::F5_VOLTAGE_CONFIG = QByteArray::fromHex(
     "F5F50500000000000000");
 QByteArray XSensorProtocol::Commands::F5_CONFIG = QByteArray::fromHex(
-    "F5F501050000000000247FFF000001020A101A1810E4181B194C067C115C11DC0E820D5417001500142016C016C4");
+    "F5F501050000000000267FFF000001020A101A1810E0181B194C067C115C11DC0E820F200D5417001500142016C016"
+    "C4");
 
 QByteArray XSensorProtocol::Commands::F6_ENABLE_EXPOSE = QByteArray::fromHex(
-    "F6F6010000000000000A0002000000C800001388"); //5
+    "F6F6010000000000000A0002000000C800007530"); //5
 QByteArray XSensorProtocol::Commands::F6_ENABLE_EXPOSE_02 = QByteArray::fromHex(
     "F6F6010000000000000A000200DB0F4907500000"); //30
 QByteArray XSensorProtocol::Commands::F6_ENABLE_EXPOSE_CALI = QByteArray::fromHex(
@@ -98,6 +99,13 @@ bool XSensorProtocol::echoSerialPort()
 
     QThread::msleep(200);
 
+    if (sendCommand(Commands::F4_POWER_OFF)) {
+        readResponse(m_readTimeout);
+    } else {
+        qDebug() << "F4_POWER_OFF";
+        return false;
+    }
+
     if (!powerOn()) {
         return false;
     }
@@ -109,8 +117,7 @@ bool XSensorProtocol::echoSerialPort()
 
     m_deviceInitialized = true;
 
-    if (m_poweredOn)
-        powerOff();
+    powerOff();
 
     return true;
 }
@@ -123,8 +130,6 @@ void XSensorProtocol::closeSerialPort()
     m_poweredOn = false;
     m_isBusy = false;
     m_cancelRequested = true;
-
-    QMutexLocker locker(&m_mutex);
 
     try {
         m_isBusy = true;
@@ -187,7 +192,7 @@ bool XSensorProtocol::sendExposureF6(bool wait, bool isCalibration)
 
     QByteArray response;
     if (sendCommand(exposureCommand)) {
-        response = readResponse(6000);
+        response = readResponse(21000);
     }
 
     bool exposureSuccess = false;
@@ -480,9 +485,6 @@ QString XSensorProtocol::getLastError() const
 
 bool XSensorProtocol::getVersion()
 {
-    if (!isConnected())
-        return false;
-
     m_serialPort->clear();
     QThread::msleep(100);
 
