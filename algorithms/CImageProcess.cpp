@@ -251,8 +251,18 @@ bool CImageProcess::CorrectImageData(unsigned char* pusSrc, int iSrcWidth, int i
         return false;
     }
 
-    qDebug()<<"Correcting image, nbits = "<<nbits <<", m_iTempDataLen ="<<m_iCorrectTemplateDataLen <<", para[0] = %.5f"<< m_pImageProConfig->m_pfDoCorrectPara[0];
-    bool bOutputTwice = iDstWidth/iSrcWidth==2 &&iDstHeight/iSrcHeight==2?true:false;
+    bool bOutputTwice = iDstWidth / iSrcWidth == 2 && iDstHeight / iSrcHeight == 2 ? true : false;
+    //bool bOutputTwice = false;
+
+    // 打印 pfPara 数组内容
+    int paraLength = 10; // 根据实际情况调整
+    QString paraValues;
+    for (int i = 0; i < paraLength; i++) {
+        paraValues += QString("para[%1]=%2 ")
+                          .arg(i)
+                          .arg(m_pImageProConfig->m_pfDoCorrectPara[i], 0, 'f', 6);
+    }
+
     int iRet = DataCorrect(pusSrc,
                            iSrcWidth,
                            iSrcHeight,

@@ -58,6 +58,9 @@ namespace mv
 
         ui->pushButtonFinished->setEnabled(false);
         ui->pushButtonStart->setEnabled(true);
+
+        ui->mFrmThumImag->setVisible(false);
+        ui->mWWWLFrm->setVisible(false);
     }
 
     void mvImageAcquisitWidget::initConnect()
@@ -840,6 +843,7 @@ namespace mv
 
         bool zoomTwice = false;
         QString fileName;
+        QString fileName1;
 
         auto algorithmic = XPectAlgorithmic::Instance();
 
@@ -851,14 +855,27 @@ namespace mv
             if (image.orientation % 2 == 0) {
                 fileName = QDir::toNativeSeparators(directory + "/" + dateStr + "/X/"
                                                     + QString("image_%1_init.raw").arg(timestamp));
+                fileName1 = QDir::toNativeSeparators(
+                    directory + "/" + dateStr + "/X/"
+                    + QString("image_%1_init_init.raw").arg(timestamp));
+
             } else {
                 fileName = QDir::toNativeSeparators(directory + "/" + dateStr + "/Y/"
                                                     + QString("image_%1_init.raw").arg(timestamp));
+                fileName1 = QDir::toNativeSeparators(
+                    directory + "/" + dateStr + "/Y/"
+                    + QString("image_%1_init_init.raw").arg(timestamp));
             }
 
             QFileInfo fInfo(fileName);
             if (!QDir().mkpath(fInfo.path())) {
                 qWarning() << tr("Failed to create directory:") << fInfo.path();
+                return;
+            }
+
+            QFileInfo fInfo1(fileName1);
+            if (!QDir().mkpath(fInfo1.path())) {
+                qWarning() << tr("Failed to create directory:") << fInfo1.path();
                 return;
             }
 
@@ -873,10 +890,21 @@ namespace mv
                 }
             }
 
+            if (!image.imageData.isEmpty()) {
+                QFile file(fileName1);
+                if (file.open(QIODevice::WriteOnly)) {
+                    file.write(image.imageData);
+                    file.close();
+                    qDebug() << tr("Raw data saved to:") << fileName1;
+                } else {
+                    qWarning() << tr("Cannot write file:") << fileName1;
+                }
+            }
+
             algorithmic->CalibrateArquireImage(image.width,
                                                image.height,
                                                image.bitDepth,
-                                               fileName,
+                                               fileName1,
                                                zoomTwice);
 
             int widthnew = zoomTwice ? image.width * 2 : image.width;

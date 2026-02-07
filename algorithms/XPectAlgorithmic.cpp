@@ -64,20 +64,15 @@ bool XPectAlgorithmic::CalibrateArquireImage(
     qint64 rawSize = 0;
     std::unique_ptr<unsigned char[]> raw = ReadRawFile(filename, &rawSize);
     // zoom width * 2 , height * 2
-    uint rawSize2 = width * height * bit / 8 * 2 * 2;
+    uint rawSize2 = width * height * bit / 8 * 2;
     std::unique_ptr<unsigned char[]> buffer = std::make_unique<unsigned char[]>(rawSize2);
-    bool res = mImageProcess->CorrectImageData(raw.get(),
-                                               width,
-                                               height,
-                                               bit,
-                                               buffer.get(),
-                                               width * 2,
-                                               height * 2);
+    bool res = mImageProcess
+                   ->CorrectImageData(raw.get(), width, height, bit, buffer.get(), width, height);
     if (res) {
         std::string savefile = (filename).toStdString();
         bool b = SaveToFile(savefile, buffer, rawSize2);
         qDebug() << "DataCorrect Successfully generated. save: " << b;
-        zoomTwice = true;
+        zoomTwice = false;
         return b;
     } else {
         qWarning() << "DataCorrect failed. " << res;
