@@ -24,6 +24,21 @@ const QString XProtocolManager::SENSOR2_KEY = "sensor2";
 const QString XProtocolManager::XRAY1_KEY = "xray1";
 const QString XProtocolManager::XRAY2_KEY = "xray2";
 
+XProtocolManager* XProtocolManager::m_instance = nullptr;
+std::mutex XProtocolManager::m_mutex;
+
+XProtocolManager* XProtocolManager::getInstance()
+{
+    // 双重检查锁
+    if (m_instance == nullptr) {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        if (m_instance == nullptr) {
+            m_instance = new XProtocolManager();
+        }
+    }
+    return m_instance;
+}
+
 XProtocolManager::XProtocolManager(QObject* parent)
     : QObject(parent)
     , m_threadPool(new QThreadPool(this))
@@ -1143,12 +1158,10 @@ void XProtocolManager::checkAllImagesReceived()
         // 按传感器顺序添加图像
         if (m_imageBuffer.contains(SENSOR1_KEY)) {
             images.append(m_imageBuffer[SENSOR1_KEY]);
-            qDebug() << "1111111111111111";
         }
 
         if (m_imageBuffer.contains(SENSOR2_KEY)) {
             images.append(m_imageBuffer[SENSOR2_KEY]);
-            qDebug() << "2222222222222222";
         }
 
         if (images.size() == requiredImages) {

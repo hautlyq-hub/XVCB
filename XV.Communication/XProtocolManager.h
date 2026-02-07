@@ -99,6 +99,10 @@ public:
     QThread* m_xray1Thread;
     QThread* m_xray2Thread;
 
+    static XProtocolManager* m_instance;
+    static std::mutex m_mutex;
+    static XProtocolManager* getInstance();
+
     template<typename Func>
     void invokeInThread(QThread* targetThread, QObject* targetObj, Func func)
     {

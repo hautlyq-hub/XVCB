@@ -11,6 +11,7 @@
 #include <QWidget>
 
 #include "XV.Communication/XProtocolManager.h"
+#include "XV.Control/InteractiveImageLabel.h"
 #include "XV.Tool/XDConfigFileManager.h"
 #include "XV.Tool/mvXmlOptionItem.h"
 #include "XV.Tool/mvconfig.h"
@@ -103,6 +104,7 @@ private:
     int mImageHeight = 0;
     int mImageBit = 16;
     int imageReadyCount = 0;
+    bool abortAutoExp = false;
 
     QTimer* mSaveSettingsTimer;
     QTimer* mPortMonitorTimer;
@@ -120,6 +122,7 @@ private:
 
     // 清理环境
     void CleanupEnv();
+    InteractiveImageLabel* getImageLabelByViewId(int viewId);
 
     // 文件操作
     void SaveRawImage(const HWImageData& data);

@@ -22,8 +22,6 @@ mvsystemsettings::mvsystemsettings(QWidget* parent)
     , ui(new Ui::mvsystemsettings)
 
     , mSaveSettingsTimer(nullptr)
-    , mHWImageDataX(nullptr)
-    , mHWImageDataY(nullptr)
     , mIsExposing(false)
     , mRBtnXChecked(true)
 {
@@ -74,8 +72,6 @@ mvsystemsettings::~mvsystemsettings()
 
     // 清理内存
     qDeleteAll(mToothPosition);
-    delete mHWImageDataX;
-    delete mHWImageDataY;
 
     delete ui;
 }
@@ -86,9 +82,6 @@ void mvsystemsettings::initData()
     auto algorithmic = XPectAlgorithmic::Instance();
     algorithmic->LoadConfig(procfile);
 
-    // 初始化校准数据
-    CleanupEnv();
-
     for (int i = 1; i <= 8; i++) {
         CorrectRelationView* view = new CorrectRelationView();
         view->ViewId = i;
@@ -97,6 +90,8 @@ void mvsystemsettings::initData()
         view->XaxisOrYaxis = (i <= 4) ? 0 : 1; // 前4个是X轴，后4个是Y轴
         mToothPosition.append(view);
     }
+
+    CleanupEnv();
 }
 
 // 在初始化函数中
@@ -222,7 +217,7 @@ void mvsystemsettings::Init()
     mCurrentDirX = QDateTime::currentDateTime().toString("QC_X_yyyyMMddHHmmss");
     mCurrentDirY = QDateTime::currentDateTime().toString("QC_Y_yyyyMMddHHmmss");
 
-    mManager = new XProtocolManager(this);
+    mManager = XProtocolManager::getInstance();
     connect(mManager, &XProtocolManager::info, this, &mvsystemsettings::onInfoReceived);
     connect(mManager, &XProtocolManager::warning, this, &mvsystemsettings::onWarningReceived);
     connect(mManager, &XProtocolManager::errorOccurred, this, &mvsystemsettings::onErrorReceived);
@@ -282,6 +277,7 @@ void mvsystemsettings::resetUI()
 
     ui->mBtnEnableExp->setChecked(false);
     ui->mBtnEnableExp->setText(tr("Exposure"));
+    ui->mBtnEnableExp->repaint();
 
     enableUIComponents(true);
 }
@@ -315,8 +311,12 @@ void mvsystemsettings::enableUIComponents(bool enabled)
 void mvsystemsettings::onBtnEnableExpClicked(bool check)
 {
     if (mIsExposing) {
+        abortAutoExp = true;
         StopExposure();
     } else {
+        abortAutoExp = false;
+        CleanupEnv();
+
         StartExposure();
     }
 }
@@ -355,9 +355,6 @@ void mvsystemsettings::onRBtnXtoggled(bool checked)
         mRBtnXChecked = true;
         // 显示当前使用的设备
         updateInfoPanel(tr("Current use: X-axis (X-ray machine 1)"), Normal);
-        // 高亮X光机1下拉框
-        ui->mCbComXray1->setStyleSheet("border: 2px solid blue;");
-        ui->mCbComXray2->setStyleSheet("");
     }
 }
 
@@ -365,11 +362,7 @@ void mvsystemsettings::onRBtnYtoggled(bool checked)
 {
     if (checked) {
         mRBtnXChecked = false;
-        // 显示当前使用的设备
         updateInfoPanel(tr("Current use: Y-axis (X-ray machine 2)"), Normal);
-        // 高亮X光机2下拉框
-        ui->mCbComXray1->setStyleSheet("");
-        ui->mCbComXray2->setStyleSheet("border: 2px solid blue;");
     }
 }
 // 曝光开始
@@ -377,6 +370,7 @@ void mvsystemsettings::StartExposure()
 {
     mIsExposing = true;
     ui->mBtnEnableExp->setText(tr("Stop"));
+    ui->mBtnEnableExp->repaint();
 
     updateInfoPanel(tr("Setting up work mode..."), Normal);
     updateDeviceState(ExposureState::SettingUp);
@@ -407,8 +401,6 @@ void mvsystemsettings::StopExposure()
     if (mManager) {
         mManager->stopExposure();
     }
-
-    resetUI();
 }
 
 void mvsystemsettings::AutoNextExposure()
@@ -436,7 +428,6 @@ void mvsystemsettings::AutoNextExposure()
     } else {
         // 所有位置都已完成
         updateInfoPanel(tr("All positions exposure completed"), Normal);
-        qDebug() << tr("All positions have been exposed");
     }
 }
 
@@ -615,22 +606,10 @@ QImage mvsystemsettings::convertRawToImage(const QByteArray& rawData)
 void mvsystemsettings::CleanupEnv()
 {
     if (this->isVisible()) {
-        for (auto view : mToothPosition) {
+        for (CorrectRelationView* view : mToothPosition) {
             view->Expose = false;
             view->ImgFileName = "";
-            // 恢复默认图标显示
-            // view->ImagePanel->setPixmap(...);
         }
-    }
-
-    if (mHWImageDataX) {
-        delete mHWImageDataX;
-        mHWImageDataX = nullptr;
-    }
-
-    if (mHWImageDataY) {
-        delete mHWImageDataY;
-        mHWImageDataY = nullptr;
     }
 }
 
@@ -708,6 +687,10 @@ void mvsystemsettings::GenerateCalibrationFiles()
 // 状态信息显示
 void mvsystemsettings::updateInfoPanel(const QString& message, int type)
 {
+    if (!this->isVisible()) {
+        return;
+    }
+
     if (message.isEmpty()) {
         ui->mLblStatusInfo->setText("");
         return;
@@ -817,16 +800,28 @@ void mvsystemsettings::onImageReceived(const QVector<HWImageData>& images)
 
 void mvsystemsettings::onInfoReceived(const QString& message)
 {
+    if (!this->isVisible()) {
+        return;
+    }
+
     updateInfoPanel(message, Normal);
 }
 
 void mvsystemsettings::onWarningReceived(const QString& message)
 {
+    if (!this->isVisible()) {
+        return;
+    }
+
     updateInfoPanel(tr("Warning: ") + message, Warning);
 }
 
 void mvsystemsettings::onErrorReceived(const QString& message)
 {
+    if (!this->isVisible()) {
+        return;
+    }
+
     updateInfoPanel(tr("Error: ") + message, Error);
 
     // 更新状态但不阻塞
@@ -841,10 +836,11 @@ void mvsystemsettings::onErrorReceived(const QString& message)
 
 void mvsystemsettings::onNotificationReceived(const QString& message)
 {
-    // 通知信息，显示较短时间
-    updateInfoPanel(tr("Notification: ") + message, Normal);
+    if (!this->isVisible()) {
+        return;
+    }
 
-    // 5秒后自动清除通知
+    updateInfoPanel(tr("Notification: ") + message, Normal);
     QTimer::singleShot(5000, [this]() {
         if (ui->mLblStatusInfo->text().contains(tr("Notification:"))) {
             updateInfoPanel("", Normal);
@@ -854,33 +850,52 @@ void mvsystemsettings::onNotificationReceived(const QString& message)
 
 void mvsystemsettings::onExposureFinished()
 {
+    if (!this->isVisible()) {
+        return;
+    }
+
     qDebug() << tr("Exposure completed, reset UI and prepare for next exposure");
 
     // 重置UI状态
     resetUI();
 
-    QTimer::singleShot(300, this, [this]() {
-        // 确保UI已重置后再检查
-        if (!mIsExposing) {
-            AutoNextExposure();
-        }
-    });
+    if (!abortAutoExp) {
+        QTimer::singleShot(300, this, [this]() {
+            if (!mIsExposing) {
+                AutoNextExposure();
+            }
+        });
+    } else {
+        updateInfoPanel(tr("Abort auto exposure "), Normal);
+    }
 }
 
 void mvsystemsettings::onExposureError(const QString& error)
 {
+    if (!this->isVisible()) {
+        return;
+    }
+
     updateInfoPanel(tr("Exposure error: ") + error, Error);
     updateDeviceState(ExposureState::Fault);
 }
 
 void mvsystemsettings::onExposureProcess(ExposureState state)
 {
+    if (!this->isVisible()) {
+        return;
+    }
+
     updateInfoPanel("", Normal);
     updateDeviceState(state);
 }
 
 void mvsystemsettings::onImagesReady(const QVector<HWImageData>& images)
 {
+    if (!this->isVisible()) {
+        return;
+    }
+
     updateInfoPanel(QString(tr("Received %1 images")).arg(images.size()), Normal);
     updateDeviceState(ExposureState::Processing);
 

@@ -198,10 +198,10 @@ namespace mv
 
    void mvLoginWindow::loginButton()
    {
-       if (checkStateHardDisk(DataLocations::getDicomPath()) == 0)
-       {
-           return;
-       }
+       // if (checkStateHardDisk(DataLocations::getDicomPath()) == 0)
+       // {
+       //     return;
+       // }
 
        QString lbUser = ui.leUid->currentText().trimmed();
        QString lbPswd = ui.lePwd->text().trimmed();

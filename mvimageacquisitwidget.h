@@ -7,6 +7,8 @@
 #include "XV.Control/XDSliderControl.h"
 #include "XV.Control/XDCableDiameterWidget.h"
 
+#include "XV.Communication/XProtocolManager.h"
+
 #include <QDropEvent>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -70,6 +72,16 @@ namespace mv
         void getImagePath(QVector<exam_type*>& examList, QString studyUID);
         void autoSwitchNextPosition();
 
+        void updateDeviceState(ExposureState state);
+        void updateInfoPanel(const QString& message, int type);
+
+        void StartExposure();
+        void StopExposure();
+        bool canStartExposure() const;
+        void resetUI();
+
+        void AlgSetCorrectionFile(int mOralMajor, QString mOralAddr);
+
     signals:
         void sigReturnMainPage(int index = 0);
 
@@ -86,12 +98,22 @@ namespace mv
         void onFinishedButton();
         void onStartButton();
 
+        void onInfoReceived(const QString& message);
+        void onWarningReceived(const QString& message);
+        void onErrorReceived(const QString& message);
+        void onNotificationReceived(const QString& message);
+        void onExposureError(const QString& error);
+        void onImagesReady(const QVector<HWImageData>& images);
+        void onExposureProcess(ExposureState state);
 
-	private:
+    private:
         Ui::mvImageAcquisitWidget *ui;
+
+        enum XPInfoType { Normal = 0, Warning = 1, Error = 2 };
 
         SliderStyle *s1;
         SliderStyle *s2;
+        XProtocolManager* mManager;
 
         int mIsExposeOrPreviewFlag;
         int currentExamID;
@@ -106,7 +128,12 @@ namespace mv
 
         StudyRecord mCurrentStudyRecord;
 
-	};
+        bool mIsExposing = false;
+        QString mOralAddr;
+        int mOralMajor = 3;
+
+        bool mcalibrationFileExists = false;
+    };
 }
 
 #endif // MVIMAGEACQUISITWIDGET_H

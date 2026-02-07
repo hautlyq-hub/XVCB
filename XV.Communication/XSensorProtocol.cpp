@@ -20,7 +20,7 @@ QByteArray XSensorProtocol::Commands::F5_CONFIG = QByteArray::fromHex(
     "C4");
 
 QByteArray XSensorProtocol::Commands::F6_ENABLE_EXPOSE = QByteArray::fromHex(
-    "F6F6010000000000000A0002000000C800007530"); //5
+    "F6F6010000000000000A0002000000C800001388"); //5
 QByteArray XSensorProtocol::Commands::F6_ENABLE_EXPOSE_02 = QByteArray::fromHex(
     "F6F6010000000000000A000200DB0F4907500000"); //30
 QByteArray XSensorProtocol::Commands::F6_ENABLE_EXPOSE_CALI = QByteArray::fromHex(

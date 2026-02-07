@@ -5053,83 +5053,10 @@ build/release/.moc/moc_mainwindow.cpp: mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qcommonstyle.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qstyle.h \
 		XV.Control/XDCableDiameterWidget.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QDropEvent \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonArray \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsonarray.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsonvalue.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qcborvalue.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qcborcommon.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qregularexpression.h \
-		/usr/local/Qt-6.5.6/include/QtCore/quuid.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonDocument \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsondocument.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonObject \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsonobject.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonParseError \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonValue \
-		/usr/local/Qt-6.5.6/include/QtCore/QQueue \
-		/usr/local/Qt-6.5.6/include/QtCore/qqueue.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QRandomGenerator \
-		/usr/local/Qt-6.5.6/include/QtCore/qrandom.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QTextDocument \
-		/usr/local/Qt-6.5.6/include/QtCore/QFile \
-		/usr/local/Qt-6.5.6/include/QtPrintSupport/qprinter.h \
-		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupportglobal.h \
-		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupport-config.h \
-		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupportexports.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpagedpaintdevice.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpagelayout.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpagesize.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpageranges.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QFileDialog \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qfiledialog.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QTextEdit \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QCalendarWidget \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qcalendarwidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QProxyStyle \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qproxystyle.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QStyleOption \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qstyleoption.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractspinbox.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qvalidator.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qslider.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractslider.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtabbar.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qrubberband.h \
-		mvpatientrecordwidget.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QSortFilterProxyModel \
-		/usr/local/Qt-6.5.6/include/QtCore/qsortfilterproxymodel.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qabstractproxymodel.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QStandardItemModel \
-		/usr/local/Qt-6.5.6/include/QtGui/qstandarditemmodel.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QListView \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlistview.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemview.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qitemselectionmodel.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemdelegate.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QScroller \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qscroller.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QPointF \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QScrollerProperties \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qscrollerproperties.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QScopedPointer \
-		/usr/local/Qt-6.5.6/include/QtCore/QMetaType \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidgetItem \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtablewidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtableview.h \
-		mvsystemsettings.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QButtonGroup \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qbuttongroup.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QComboBox \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qcombobox.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QFutureWatcher \
-		/usr/local/Qt-6.5.6/include/QtCore/qfuturewatcher.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QThread \
-		/usr/local/Qt-6.5.6/include/QtCore/QVector \
-		/usr/local/Qt-6.5.6/include/QtCore/qvector.h \
 		XV.Communication/XProtocolManager.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QAtomicInteger \
+		/usr/local/Qt-6.5.6/include/QtCore/QFutureWatcher \
+		/usr/local/Qt-6.5.6/include/QtCore/qfuturewatcher.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QThreadPool \
 		XV.Communication/XRayProtocol.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QByteArray \
@@ -5138,10 +5065,13 @@ build/release/.moc/moc_mainwindow.cpp: mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtSerialPort/qserialportglobal.h \
 		/usr/local/Qt-6.5.6/include/QtSerialPort/qtserialportexports.h \
 		XV.Communication/ModbusCRC16.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QVector \
+		/usr/local/Qt-6.5.6/include/QtCore/qvector.h \
 		XV.Communication/XSensorProtocol.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QElapsedTimer \
 		XV.Communication/SensorCRC16.h \
 		XV.Tool/XDConfigFileManager.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QFile \
 		/usr/local/Qt-6.5.6/include/QtCore/QTextStream \
 		/usr/local/Qt-6.5.6/include/QtXml/QtXml \
 		/usr/local/Qt-6.5.6/include/QtXml/QtXmlDepends \
@@ -5154,6 +5084,7 @@ build/release/.moc/moc_mainwindow.cpp: mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qabstractanimation.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qabstracteventdispatcher.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qabstractnativeeventfilter.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qabstractproxymodel.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qanimationgroup.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qapplicationstatic.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qassociativeiterable.h \
@@ -5162,6 +5093,10 @@ build/release/.moc/moc_mainwindow.cpp: mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qbytearraymatcher.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcache.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcborarray.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcborvalue.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcborcommon.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qregularexpression.h \
+		/usr/local/Qt-6.5.6/include/QtCore/quuid.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcbormap.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcborstream.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcborstreamreader.h \
@@ -5179,6 +5114,11 @@ build/release/.moc/moc_mainwindow.cpp: mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qfilesystemwatcher.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qfuturesynchronizer.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qidentityproxymodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qitemselectionmodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsonarray.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsonvalue.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsondocument.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsonobject.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qlatin1stringmatcher.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qlibrary.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qlibraryinfo.h \
@@ -5200,6 +5140,8 @@ build/release/.moc/moc_mainwindow.cpp: mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qpropertyprivate.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qpropertyanimation.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qvariantanimation.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qqueue.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qrandom.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qreadwritelock.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qsavefile.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qscopedvaluerollback.h \
@@ -5211,6 +5153,7 @@ build/release/.moc/moc_mainwindow.cpp: mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qsignalmapper.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qsimd.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qsocketnotifier.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsortfilterproxymodel.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qstack.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qstorageinfo.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qstringconverter.h \
@@ -5239,6 +5182,67 @@ build/release/.moc/moc_mainwindow.cpp: mainwindow.h \
 		algorithms/CImageProcess.h \
 		algorithms/ImageProConfig.h \
 		algorithms/PostProcPara.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QDropEvent \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonArray \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonDocument \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonObject \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonParseError \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonValue \
+		/usr/local/Qt-6.5.6/include/QtCore/QQueue \
+		/usr/local/Qt-6.5.6/include/QtCore/QRandomGenerator \
+		/usr/local/Qt-6.5.6/include/QtGui/QTextDocument \
+		/usr/local/Qt-6.5.6/include/QtPrintSupport/qprinter.h \
+		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupportglobal.h \
+		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupport-config.h \
+		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupportexports.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpagedpaintdevice.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpagelayout.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpagesize.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpageranges.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QFileDialog \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qfiledialog.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QLayout \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QTextEdit \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QCalendarWidget \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qcalendarwidget.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QProxyStyle \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qproxystyle.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QStyleOption \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qstyleoption.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractspinbox.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qvalidator.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qslider.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractslider.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qtabbar.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qrubberband.h \
+		mvpatientrecordwidget.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QSortFilterProxyModel \
+		/usr/local/Qt-6.5.6/include/QtGui/QStandardItemModel \
+		/usr/local/Qt-6.5.6/include/QtGui/qstandarditemmodel.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QListView \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qlistview.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemview.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemdelegate.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QScroller \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qscroller.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QPointF \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QScrollerProperties \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qscrollerproperties.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QScopedPointer \
+		/usr/local/Qt-6.5.6/include/QtCore/QMetaType \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidgetItem \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qtablewidget.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qtableview.h \
+		mvsystemsettings.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QButtonGroup \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qbuttongroup.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QComboBox \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qcombobox.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QThread \
+		XV.Control/InteractiveImageLabel.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QImage \
+		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
+		/usr/local/Qt-6.5.6/include/QtGui/QWheelEvent \
 		mvaboutwidget.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QBitmap \
 		build/release/.ui/ui_mvaboutwidget.h \
@@ -5258,12 +5262,10 @@ build/release/.moc/moc_mainwindow.cpp: mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QFrame \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QImage \
 		/usr/local/Qt-6.5.6/include/QtCore/QSettings \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidget \
 		/usr/local/Qt-6.5.6/include/QtGui/QGuiApplication \
 		/usr/local/Qt-6.5.6/include/QtGui/QKeyEvent \
-		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
 		/usr/local/Qt-6.5.6/include/QtCore/QUuid \
 		/usr/local/Qt-6.5.6/include/QtCore/QtMath \
 		mvexitappdialog.h \
@@ -5952,18 +5954,146 @@ build/release/.moc/moc_mvimageacquisitwidget.cpp: mvimageacquisitwidget.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qcommonstyle.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qstyle.h \
 		XV.Control/XDCableDiameterWidget.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QDropEvent \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonArray \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsonarray.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsonvalue.h \
+		XV.Communication/XProtocolManager.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QAtomicInteger \
+		/usr/local/Qt-6.5.6/include/QtCore/QFutureWatcher \
+		/usr/local/Qt-6.5.6/include/QtCore/qfuturewatcher.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QMutex \
+		/usr/local/Qt-6.5.6/include/QtCore/QThreadPool \
+		/usr/local/Qt-6.5.6/include/QtCore/QTimer \
+		/usr/local/Qt-6.5.6/include/QtCore/qtimer.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qbasictimer.h \
+		XV.Communication/XRayProtocol.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QByteArray \
+		/usr/local/Qt-6.5.6/include/QtSerialPort/QSerialPort \
+		/usr/local/Qt-6.5.6/include/QtSerialPort/qserialport.h \
+		/usr/local/Qt-6.5.6/include/QtSerialPort/qserialportglobal.h \
+		/usr/local/Qt-6.5.6/include/QtSerialPort/qtserialportexports.h \
+		XV.Communication/ModbusCRC16.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QVector \
+		/usr/local/Qt-6.5.6/include/QtCore/qvector.h \
+		XV.Communication/XSensorProtocol.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QElapsedTimer \
+		XV.Communication/SensorCRC16.h \
+		XV.Tool/XDConfigFileManager.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QFile \
+		/usr/local/Qt-6.5.6/include/QtCore/QTextStream \
+		/usr/local/Qt-6.5.6/include/QtXml/QtXml \
+		/usr/local/Qt-6.5.6/include/QtXml/QtXmlDepends \
+		/usr/local/Qt-6.5.6/include/QtCore/QtCore \
+		/usr/local/Qt-6.5.6/include/QtCore/QtCoreDepends \
+		/usr/local/Qt-6.5.6/include/QtCore/q20algorithm.h \
+		/usr/local/Qt-6.5.6/include/QtCore/q20functional.h \
+		/usr/local/Qt-6.5.6/include/QtCore/q20iterator.h \
+		/usr/local/Qt-6.5.6/include/QtCore/q23functional.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qabstractanimation.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qabstracteventdispatcher.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qabstractnativeeventfilter.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qabstractproxymodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qanimationgroup.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qapplicationstatic.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qassociativeiterable.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qbitarray.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qbuffer.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qbytearraymatcher.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcache.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcborarray.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcborvalue.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcborcommon.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qregularexpression.h \
 		/usr/local/Qt-6.5.6/include/QtCore/quuid.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonDocument \
+		/usr/local/Qt-6.5.6/include/QtCore/qcbormap.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcborstream.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcborstreamreader.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcborstreamwriter.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcollator.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcommandlineoption.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcommandlineparser.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qconcatenatetablesproxymodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcryptographichash.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qdiriterator.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qeasingcurve.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qendian.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qfactoryinterface.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qfileselector.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qfilesystemwatcher.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qfuturesynchronizer.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qidentityproxymodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qitemselectionmodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsonarray.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsonvalue.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qjsondocument.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonObject \
 		/usr/local/Qt-6.5.6/include/QtCore/qjsonobject.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qlatin1stringmatcher.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qlibrary.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qlibraryinfo.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qversionnumber.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtyperevision.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qlockfile.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qloggingcategory.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qmessageauthenticationcode.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qmetaobject.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qmimedata.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qmimedatabase.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qmimetype.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qobjectcleanuphandler.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qoperatingsystemversion.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qparallelanimationgroup.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qpauseanimation.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qplugin.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qpluginloader.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qprocess.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qproperty.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qpropertyprivate.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qpropertyanimation.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qvariantanimation.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qqueue.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qrandom.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qreadwritelock.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qresource.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsavefile.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qscopedvaluerollback.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsemaphore.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsequentialanimationgroup.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsequentialiterable.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsettings.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsharedmemory.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsignalmapper.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsimd.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsocketnotifier.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsortfilterproxymodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qstack.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qstorageinfo.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qstringconverter.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qstringlistmodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsystemsemaphore.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtcoreversion.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtemporarydir.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtemporaryfile.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtextboundaryfinder.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qthreadstorage.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtimeline.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtimezone.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtranslator.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtransposeproxymodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qurlquery.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qvarianthash.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qvariantlist.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qvariantmap.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qwaitcondition.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QDeadlineTimer \
+		/usr/local/Qt-6.5.6/include/QtCore/qwineventnotifier.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qxmlstream.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qxpfunctional.h \
+		/usr/local/Qt-6.5.6/include/QtXml/qtxmlversion.h \
+		algorithms/XPectAlgorithmic.h \
+		algorithms/CImageProcess.h \
+		algorithms/ImageProConfig.h \
+		algorithms/PostProcPara.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QDropEvent \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonArray \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonDocument \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonObject \
 		/usr/local/Qt-6.5.6/include/QtCore/QJsonParseError \
 		/usr/local/Qt-6.5.6/include/QtCore/QJsonValue \
 		/usr/local/Qt-6.5.6/include/QtGui/QPainter \
@@ -5971,12 +6101,9 @@ build/release/.moc/moc_mvimageacquisitwidget.cpp: mvimageacquisitwidget.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QQueue \
-		/usr/local/Qt-6.5.6/include/QtCore/qqueue.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QRandomGenerator \
-		/usr/local/Qt-6.5.6/include/QtCore/qrandom.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QTextDocument \
 		/usr/local/Qt-6.5.6/include/QtGui/qtextdocument.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QFile \
 		/usr/local/Qt-6.5.6/include/QtPrintSupport/qprinter.h \
 		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupportglobal.h \
 		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupport-config.h \
@@ -7432,6 +7559,20 @@ build/release/.moc/moc_mvsystemsettings.cpp: mvsystemsettings.h \
 		algorithms/CImageProcess.h \
 		algorithms/ImageProConfig.h \
 		algorithms/PostProcPara.h \
+		XV.Control/InteractiveImageLabel.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QImage \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QLabel \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qlabel.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpicture.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qtextdocument.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
+		/usr/local/Qt-6.5.6/include/QtGui/QPainter \
+		/usr/local/Qt-6.5.6/include/QtGui/qpainter.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QPixmap \
+		/usr/local/Qt-6.5.6/include/QtCore/QPoint \
+		/usr/local/Qt-6.5.6/include/QtGui/QWheelEvent \
 		XV.Tool/mvXmlOptionItem.h \
 		/usr/local/Qt-6.5.6/include/QtXml/QDomElement \
 		/usr/local/Qt-6.5.6/include/QtXml/QDomNode \
@@ -14014,83 +14155,10 @@ build/release/.obj/main.o: main.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qcommonstyle.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qstyle.h \
 		XV.Control/XDCableDiameterWidget.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QDropEvent \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonArray \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsonarray.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsonvalue.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qcborvalue.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qcborcommon.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qregularexpression.h \
-		/usr/local/Qt-6.5.6/include/QtCore/quuid.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonDocument \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsondocument.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonObject \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsonobject.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonParseError \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonValue \
-		/usr/local/Qt-6.5.6/include/QtCore/QQueue \
-		/usr/local/Qt-6.5.6/include/QtCore/qqueue.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QRandomGenerator \
-		/usr/local/Qt-6.5.6/include/QtCore/qrandom.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QTextDocument \
-		/usr/local/Qt-6.5.6/include/QtCore/QFile \
-		/usr/local/Qt-6.5.6/include/QtPrintSupport/qprinter.h \
-		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupportglobal.h \
-		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupport-config.h \
-		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupportexports.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpagedpaintdevice.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpagelayout.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpagesize.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpageranges.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QFileDialog \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qfiledialog.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QTextEdit \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QCalendarWidget \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qcalendarwidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QProxyStyle \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qproxystyle.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QStyleOption \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qstyleoption.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractspinbox.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qvalidator.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qslider.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractslider.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtabbar.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qrubberband.h \
-		mvpatientrecordwidget.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QSortFilterProxyModel \
-		/usr/local/Qt-6.5.6/include/QtCore/qsortfilterproxymodel.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qabstractproxymodel.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QStandardItemModel \
-		/usr/local/Qt-6.5.6/include/QtGui/qstandarditemmodel.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QListView \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlistview.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemview.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qitemselectionmodel.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemdelegate.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QScroller \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qscroller.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QPointF \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QScrollerProperties \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qscrollerproperties.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QScopedPointer \
-		/usr/local/Qt-6.5.6/include/QtCore/QMetaType \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidgetItem \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtablewidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtableview.h \
-		mvsystemsettings.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QButtonGroup \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qbuttongroup.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QComboBox \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qcombobox.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QFutureWatcher \
-		/usr/local/Qt-6.5.6/include/QtCore/qfuturewatcher.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QThread \
-		/usr/local/Qt-6.5.6/include/QtCore/QVector \
-		/usr/local/Qt-6.5.6/include/QtCore/qvector.h \
 		XV.Communication/XProtocolManager.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QAtomicInteger \
+		/usr/local/Qt-6.5.6/include/QtCore/QFutureWatcher \
+		/usr/local/Qt-6.5.6/include/QtCore/qfuturewatcher.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QThreadPool \
 		XV.Communication/XRayProtocol.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QByteArray \
@@ -14099,10 +14167,13 @@ build/release/.obj/main.o: main.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtSerialPort/qserialportglobal.h \
 		/usr/local/Qt-6.5.6/include/QtSerialPort/qtserialportexports.h \
 		XV.Communication/ModbusCRC16.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QVector \
+		/usr/local/Qt-6.5.6/include/QtCore/qvector.h \
 		XV.Communication/XSensorProtocol.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QElapsedTimer \
 		XV.Communication/SensorCRC16.h \
 		XV.Tool/XDConfigFileManager.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QFile \
 		/usr/local/Qt-6.5.6/include/QtCore/QTextStream \
 		/usr/local/Qt-6.5.6/include/QtXml/QtXml \
 		/usr/local/Qt-6.5.6/include/QtXml/QtXmlDepends \
@@ -14115,6 +14186,7 @@ build/release/.obj/main.o: main.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qabstractanimation.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qabstracteventdispatcher.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qabstractnativeeventfilter.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qabstractproxymodel.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qanimationgroup.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qapplicationstatic.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qassociativeiterable.h \
@@ -14123,6 +14195,10 @@ build/release/.obj/main.o: main.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qbytearraymatcher.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcache.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcborarray.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcborvalue.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcborcommon.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qregularexpression.h \
+		/usr/local/Qt-6.5.6/include/QtCore/quuid.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcbormap.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcborstream.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcborstreamreader.h \
@@ -14140,6 +14216,11 @@ build/release/.obj/main.o: main.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qfilesystemwatcher.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qfuturesynchronizer.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qidentityproxymodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qitemselectionmodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsonarray.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsonvalue.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsondocument.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsonobject.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qlatin1stringmatcher.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qlibrary.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qlibraryinfo.h \
@@ -14161,6 +14242,8 @@ build/release/.obj/main.o: main.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qpropertyprivate.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qpropertyanimation.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qvariantanimation.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qqueue.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qrandom.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qreadwritelock.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qsavefile.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qscopedvaluerollback.h \
@@ -14172,6 +14255,7 @@ build/release/.obj/main.o: main.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qsignalmapper.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qsimd.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qsocketnotifier.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsortfilterproxymodel.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qstack.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qstorageinfo.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qstringconverter.h \
@@ -14200,6 +14284,67 @@ build/release/.obj/main.o: main.cpp mainwindow.h \
 		algorithms/CImageProcess.h \
 		algorithms/ImageProConfig.h \
 		algorithms/PostProcPara.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QDropEvent \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonArray \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonDocument \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonObject \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonParseError \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonValue \
+		/usr/local/Qt-6.5.6/include/QtCore/QQueue \
+		/usr/local/Qt-6.5.6/include/QtCore/QRandomGenerator \
+		/usr/local/Qt-6.5.6/include/QtGui/QTextDocument \
+		/usr/local/Qt-6.5.6/include/QtPrintSupport/qprinter.h \
+		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupportglobal.h \
+		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupport-config.h \
+		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupportexports.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpagedpaintdevice.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpagelayout.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpagesize.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpageranges.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QFileDialog \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qfiledialog.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QLayout \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QTextEdit \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QCalendarWidget \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qcalendarwidget.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QProxyStyle \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qproxystyle.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QStyleOption \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qstyleoption.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractspinbox.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qvalidator.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qslider.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractslider.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qtabbar.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qrubberband.h \
+		mvpatientrecordwidget.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QSortFilterProxyModel \
+		/usr/local/Qt-6.5.6/include/QtGui/QStandardItemModel \
+		/usr/local/Qt-6.5.6/include/QtGui/qstandarditemmodel.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QListView \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qlistview.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemview.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemdelegate.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QScroller \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qscroller.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QPointF \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QScrollerProperties \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qscrollerproperties.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QScopedPointer \
+		/usr/local/Qt-6.5.6/include/QtCore/QMetaType \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidgetItem \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qtablewidget.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qtableview.h \
+		mvsystemsettings.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QButtonGroup \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qbuttongroup.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QComboBox \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qcombobox.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QThread \
+		XV.Control/InteractiveImageLabel.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QImage \
+		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
+		/usr/local/Qt-6.5.6/include/QtGui/QWheelEvent \
 		mvaboutwidget.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QBitmap \
 		build/release/.ui/ui_mvaboutwidget.h \
@@ -14219,12 +14364,10 @@ build/release/.obj/main.o: main.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QFrame \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QImage \
 		/usr/local/Qt-6.5.6/include/QtCore/QSettings \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidget \
 		/usr/local/Qt-6.5.6/include/QtGui/QGuiApplication \
 		/usr/local/Qt-6.5.6/include/QtGui/QKeyEvent \
-		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
 		/usr/local/Qt-6.5.6/include/QtCore/QUuid \
 		/usr/local/Qt-6.5.6/include/QtCore/QtMath \
 		mvexitappdialog.h \
@@ -14532,83 +14675,10 @@ build/release/.obj/mainwindow.o: mainwindow.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qcommonstyle.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qstyle.h \
 		XV.Control/XDCableDiameterWidget.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QDropEvent \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonArray \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsonarray.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsonvalue.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qcborvalue.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qcborcommon.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qregularexpression.h \
-		/usr/local/Qt-6.5.6/include/QtCore/quuid.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonDocument \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsondocument.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonObject \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsonobject.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonParseError \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonValue \
-		/usr/local/Qt-6.5.6/include/QtCore/QQueue \
-		/usr/local/Qt-6.5.6/include/QtCore/qqueue.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QRandomGenerator \
-		/usr/local/Qt-6.5.6/include/QtCore/qrandom.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QTextDocument \
-		/usr/local/Qt-6.5.6/include/QtCore/QFile \
-		/usr/local/Qt-6.5.6/include/QtPrintSupport/qprinter.h \
-		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupportglobal.h \
-		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupport-config.h \
-		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupportexports.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpagedpaintdevice.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpagelayout.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpagesize.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpageranges.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QFileDialog \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qfiledialog.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QLayout \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QTextEdit \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QCalendarWidget \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qcalendarwidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QProxyStyle \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qproxystyle.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QStyleOption \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qstyleoption.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractspinbox.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qvalidator.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qslider.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractslider.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtabbar.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qrubberband.h \
-		mvpatientrecordwidget.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QSortFilterProxyModel \
-		/usr/local/Qt-6.5.6/include/QtCore/qsortfilterproxymodel.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qabstractproxymodel.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QStandardItemModel \
-		/usr/local/Qt-6.5.6/include/QtGui/qstandarditemmodel.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QListView \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qlistview.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemview.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qitemselectionmodel.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemdelegate.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QScroller \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qscroller.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QPointF \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QScrollerProperties \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qscrollerproperties.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QScopedPointer \
-		/usr/local/Qt-6.5.6/include/QtCore/QMetaType \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidgetItem \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtablewidget.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qtableview.h \
-		mvsystemsettings.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QButtonGroup \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qbuttongroup.h \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QComboBox \
-		/usr/local/Qt-6.5.6/include/QtWidgets/qcombobox.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QFutureWatcher \
-		/usr/local/Qt-6.5.6/include/QtCore/qfuturewatcher.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QThread \
-		/usr/local/Qt-6.5.6/include/QtCore/QVector \
-		/usr/local/Qt-6.5.6/include/QtCore/qvector.h \
 		XV.Communication/XProtocolManager.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QAtomicInteger \
+		/usr/local/Qt-6.5.6/include/QtCore/QFutureWatcher \
+		/usr/local/Qt-6.5.6/include/QtCore/qfuturewatcher.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QThreadPool \
 		XV.Communication/XRayProtocol.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QByteArray \
@@ -14617,10 +14687,13 @@ build/release/.obj/mainwindow.o: mainwindow.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtSerialPort/qserialportglobal.h \
 		/usr/local/Qt-6.5.6/include/QtSerialPort/qtserialportexports.h \
 		XV.Communication/ModbusCRC16.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QVector \
+		/usr/local/Qt-6.5.6/include/QtCore/qvector.h \
 		XV.Communication/XSensorProtocol.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QElapsedTimer \
 		XV.Communication/SensorCRC16.h \
 		XV.Tool/XDConfigFileManager.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QFile \
 		/usr/local/Qt-6.5.6/include/QtCore/QTextStream \
 		/usr/local/Qt-6.5.6/include/QtXml/QtXml \
 		/usr/local/Qt-6.5.6/include/QtXml/QtXmlDepends \
@@ -14633,6 +14706,7 @@ build/release/.obj/mainwindow.o: mainwindow.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qabstractanimation.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qabstracteventdispatcher.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qabstractnativeeventfilter.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qabstractproxymodel.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qanimationgroup.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qapplicationstatic.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qassociativeiterable.h \
@@ -14641,6 +14715,10 @@ build/release/.obj/mainwindow.o: mainwindow.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qbytearraymatcher.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcache.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcborarray.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcborvalue.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcborcommon.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qregularexpression.h \
+		/usr/local/Qt-6.5.6/include/QtCore/quuid.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcbormap.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcborstream.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcborstreamreader.h \
@@ -14658,6 +14736,11 @@ build/release/.obj/mainwindow.o: mainwindow.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qfilesystemwatcher.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qfuturesynchronizer.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qidentityproxymodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qitemselectionmodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsonarray.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsonvalue.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsondocument.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsonobject.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qlatin1stringmatcher.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qlibrary.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qlibraryinfo.h \
@@ -14679,6 +14762,8 @@ build/release/.obj/mainwindow.o: mainwindow.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qpropertyprivate.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qpropertyanimation.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qvariantanimation.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qqueue.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qrandom.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qreadwritelock.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qsavefile.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qscopedvaluerollback.h \
@@ -14690,6 +14775,7 @@ build/release/.obj/mainwindow.o: mainwindow.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qsignalmapper.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qsimd.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qsocketnotifier.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsortfilterproxymodel.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qstack.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qstorageinfo.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qstringconverter.h \
@@ -14718,6 +14804,67 @@ build/release/.obj/mainwindow.o: mainwindow.cpp mainwindow.h \
 		algorithms/CImageProcess.h \
 		algorithms/ImageProConfig.h \
 		algorithms/PostProcPara.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QDropEvent \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonArray \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonDocument \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonObject \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonParseError \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonValue \
+		/usr/local/Qt-6.5.6/include/QtCore/QQueue \
+		/usr/local/Qt-6.5.6/include/QtCore/QRandomGenerator \
+		/usr/local/Qt-6.5.6/include/QtGui/QTextDocument \
+		/usr/local/Qt-6.5.6/include/QtPrintSupport/qprinter.h \
+		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupportglobal.h \
+		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupport-config.h \
+		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupportexports.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpagedpaintdevice.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpagelayout.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpagesize.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpageranges.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QFileDialog \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qfiledialog.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QLayout \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QTextEdit \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QCalendarWidget \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qcalendarwidget.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QProxyStyle \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qproxystyle.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QStyleOption \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qstyleoption.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractspinbox.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qvalidator.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qslider.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractslider.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qtabbar.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qrubberband.h \
+		mvpatientrecordwidget.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QSortFilterProxyModel \
+		/usr/local/Qt-6.5.6/include/QtGui/QStandardItemModel \
+		/usr/local/Qt-6.5.6/include/QtGui/qstandarditemmodel.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QListView \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qlistview.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemview.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qabstractitemdelegate.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QScroller \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qscroller.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QPointF \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QScrollerProperties \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qscrollerproperties.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QScopedPointer \
+		/usr/local/Qt-6.5.6/include/QtCore/QMetaType \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidgetItem \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qtablewidget.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qtableview.h \
+		mvsystemsettings.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QButtonGroup \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qbuttongroup.h \
+		/usr/local/Qt-6.5.6/include/QtWidgets/QComboBox \
+		/usr/local/Qt-6.5.6/include/QtWidgets/qcombobox.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QThread \
+		XV.Control/InteractiveImageLabel.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QImage \
+		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
+		/usr/local/Qt-6.5.6/include/QtGui/QWheelEvent \
 		mvaboutwidget.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QBitmap \
 		build/release/.ui/ui_mvaboutwidget.h \
@@ -14737,12 +14884,10 @@ build/release/.obj/mainwindow.o: mainwindow.cpp mainwindow.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QFrame \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QLineEdit \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QImage \
 		/usr/local/Qt-6.5.6/include/QtCore/QSettings \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QTableWidget \
 		/usr/local/Qt-6.5.6/include/QtGui/QGuiApplication \
 		/usr/local/Qt-6.5.6/include/QtGui/QKeyEvent \
-		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
 		/usr/local/Qt-6.5.6/include/QtCore/QUuid \
 		/usr/local/Qt-6.5.6/include/QtCore/QtMath \
 		mvexitappdialog.h \
@@ -15430,18 +15575,146 @@ build/release/.obj/mvimageacquisitwidget.o: mvimageacquisitwidget.cpp mvimageacq
 		/usr/local/Qt-6.5.6/include/QtWidgets/qcommonstyle.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qstyle.h \
 		XV.Control/XDCableDiameterWidget.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QDropEvent \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonArray \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsonarray.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qjsonvalue.h \
+		XV.Communication/XProtocolManager.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QAtomicInteger \
+		/usr/local/Qt-6.5.6/include/QtCore/QFutureWatcher \
+		/usr/local/Qt-6.5.6/include/QtCore/qfuturewatcher.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QMutex \
+		/usr/local/Qt-6.5.6/include/QtCore/QThreadPool \
+		/usr/local/Qt-6.5.6/include/QtCore/QTimer \
+		/usr/local/Qt-6.5.6/include/QtCore/qtimer.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qbasictimer.h \
+		XV.Communication/XRayProtocol.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QByteArray \
+		/usr/local/Qt-6.5.6/include/QtSerialPort/QSerialPort \
+		/usr/local/Qt-6.5.6/include/QtSerialPort/qserialport.h \
+		/usr/local/Qt-6.5.6/include/QtSerialPort/qserialportglobal.h \
+		/usr/local/Qt-6.5.6/include/QtSerialPort/qtserialportexports.h \
+		XV.Communication/ModbusCRC16.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QVector \
+		/usr/local/Qt-6.5.6/include/QtCore/qvector.h \
+		XV.Communication/XSensorProtocol.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QElapsedTimer \
+		XV.Communication/SensorCRC16.h \
+		XV.Tool/XDConfigFileManager.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QFile \
+		/usr/local/Qt-6.5.6/include/QtCore/QTextStream \
+		/usr/local/Qt-6.5.6/include/QtXml/QtXml \
+		/usr/local/Qt-6.5.6/include/QtXml/QtXmlDepends \
+		/usr/local/Qt-6.5.6/include/QtCore/QtCore \
+		/usr/local/Qt-6.5.6/include/QtCore/QtCoreDepends \
+		/usr/local/Qt-6.5.6/include/QtCore/q20algorithm.h \
+		/usr/local/Qt-6.5.6/include/QtCore/q20functional.h \
+		/usr/local/Qt-6.5.6/include/QtCore/q20iterator.h \
+		/usr/local/Qt-6.5.6/include/QtCore/q23functional.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qabstractanimation.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qabstracteventdispatcher.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qabstractnativeeventfilter.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qabstractproxymodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qanimationgroup.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qapplicationstatic.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qassociativeiterable.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qbitarray.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qbuffer.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qbytearraymatcher.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcache.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcborarray.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcborvalue.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qcborcommon.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qregularexpression.h \
 		/usr/local/Qt-6.5.6/include/QtCore/quuid.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonDocument \
+		/usr/local/Qt-6.5.6/include/QtCore/qcbormap.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcborstream.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcborstreamreader.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcborstreamwriter.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcollator.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcommandlineoption.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcommandlineparser.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qconcatenatetablesproxymodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qcryptographichash.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qdiriterator.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qeasingcurve.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qendian.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qfactoryinterface.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qfileselector.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qfilesystemwatcher.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qfuturesynchronizer.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qidentityproxymodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qitemselectionmodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsonarray.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qjsonvalue.h \
 		/usr/local/Qt-6.5.6/include/QtCore/qjsondocument.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QJsonObject \
 		/usr/local/Qt-6.5.6/include/QtCore/qjsonobject.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qlatin1stringmatcher.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qlibrary.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qlibraryinfo.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qversionnumber.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtyperevision.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qlockfile.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qloggingcategory.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qmessageauthenticationcode.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qmetaobject.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qmimedata.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qmimedatabase.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qmimetype.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qobjectcleanuphandler.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qoperatingsystemversion.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qparallelanimationgroup.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qpauseanimation.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qplugin.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qpluginloader.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qprocess.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qproperty.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qpropertyprivate.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qpropertyanimation.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qvariantanimation.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qqueue.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qrandom.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qreadwritelock.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qresource.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsavefile.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qscopedvaluerollback.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsemaphore.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsequentialanimationgroup.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsequentialiterable.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsettings.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsharedmemory.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsignalmapper.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsimd.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsocketnotifier.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsortfilterproxymodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qstack.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qstorageinfo.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qstringconverter.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qstringlistmodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qsystemsemaphore.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtcoreversion.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtemporarydir.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtemporaryfile.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtextboundaryfinder.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qthreadstorage.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtimeline.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtimezone.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtranslator.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qtransposeproxymodel.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qurlquery.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qvarianthash.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qvariantlist.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qvariantmap.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qwaitcondition.h \
+		/usr/local/Qt-6.5.6/include/QtCore/QDeadlineTimer \
+		/usr/local/Qt-6.5.6/include/QtCore/qwineventnotifier.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qxmlstream.h \
+		/usr/local/Qt-6.5.6/include/QtCore/qxpfunctional.h \
+		/usr/local/Qt-6.5.6/include/QtXml/qtxmlversion.h \
+		algorithms/XPectAlgorithmic.h \
+		algorithms/CImageProcess.h \
+		algorithms/ImageProConfig.h \
+		algorithms/PostProcPara.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QDropEvent \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonArray \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonDocument \
+		/usr/local/Qt-6.5.6/include/QtCore/QJsonObject \
 		/usr/local/Qt-6.5.6/include/QtCore/QJsonParseError \
 		/usr/local/Qt-6.5.6/include/QtCore/QJsonValue \
 		/usr/local/Qt-6.5.6/include/QtGui/QPainter \
@@ -15449,12 +15722,9 @@ build/release/.obj/mvimageacquisitwidget.o: mvimageacquisitwidget.cpp mvimageacq
 		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QQueue \
-		/usr/local/Qt-6.5.6/include/QtCore/qqueue.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QRandomGenerator \
-		/usr/local/Qt-6.5.6/include/QtCore/qrandom.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QTextDocument \
 		/usr/local/Qt-6.5.6/include/QtGui/qtextdocument.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QFile \
 		/usr/local/Qt-6.5.6/include/QtPrintSupport/qprinter.h \
 		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupportglobal.h \
 		/usr/local/Qt-6.5.6/include/QtPrintSupport/qtprintsupport-config.h \
@@ -15503,8 +15773,6 @@ build/release/.obj/mvimageacquisitwidget.o: mvimageacquisitwidget.cpp mvimageacq
 		/usr/local/Qt-6.5.6/include/QtWidgets/QToolButton \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qtoolbutton.h \
 		XV.Control/XDDiameterHistoryWidget.h \
-		/usr/local/Qt-6.5.6/include/QtCore/QVector \
-		/usr/local/Qt-6.5.6/include/QtCore/qvector.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QPair \
 		XV.Control/XDThumbnailListWidget.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QDesktopServices \
@@ -15512,16 +15780,10 @@ build/release/.obj/mvimageacquisitwidget.o: mvimageacquisitwidget.cpp mvimageacq
 		/usr/local/Qt-6.5.6/include/QtGui/QImageReader \
 		/usr/local/Qt-6.5.6/include/QtGui/qimagereader.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qimageiohandler.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qplugin.h \
-		/usr/local/Qt-6.5.6/include/QtCore/q20algorithm.h \
-		/usr/local/Qt-6.5.6/include/QtCore/q20functional.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qfactoryinterface.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
 		/usr/local/Qt-6.5.6/include/QtGui/QPdfWriter \
 		/usr/local/Qt-6.5.6/include/QtGui/qpdfwriter.h \
 		/usr/local/Qt-6.5.6/include/QtCore/QSortFilterProxyModel \
-		/usr/local/Qt-6.5.6/include/QtCore/qsortfilterproxymodel.h \
-		/usr/local/Qt-6.5.6/include/QtCore/qabstractproxymodel.h \
 		/usr/local/Qt-6.5.6/include/QtGui/QTextBlock \
 		/usr/local/Qt-6.5.6/include/QtGui/qtextobject.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qtextlayout.h \
@@ -17038,13 +17300,23 @@ build/release/.obj/mvsystemsettings.o: mvsystemsettings.cpp mvsystemsettings.h \
 		algorithms/CImageProcess.h \
 		algorithms/ImageProConfig.h \
 		algorithms/PostProcPara.h \
-		XV.Tool/mvXmlOptionItem.h \
-		/usr/local/Qt-6.5.6/include/QtXml/QDomElement \
-		/usr/local/Qt-6.5.6/include/QtXml/QDomNode \
+		XV.Control/InteractiveImageLabel.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QImage \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QLabel \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qlabel.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qpicture.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qtextdocument.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
+		/usr/local/Qt-6.5.6/include/QtGui/QPainter \
+		/usr/local/Qt-6.5.6/include/QtGui/qpainter.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
+		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
+		/usr/local/Qt-6.5.6/include/QtGui/QPixmap \
+		/usr/local/Qt-6.5.6/include/QtCore/QPoint \
+		/usr/local/Qt-6.5.6/include/QtGui/QWheelEvent \
+		XV.Tool/mvXmlOptionItem.h \
+		/usr/local/Qt-6.5.6/include/QtXml/QDomElement \
+		/usr/local/Qt-6.5.6/include/QtXml/QDomNode \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QMessageBox \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qmessagebox.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qdialog.h \
@@ -17093,19 +17365,9 @@ build/release/.obj/mvsystemsettings.o: mvsystemsettings.cpp mvsystemsettings.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/qlineedit.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qtextcursor.h \
 		/usr/local/Qt-6.5.6/include/QtGui/qtextformat.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qpen.h \
-		/usr/local/Qt-6.5.6/include/QtGui/qtextoption.h \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QSpacerItem \
 		/usr/local/Qt-6.5.6/include/QtWidgets/QTabWidget \
-		/usr/local/Qt-6.5.6/include/QtWidgets/QVBoxLayout \
-		XV.Control/InteractiveImageLabel.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QImage \
-		/usr/local/Qt-6.5.6/include/QtGui/QMouseEvent \
-		/usr/local/Qt-6.5.6/include/QtGui/QPainter \
-		/usr/local/Qt-6.5.6/include/QtGui/qpainter.h \
-		/usr/local/Qt-6.5.6/include/QtGui/QPixmap \
-		/usr/local/Qt-6.5.6/include/QtCore/QPoint \
-		/usr/local/Qt-6.5.6/include/QtGui/QWheelEvent
+		/usr/local/Qt-6.5.6/include/QtWidgets/QVBoxLayout
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o build/release/.obj/mvsystemsettings.o mvsystemsettings.cpp
 
 build/release/.obj/qrc_mvResources.o: build/release/.rcc/qrc_mvResources.cpp 
