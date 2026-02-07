@@ -20,7 +20,6 @@
 mvsystemsettings::mvsystemsettings(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::mvsystemsettings)
-
     , mSaveSettingsTimer(nullptr)
     , mIsExposing(false)
     , mRBtnXChecked(true)
@@ -78,6 +77,7 @@ mvsystemsettings::~mvsystemsettings()
 
 void mvsystemsettings::initData()
 {
+    //jiaozheng
     QString procfile = DataLocations::getRootConfigPath() + "/Conf/DataProcFeature.xml";
     auto algorithmic = XPectAlgorithmic::Instance();
     algorithmic->LoadConfig(procfile);
@@ -1035,6 +1035,14 @@ void mvsystemsettings::loadSelectedPorts()
     selectPortInComboBox(ui->mCbComSensor2, sensor2Port);
     selectPortInComboBox(ui->mCbComXray1, xray1Port);
     selectPortInComboBox(ui->mCbComXray2, xray2Port);
+
+    bool sensor1Checked = ConfigFileManager::getInstance()->getValue("sensor1/description")
+                          == "true";
+    bool sensor2Checked = ConfigFileManager::getInstance()->getValue("sensor2/description")
+                          == "true";
+
+    ui->mRBtnSensor1->setChecked(sensor1Checked);
+    ui->mRBtnSensor2->setChecked(sensor2Checked);
 
     // 设置方向
     int sensor1Orientation

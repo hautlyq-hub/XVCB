@@ -8,7 +8,7 @@ QT += core gui sql xml serialport concurrent
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 # ============ 项目配置 ============
-CONFIG += c++11 link_pkgconfig
+CONFIG += c++17 link_pkgconfig
 TARGET = XVBVThickness
 TEMPLATE = app
 
@@ -54,11 +54,19 @@ LIBS += -L$$DataProc_DIR -lDataProc
 # 添加运行时库路径（树莓派需要）
 QMAKE_RPATHDIR += $$DataProc_DIR
 
-# ============ OpenCV 配置（如果使用）============
-# PKGCONFIG += opencv4
-# 或者手动指定
-# INCLUDEPATH += /usr/include/opencv4
-# LIBS += -lopencv_core -lopencv_imgproc -lopencv_highgui
+# ---------------ONNXRuntime----------------
+ONNXRUNTIME_DIR = /home/pi/algorithm/onnxruntime-linux-aarch64-1.22.0
+INCLUDEPATH += $${ONNXRUNTIME_DIR}/include
+LIBS += -L$${ONNXRUNTIME_DIR}/lib -lonnxruntime
+# 添加运行时库路径（优先使用指定路径）
+QMAKE_LFLAGS += -Wl,-rpath,$${ONNXRUNTIME_DIR}/lib
+# 可选：保留 ORIGIN/lib 路径
+QMAKE_LFLAGS += -Wl,-rpath,'$$ORIGIN/lib'
+# 删除重复的 ORIGIN/libs 设置
+
+# ============ OpenCV 配置 ============
+PKGCONFIG += opencv4   # 使用 pkg-config 自动处理链接
+
 
 # ============ VTK 配置（如果使用）============
 # 根据你的安装路径调整
@@ -102,6 +110,9 @@ SOURCES += \
     algorithms/PostProcPara.cpp \
     algorithms/StringUtility.cpp \
     algorithms/XPectAlgorithmic.cpp \
+    algorithms/cable_detector.cpp \
+    algorithms/onnx_model.cpp \
+    algorithms/process_util.cpp \
     algorithms/tinyxml2.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -158,6 +169,10 @@ HEADERS += \
     algorithms/PostProcPara.h \
     algorithms/StringUtility.h \
     algorithms/XPectAlgorithmic.h \
+    algorithms/cable_detector.h \
+    algorithms/onnx_model.h \
+    algorithms/process_util.h \
+    algorithms/status_code.h \
     algorithms/tinyxml2.h \
     mainwindow.h \
     mvaboutwidget.h \
@@ -196,15 +211,8 @@ isEqual(QMAKE_HOST.arch, arm*) {
     QMAKE_CXXFLAGS += -march=armv8-a+crc -mtune=cortex-a72 -mfpu=neon-fp-armv8 -mfloat-abi=hard
 }
 
-QMAKE_CXXFLAGS += -std=c++11
 QMAKE_CXXFLAGS_RELEASE += -O2 -pipe
 QMAKE_CXXFLAGS_DEBUG += -g -O0 -Wall -Wextra
-
-# 如果是 QT6，使用C++17
-greaterThan(QT_MAJOR_VERSION, 5) {
-    QT += widgets
-    QMAKE_CXXFLAGS += -std=c++17
-}
 
 # ============ 资源文件 ============
 RESOURCES += \
@@ -249,5 +257,3 @@ OBJECTS_DIR = $${BUILD_PATH}/.obj
 !exists($${BUILD_PATH}/.rcc) { mkpath($${BUILD_PATH}/.rcc) }
 !exists($${BUILD_PATH}/.ui) { mkpath($${BUILD_PATH}/.ui) }
 !exists($${BUILD_PATH}/.obj) { mkpath($${BUILD_PATH}/.obj) }
-
-unix:QMAKE_LFLAGS += -Wl,-rpath,\'\$$ORIGIN/libs\'

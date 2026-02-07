@@ -54,19 +54,30 @@ CImageProcess::CImageProcess(std::string sConfigPath)
     if (!appDir.endsWith(QDir::separator())) {
         appDir += QDir::separator();
     }
+
     QString currentDate = QDate::currentDate().toString("yyyy-MM-dd");
     QString logFileName = QString("image_process_%1.log").arg(currentDate);
-    QString logPath = QString("%1%2log%3%4")
-                          .arg(appDir)
-                          .arg(QDir::separator())
-                          .arg(QDir::separator())
-                          .arg(logFileName);
-    qDebug() << "DataProc log : "<< logPath;
-    //
+
+    // 构建日志目录路径
+    QString logDir = appDir + "log";
+    // 创建日志目录（如果不存在）
+    QDir dir(logDir);
+    if (!dir.exists()) {
+        dir.mkpath("."); // 创建目录
+    }
+
+    // 构建完整的日志文件路径
+    QString logPath = logDir + QDir::separator() + logFileName;
+
+    qDebug() << "DataProc log : " << logPath;
+
+    // 初始化日志
     InitLog(logPath.toUtf8().data());
+
     qDebug() << "Current app directory:" << appDir;
-    QByteArray appdir= appDir.toUtf8();
-    char * appdir_= appdir.data();
+
+    QByteArray appdir = appDir.toUtf8();
+    char* appdir_ = appdir.data();
     int algmodule = InitAiModule(appdir_);
     qDebug() << "InitAiModule : " << algmodule;
 }

@@ -9,6 +9,11 @@
 
 #include "XV.Communication/XProtocolManager.h"
 
+#include "algorithms/cable_detector.h"
+#include "algorithms/onnx_model.h"
+#include "algorithms/process_util.h"
+#include "algorithms/status_code.h"
+
 #include <QDropEvent>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -34,6 +39,12 @@
 #include <QtWidgets/QCalendarWidget>
 #include <QtWidgets/QProxyStyle>
 #include <QtWidgets/QStyleOption>
+
+#include "algorithms/cable_detector.h"
+#include "algorithms/onnx_model.h"
+#include "algorithms/process_util.h"
+
+using namespace cable_detector;
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -133,6 +144,11 @@ namespace mv
         int mOralMajor = 3;
 
         bool mcalibrationFileExists = false;
+
+        QString imagePathX;
+        QString imagePathY;
+
+        std::unique_ptr<CableDetector> detector;
     };
 }
 

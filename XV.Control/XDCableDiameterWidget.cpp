@@ -1,8 +1,9 @@
 ﻿// CableDiameterWidget.cpp
 #include "XDCableDiameterWidget.h"
+#include <QFontMetrics>
 #include <QPainter>
 #include <QPainterPath>
-#include <QFontMetrics>
+#include <QWheelEvent>
 #include <QtCore/QDebug>
 #include <cmath>
 
@@ -866,4 +867,60 @@ void CableDiameterWidget::drawCrossMarkers(QPainter &painter)
     painter.drawLine(innerCenterScreen - QPointF(0, smallCrossSize), innerCenterScreen + QPointF(0, smallCrossSize));
 
     painter.restore();
+}
+
+void CableDiameterWidget::wheelEvent(QWheelEvent *event)
+{
+    if (!m_enableZoom) {
+        event->ignore();
+        return;
+    }
+
+    // 获取鼠标位置（屏幕坐标）
+    QPointF mouseScreenPos = event->position();
+
+    // 将鼠标位置转换为逻辑坐标（作为缩放中心）
+    QPointF mouseLogicPos = toLogicCoordinates(mouseScreenPos);
+
+    // 计算缩放因子
+    double zoomFactor = 1.1; // 每次滚轮缩放10%
+    double delta;
+
+    // 判断滚轮方向
+    if (event->angleDelta().y() > 0) {
+        // 向上滚动：放大
+        delta = 1.0 / zoomFactor;
+    } else {
+        // 向下滚动：缩小
+        delta = zoomFactor;
+    }
+
+    // 应用缩放限制
+    double newZoomFactor = m_zoomFactor * delta;
+    newZoomFactor = qBound(m_minZoomFactor, newZoomFactor, m_maxZoomFactor);
+
+    // 如果缩放因子没有变化，直接返回
+    if (qFuzzyCompare(newZoomFactor, m_zoomFactor)) {
+        event->accept();
+        return;
+    }
+
+    // 计算新的缩放中心
+    // 公式: new_center = mousePos - (mousePos - old_center) * (old_zoom / new_zoom)
+    QPointF oldCenter = m_zoomCenter;
+    double zoomRatio = m_zoomFactor / newZoomFactor;
+    QPointF newCenter(mouseLogicPos.x() - (mouseLogicPos.x() - oldCenter.x()) * zoomRatio,
+                      mouseLogicPos.y() - (mouseLogicPos.y() - oldCenter.y()) * zoomRatio);
+
+    // 应用新的缩放中心和缩放因子
+    m_zoomFactor = newZoomFactor;
+    m_zoomCenter = newCenter;
+
+    // 更新坐标矩形和相关参数
+    updateZoomParameters();
+
+    // 触发重绘
+    update();
+
+    event->accept();
 }

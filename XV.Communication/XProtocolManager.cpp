@@ -271,17 +271,15 @@ void XProtocolManager::loadConfig()
 
     // 加载X光机1配置
     QString xray1Port = ConfigFileManager::getInstance()->getValue("xray1/value");
-    QString xray1Desc = ConfigFileManager::getInstance()->getValue("xray1/description");
     int xray1Ori = ConfigFileManager::getInstance()->getValue("xray1/orientation").toInt();
 
-    m_portSettings.append({"xray1", xray1Port, xray1Desc, xray1Ori, false});
+    m_portSettings.append({"xray1", xray1Port, "", xray1Ori, false});
 
     // 加载X光机2配置
     QString xray2Port = ConfigFileManager::getInstance()->getValue("xray2/value");
-    QString xray2Desc = ConfigFileManager::getInstance()->getValue("xray2/description");
     int xray2Ori = ConfigFileManager::getInstance()->getValue("xray2/orientation").toInt();
 
-    m_portSettings.append({"xray2", xray2Port, xray2Desc, xray2Ori, false});
+    m_portSettings.append({"xray2", xray2Port, "", xray2Ori, false});
 
     QString appDataPath = DataLocations::getRootConfigPath() + XV_APPDATA;
     QFile file(appDataPath);
@@ -703,7 +701,6 @@ bool XProtocolManager::startExposure()
         QMetaObject::invokeMethod(
             m_sensor2,
             [this, &success2]() {
-                qDebug() << tr("[m_sensor2] Current thread:") << QThread::currentThread();
                 success2 = m_sensor2->setupWorkMode(true);
             },
             Qt::BlockingQueuedConnection);
@@ -959,7 +956,7 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
                 Qt::QueuedConnection);
         }
 
-        QThread::msleep(500); // 新增延迟
+        // QThread::msleep(500); // 新增延迟
 
         if (m_xRayIndex != 2 && m_xrayProtocol1) {
             QMetaObject::invokeMethod(
