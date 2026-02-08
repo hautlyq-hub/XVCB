@@ -676,7 +676,7 @@ QByteArray XSensorProtocol::readResponse(int timeout)
         QCoreApplication::processEvents();
     }
 
-    qDebug() << "resp:" << response.toHex(' ').toUpper();
+    // qDebug() << "resp:" << response.toHex(' ').toUpper();
 
     return response;
 }

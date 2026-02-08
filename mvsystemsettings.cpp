@@ -1,4 +1,6 @@
 // scp /home/pi/XVBVThiness/build/release/XVBVThickness pi@192.168.2.158:/home/pi/XVBVThickness/release/
+// scp /home/pi/XVBVThiness/build/config/model/DNUNetRes_NB_Nature_tiny.onnx pi@192.168.2.158:/home/pi/XVBVThickness/config/model
+
 #include "mvsystemsettings.h"
 #include <QButtonGroup>
 #include <QComboBox>
@@ -374,6 +376,8 @@ void mvsystemsettings::StartExposure()
 
     updateInfoPanel(tr("Setting up work mode..."), Normal);
     updateDeviceState(ExposureState::SettingUp);
+
+    qApp->processEvents();
 
     // 状态检查
     if (!canStartExposure()) {

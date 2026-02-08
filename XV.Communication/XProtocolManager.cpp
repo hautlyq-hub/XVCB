@@ -432,12 +432,6 @@ void XProtocolManager::initializeXray()
         Qt::QueuedConnection);
     connect(
         m_xrayProtocol1,
-        &XRayProtocol::deviceStatusChanged,
-        this,
-        [this](XRayDeviceStatus status) { onXrayStatusChanged(status, 0); },
-        Qt::QueuedConnection);
-    connect(
-        m_xrayProtocol1,
         &XRayProtocol::exposureStarted,
         this,
         [this]() { onXrayExposureStarted(0); },
@@ -482,10 +476,6 @@ void XProtocolManager::initializeXray()
         this,
         [this]() { onXrayDeviceDisconnected(1); },
         Qt::QueuedConnection);
-    connect(m_xrayProtocol2,
-            &XRayProtocol::deviceStatusChanged,
-            this,
-            [this](XRayDeviceStatus status) { onXrayStatusChanged(status, 1); });
     connect(
         m_xrayProtocol2,
         &XRayProtocol::exposureStarted,
@@ -1235,34 +1225,6 @@ void XProtocolManager::onXrayDeviceDisconnected(int index)
 {
     QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
     emit warning(QString(tr("X-ray %1 disconnected")).arg(xrayKey));
-}
-
-void XProtocolManager::onXrayStatusChanged(XRayDeviceStatus status, int index)
-{
-    QString statusStr;
-    switch (status) {
-    case DEVICE_IDLE:
-        statusStr = tr("Idle");
-        break;
-    case DEVICE_READY:
-        statusStr = tr("Ready");
-        break;
-    case DEVICE_EXPOSING:
-        statusStr = tr("Exposing");
-        break;
-    case DEVICE_COOLING:
-        statusStr = tr("Cooling");
-        break;
-    case DEVICE_ERROR:
-        statusStr = tr("Error");
-        break;
-    default:
-        statusStr = tr("Unknown");
-        break;
-    }
-
-    // QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
-    // emit info(QString("X光机 %1 状态: %2").arg(xrayKey).arg(statusStr));
 }
 
 void XProtocolManager::onXrayExposureStarted(int index)

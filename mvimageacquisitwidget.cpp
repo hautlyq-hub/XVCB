@@ -499,6 +499,8 @@ void mvImageAcquisitWidget::setCurrentPatient()
         }
     }
 
+    resetUI();
+
     //        this->getImagePath(examList, currentStudyUID);
 
     //        QString databaseDirectory = DataLocations::getRootConfigPath() + "/";
@@ -588,6 +590,8 @@ void mvImageAcquisitWidget::StartExposure()
 
     updateInfoPanel(tr("Setting up work mode..."), Normal);
     updateDeviceState(ExposureState::SettingUp);
+
+    qApp->processEvents();
 
     if (!canStartExposure()) {
         resetUI();

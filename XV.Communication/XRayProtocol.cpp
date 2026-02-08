@@ -35,7 +35,6 @@ const QByteArray XRayProtocol::CMD_EXPOSURE_STOP = QByteArray::fromHex(
 XRayProtocol::XRayProtocol(QObject *parent)
     : QObject(parent)
     , m_serialPort(nullptr)
-    , m_deviceStatus(DEVICE_IDLE)
     , m_lastError(XRAY_SUCCESS)
     , m_coolingRemaining(0)
     , m_expTimeMs(30000)
@@ -87,9 +86,7 @@ bool XRayProtocol::initSerialPort(const QString &portName, int baudRate)
     QMetaObject::invokeMethod(
         this,
         [this]() {
-            m_deviceStatus = DEVICE_READY;
             emit deviceConnected();
-            emit deviceStatusChanged(m_deviceStatus);
         },
         Qt::QueuedConnection);
 
@@ -111,11 +108,8 @@ void XRayProtocol::closeSerialPort()
         m_serialPort = nullptr;
     }
 
-    m_deviceStatus = DEVICE_IDLE;
-
     QTimer::singleShot(0, this, [this]() {
         emit deviceDisconnected();
-        emit deviceStatusChanged(m_deviceStatus);
     });
 }
 
@@ -159,20 +153,14 @@ bool XRayProtocol::startExposure()
 
 bool XRayProtocol::stopExposure()
 {
-    if (m_deviceStatus != DEVICE_EXPOSING) {
-        return true;
-    }
-
     QByteArray response;
     if (sendCommand(0x1B, QByteArray::fromHex("01000000"))) {
         response = readResponse(m_respTimeout);
     }
 
     m_exposureTimer->stop();
-    m_deviceStatus = DEVICE_READY;
 
     emit exposureStopped();
-    emit deviceStatusChanged(m_deviceStatus);
 
     return true;
 }
@@ -478,7 +466,7 @@ QByteArray XRayProtocol::readResponse(int timeout)
 
             QByteArray packet = extractCompletePacket(buffer);
             if (!packet.isEmpty() && verifyCRC(packet)) {
-                qDebug() << "resp:" << packet.toHex(' ').toUpper();
+                // qDebug() << "resp:" << packet.toHex(' ').toUpper();
                 return packet;
             }
         }
@@ -578,20 +566,6 @@ void XRayProtocol::handleExposureResponse(const QByteArray &response)
     stream >> exp_cooling_time;
     stream >> exp_step;
 
-    // 更新设备状态
-    if (exp_en == 1) {
-        m_deviceStatus = DEVICE_EXPOSING;
-        m_coolingRemaining = 0;
-    } else {
-        if (exp_cooling_time > 0) {
-            m_deviceStatus = DEVICE_COOLING;
-            m_coolingRemaining = exp_cooling_time;
-        } else {
-            m_deviceStatus = DEVICE_READY;
-            m_coolingRemaining = 0;
-        }
-    }
-
     // 检查错误
     if (low_battery_flag == 1) {
         m_lastError = XRAY_ERROR_LOW_BATTERY;
@@ -608,7 +582,6 @@ void XRayProtocol::handleExposureResponse(const QByteArray &response)
         emit exposureError(XRAY_ERROR_EXPOSURE_TIMEOUT);
     }
 
-    // emit deviceStatusChanged(m_deviceStatus);
 }
 
 QString XRayProtocol::parseSerialNumber(const QByteArray &data)
@@ -690,9 +663,7 @@ void XRayProtocol::onExposureTimeout()
         if (sendCommand(0x1B, m_exposureStopData)) {
             QByteArray resp = readResponse(m_respTimeout);
         }
-        m_deviceStatus = DEVICE_READY;
         emit exposureStopped();
-        emit deviceStatusChanged(m_deviceStatus);
     }
     // else if (elapsed >= 1800 && !m_over18SecSent) {
     //     m_over18SecSent = true; // 标记已发送
@@ -720,9 +691,9 @@ void XRayProtocol::updateDeviceStatus()
     }
 
     // 更新温度等信息
-    ADCValues adcValues = getADCValues();
-    emit adcValuesUpdated(adcValues);
-    emit temperatureUpdated(adcValues.device_temp, adcValues.mcu_temp);
+    // ADCValues adcValues = getADCValues();
+    // emit adcValuesUpdated(adcValues);
+    // emit temperatureUpdated(adcValues.device_temp, adcValues.mcu_temp);
 }
 
 // 数据解析方法实现
@@ -983,51 +954,6 @@ bool XRayProtocol::setExposureParams(const ExposureParams &params)
     return success;
 }
 
-// 提取曝光状态检查方法
-bool XRayProtocol::checkExposureStatus(ExposureStatus &status)
-{
-    QByteArray queryResponse;
-    if (sendCommand(0x1B, QByteArray())) {
-        queryResponse = readResponse(m_respTimeout);
-    }
-
-    if (queryResponse.isEmpty() || queryResponse.size() < 29) {
-        return false;
-    }
-
-    qDebug() << tr("Exposure query response HEX:") << queryResponse.toHex(' ').toUpper();
-
-    // 解析状态 - 从第16字节开始
-    QDataStream stream(queryResponse.mid(16));
-    stream.setByteOrder(QDataStream::LittleEndian);
-
-    stream >> status.exposureEnable;
-    stream >> status.exposureMode;
-    stream >> status.lowBattery;
-    stream >> status.hardwareCheck;
-    stream >> status.delayShutdown;
-    stream >> status.cooldownTime;
-    stream >> status.exposureStep;
-
-    qDebug() << tr("Parsed exposure status:");
-    qDebug() << tr("  Exposure enable:") << status.exposureEnable;
-    qDebug() << tr("  Exposure mode:") << status.exposureMode;
-    qDebug() << tr("  Low battery:") << status.lowBattery;
-    qDebug() << tr("  Hardware check:") << status.hardwareCheck;
-    qDebug() << tr("  Delay shutdown:") << status.delayShutdown << "ms";
-    qDebug() << tr("  Cooldown time:") << status.cooldownTime << "s";
-    qDebug() << tr("  Exposure step:") << status.exposureStep;
-
-    // 检查异常状态
-    if (status.exposureEnable == 0xFFFF) {
-        qWarning() << tr(
-            "⚠️ Device returns abnormal status (exposure enable=65535), need to reset device");
-        return false;
-    }
-
-    return true;
-}
-
 // 提取故障清除方法
 bool XRayProtocol::clearFaults()
 {
@@ -1078,15 +1004,4 @@ QString XRayProtocol::getErrorString(XRayErrorCode error) const
            {XRAY_ERROR_EXPOSURE_TIMEOUT, tr("Exposure timeout")}};
 
     return errorStrings.value(error, tr("Unknown error"));
-}
-
-// 设备状态查询
-XRayDeviceStatus XRayProtocol::getDeviceStatus() const
-{
-    return m_deviceStatus;
-}
-
-int XRayProtocol::getCoolingRemainingTime() const
-{
-    return m_coolingRemaining;
 }

@@ -27,15 +27,6 @@ enum XRayErrorCode {
     XRAY_ERROR_EXPOSURE_TIMEOUT = 13
 };
 
-// 设备状态
-enum XRayDeviceStatus {
-    DEVICE_IDLE = 0,
-    DEVICE_READY = 1,
-    DEVICE_EXPOSING = 2,
-    DEVICE_COOLING = 3,
-    DEVICE_ERROR = 4
-};
-
 // 曝光参数结构体
 struct ExposureParams
 {
@@ -66,15 +57,15 @@ struct ExposureParams
     }
 };
 
-struct ExposureStatus
-{
-    quint16 exposureEnable; // 曝光使能
-    quint16 exposureMode;   // 曝光模式
-    quint8 lowBattery;      // 低电量
-    quint8 hardwareCheck;   // 硬件检测
-    quint16 delayShutdown;  // 延迟关机时间(ms)
-    quint16 cooldownTime;   // 曝光冷却时间(s)
-    quint8 exposureStep;    // 曝光处理步骤
+enum class ExposureState {
+    Idle = 0,   // 空闲
+    SettingUp,  // 设置中
+    Exposing,   // 曝光中
+    Acquiring,  // 采集中
+    Processing, // 处理中
+    Completed,  // 完成
+    Fault,
+    Timeout
 };
 
 // ADC采集值结构体
@@ -125,10 +116,6 @@ public:
     XRayErrorCode getLastError() const;
     QString getErrorString(XRayErrorCode error) const;
 
-    // 设备状态
-    XRayDeviceStatus getDeviceStatus() const;
-    int getCoolingRemainingTime() const;
-
     // 数据包处理
     QByteArray extractCompletePacket(QByteArray &buffer);
 
@@ -136,7 +123,7 @@ signals:
     // 设备状态信号
     void deviceConnected();
     void deviceDisconnected();
-    void deviceStatusChanged(XRayDeviceStatus status);
+    void deviceStatusChanged(ExposureState status);
 
     // 曝光相关信号
     void exposureStarted();
@@ -186,7 +173,6 @@ private:
     void handleExposureResponse(const QByteArray &response);
 
     // 状态管理
-    XRayDeviceStatus m_deviceStatus;
     XRayErrorCode m_lastError;
     ExposureParams m_currentParams;
     QTimer *m_exposureTimer;
@@ -201,7 +187,6 @@ private:
     QByteArray m_exposureStopData;
 
     // 辅助方法
-    bool checkExposureStatus(ExposureStatus &status);
     bool clearFaults();
 };
 

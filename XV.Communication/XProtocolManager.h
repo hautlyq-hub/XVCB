@@ -72,17 +72,6 @@ struct DeviceStatus
     bool operator!=(const DeviceStatus& other) const { return !(*this == other); }
 };
 
-enum class ExposureState {
-    Idle = 0,   // 空闲
-    SettingUp,  // 设置中
-    Exposing,   // 曝光中
-    Acquiring,  // 采集中
-    Processing, // 处理中
-    Completed,  // 完成
-    Fault,
-    Timeout
-};
-
 class XProtocolManager : public QObject
 {
     Q_OBJECT
@@ -201,7 +190,6 @@ private slots:
     // X光信号处理（带索引参数）
     void onXrayDeviceConnected(int index);
     void onXrayDeviceDisconnected(int index);
-    void onXrayStatusChanged(XRayDeviceStatus status, int index);
     void onXrayExposureStarted(int index);
     void onXrayExposureStopped(int index);
     void onXrayExposureError(XRayErrorCode error, int index);

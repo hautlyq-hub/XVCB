@@ -44,34 +44,27 @@ INCLUDEPATH += /usr/include
 
 # ============ DataProc 库配置 ============
 DataProc_DIR = /home/pi/algorithm/DataProc-build
-
-# 添加包含路径
 INCLUDEPATH += /home/pi/algorithm/DataProc/include
-
-# 添加库路径和库文件
 LIBS += -L$$DataProc_DIR -lDataProc
 
-# 添加运行时库路径（树莓派需要）
-QMAKE_RPATHDIR += $$DataProc_DIR
 
 # ---------------ONNXRuntime----------------
 ONNXRUNTIME_DIR = /home/pi/algorithm/onnxruntime-linux-aarch64-1.22.0
 INCLUDEPATH += $${ONNXRUNTIME_DIR}/include
 LIBS += -L$${ONNXRUNTIME_DIR}/lib -lonnxruntime
-# 添加运行时库路径（优先使用指定路径）
-QMAKE_LFLAGS += -Wl,-rpath,$${ONNXRUNTIME_DIR}/lib
-# 可选：保留 ORIGIN/lib 路径
-QMAKE_LFLAGS += -Wl,-rpath,'$$ORIGIN/lib'
-# 删除重复的 ORIGIN/libs 设置
 
 # ============ OpenCV 配置 ============
 PKGCONFIG += opencv4   # 使用 pkg-config 自动处理链接
-
 
 # ============ VTK 配置（如果使用）============
 # 根据你的安装路径调整
 # INCLUDEPATH += /home/pi/vtk-9.4.2-build/include
 # LIBS += -L/home/pi/vtk-9.4.2-build/lib -lvtkCommonCore -lvtkFiltersCore
+
+# ============ 运行时库路径设置 ============
+# 设置运行时库搜索路径为程序所在目录的 libs 子目录
+QMAKE_LFLAGS += -Wl,-rpath,'$$ORIGIN/libs'
+
 
 # ============ 源文件配置 ============
 SOURCES += \
