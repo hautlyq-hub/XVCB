@@ -186,7 +186,6 @@ bool XSensorProtocol::sendExposureF6(bool wait, bool isCalibration)
     if (wait) {
         QThread::msleep(1950);
     }
-
     QByteArray exposureCommand = isCalibration ? Commands::F6_ENABLE_EXPOSE_CALI
                                                : Commands::F6_ENABLE_EXPOSE;
 
@@ -201,7 +200,7 @@ bool XSensorProtocol::sendExposureF6(bool wait, bool isCalibration)
         exposureSuccess = true;
         m_exposing = true;
 
-        emit exposureF6Ready(m_serialPort->portName());
+        emit exposureF6Ready(m_serialPort->portName()); //kaishijishu
     } else {
         if (!response.isEmpty()) {
             qWarning() << "[" << m_serialPort->portName() << tr("] Response header: 0x")
@@ -386,8 +385,8 @@ QByteArray XSensorProtocol::retrieveImageByte(QString& errorCode, int& realGetBa
             }
 
             package.append(data);
-            qDebug() << "[" << m_serialPort->portName() << tr("] Read") << data.size()
-                     << tr("bytes, total:") << package.size();
+            // qDebug() << "[" << m_serialPort->portName() << tr("] Read") << data.size()
+            //          << tr("bytes, total:") << package.size();
 
             if (package.size() >= maxPackageSize) {
                 break;
@@ -640,7 +639,8 @@ bool XSensorProtocol::sendCommand(const QByteArray& cmd)
     }
 
     QString hexStr = fullCommand.toHex(' ').toUpper();
-    qDebug() << "req:" << hexStr << "to" << m_serialPort->portName();
+    if (Commands::F8_REQUEST_IMAGE != cmd)
+        qDebug() << "req:" << hexStr << "to" << m_serialPort->portName();
 
     m_serialPort->write(fullCommand);
 

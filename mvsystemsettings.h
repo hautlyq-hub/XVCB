@@ -46,6 +46,9 @@ private slots:
     void onRBtnXtoggled(bool checked);
     void onRBtnYtoggled(bool checked);
 
+    void onSelectFolderClicked(); // 选择文件夹按钮点击
+    void onConfirmClicked();      // 确认按钮点击
+
     void onComboBoxChanged();
     void savePortSettings();
     void refreshComPorts();
@@ -97,6 +100,7 @@ private:
     QString mCurrentDirX;
     QString mCurrentDirY;
     QString mPreCalFolder;
+    QString mSelectedFolder;
 
     QString mOralAddr;
     int mOralMajor = 3;
@@ -126,7 +130,7 @@ private:
 
     // 文件操作
     void SaveRawImage(const HWImageData& data);
-    void GenerateCalibrationFiles();
+    void GenerateCalibrationFiles(int num);
 
     // 工具函数
     bool canStartExposure() const;

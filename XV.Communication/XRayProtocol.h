@@ -46,13 +46,13 @@ struct ExposureParams
     {
         ma_min = 0.01f;
         ma_max = 3.00f;
-        ma_val = 0.0f;
+        ma_val = 0.5f;
         kvs_min = 0.0f;
-        kvs_max = 2.60f;
+        kvs_max = 2.40f;
         kv_min = 0.01f;
-        kv_max = 2.50f;
+        kv_max = 2.29f;
         kv_val = 1.6666f;
-        exp_time_ms = 1000;
+        exp_time_ms = 160;
         waitXray = true;
     }
 };

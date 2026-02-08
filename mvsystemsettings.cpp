@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
+#include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
 #include <QMutex>
@@ -93,7 +94,6 @@ void mvsystemsettings::initData()
         mToothPosition.append(view);
     }
 
-    CleanupEnv();
 }
 
 // 在初始化函数中
@@ -199,6 +199,12 @@ void mvsystemsettings::Init()
     connect(ui->mBtnGenerate, &QPushButton::clicked, this, &mvsystemsettings::onBtnGenerateClicked);
     connect(ui->mRBtnX, &QRadioButton::toggled, this, &mvsystemsettings::onRBtnXtoggled);
     connect(ui->mRBtnY, &QRadioButton::toggled, this, &mvsystemsettings::onRBtnYtoggled);
+
+    connect(ui->pushButtonSelect,
+            &QPushButton::clicked,
+            this,
+            &mvsystemsettings::onSelectFolderClicked);
+    connect(ui->pushButtonConfirm, &QPushButton::clicked, this, &mvsystemsettings::onConfirmClicked);
 
     // 初始化状态显示
     ui->mLblStatusInfo->setText("");
@@ -328,14 +334,8 @@ void mvsystemsettings::onBtnGenerateClicked()
     ui->mBtnGenerate->setEnabled(false);
 
     try {
-        // if (!mHWImageDataX || !mHWImageDataY) {
-        //     updateInfoPanel(tr("No raw images found"), Warning);
-        //     ui->mBtnGenerate->setEnabled(true);
-        //     return;
-        // }
-
         // 在后台线程中生成校准文件
-        QFuture<void> future = QtConcurrent::run([this]() { GenerateCalibrationFiles(); });
+        QFuture<void> future = QtConcurrent::run([this]() { GenerateCalibrationFiles(2); });
 
         QFutureWatcher<void>* watcher = new QFutureWatcher<void>();
         connect(watcher, &QFutureWatcher<void>::finished, [this, watcher]() {
@@ -344,6 +344,60 @@ void mvsystemsettings::onBtnGenerateClicked()
             watcher->deleteLater();
         });
         watcher->setFuture(future);
+
+        CleanupEnv();
+
+    } catch (...) {
+        updateInfoPanel(tr("Failed to generate calibration files"), Error);
+        ui->mBtnGenerate->setEnabled(true);
+    }
+}
+
+void mvsystemsettings::onSelectFolderClicked()
+{
+    QString folderPath = QFileDialog::getExistingDirectory(
+        this,
+        tr("Select Folder"),
+        ui->lineEditSelectFolder->text(),      // 默认路径（上一次选择的路径）
+        QFileDialog::ShowDirsOnly              // 只显示文件夹
+            | QFileDialog::DontResolveSymlinks // 不解析符号链接
+    );
+
+    if (!folderPath.isEmpty()) {
+        ui->lineEditSelectFolder->setText(folderPath);
+    }
+}
+
+void mvsystemsettings::onConfirmClicked()
+{
+    mSelectedFolder = ui->lineEditSelectFolder->text();
+
+    if (mSelectedFolder.isEmpty()) {
+        QMessageBox::warning(this, tr("警告"), tr("请先选择文件夹！"));
+        return;
+    }
+
+    QDir dir(mSelectedFolder);
+    if (!dir.exists()) {
+        QMessageBox::warning(this, tr("警告"), tr("选择的文件夹不存在！"));
+        return;
+    }
+
+    ui->mBtnGenerate->setEnabled(false);
+
+    try {
+        // 在后台线程中生成校准文件
+        QFuture<void> future = QtConcurrent::run([this]() { GenerateCalibrationFiles(1); });
+
+        QFutureWatcher<void>* watcher = new QFutureWatcher<void>();
+        connect(watcher, &QFutureWatcher<void>::finished, [this, watcher]() {
+            updateInfoPanel(tr("Calibration files generated successfully"), Warning);
+            ui->mBtnGenerate->setEnabled(true);
+            watcher->deleteLater();
+        });
+        watcher->setFuture(future);
+
+        CleanupEnv();
 
     } catch (...) {
         updateInfoPanel(tr("Failed to generate calibration files"), Error);
@@ -615,18 +669,41 @@ void mvsystemsettings::CleanupEnv()
             view->ImgFileName = "";
         }
     }
+
+    ui->mImagePnl1->clear();
+    ui->mImagePnl2->clear();
+    ui->mImagePnl3->clear();
+    ui->mImagePnl4->clear();
+    ui->mImagePnl5->clear();
+    ui->mImagePnl6->clear();
+    ui->mImagePnl7->clear();
+    ui->mImagePnl8->clear();
+
+    // 或者使用setPixmap
+    ui->mImagePnl1->setPixmap(QPixmap());
+    ui->mImagePnl2->setPixmap(QPixmap());
+    ui->mImagePnl3->setPixmap(QPixmap());
+    ui->mImagePnl4->setPixmap(QPixmap());
+    ui->mImagePnl5->setPixmap(QPixmap());
+    ui->mImagePnl6->setPixmap(QPixmap());
+    ui->mImagePnl7->setPixmap(QPixmap());
+    ui->mImagePnl8->setPixmap(QPixmap());
 }
 
-void mvsystemsettings::GenerateCalibrationFiles()
+void mvsystemsettings::GenerateCalibrationFiles(int num)
 {
     QString _file;
-    for (int i = 0; i < 2; i++) {
-        if (i == 0)
-            _file = mCurrentDirX;
-        else
-            _file = mCurrentDirY;
+    for (int i = 0; i < num; i++) {
+        if (num == 1) {
+            _file = mSelectedFolder;
+        } else {
+            if (i == 0)
+                _file = mPreCalFolder + "/" + mCurrentDirX;
+            else
+                _file = mPreCalFolder + "/" + mCurrentDirY;
+        }
 
-        QDir directory(mPreCalFolder + "/" + _file);
+        QDir directory(_file);
         directory.setFilter(QDir::Files);
         QFileInfoList fileList = directory.entryInfoList();
         if (fileList.size() == 0) {

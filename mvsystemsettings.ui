@@ -892,7 +892,7 @@
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_11">
                   <item>
-                   <widget class="QLineEdit" name="lineEdit">
+                   <widget class="QLineEdit" name="lineEditSelectFolder">
                     <property name="minimumSize">
                      <size>
                       <width>120</width>
@@ -919,7 +919,7 @@
                    </spacer>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="pushButton">
+                   <widget class="QPushButton" name="pushButtonSelect">
                     <property name="minimumSize">
                      <size>
                       <width>80</width>
@@ -941,7 +941,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="pushButton_2">
+                   <widget class="QPushButton" name="pushButtonConfirm">
                     <property name="minimumSize">
                      <size>
                       <width>80</width>

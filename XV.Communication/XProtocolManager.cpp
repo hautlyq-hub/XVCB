@@ -925,6 +925,10 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
             if (portName == name) {
                 isX == setting.orientation == 0;
                 isMain = setting.description == "true" ? true : false;
+                qDebug() << "================";
+                qDebug() << name << isX;
+                qDebug() << name << setting.description;
+                qDebug() << "================";
                 break;
             }
         }
@@ -936,6 +940,8 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
                 [this, isXmain]() { m_sensor1->sendExposureF6(isXmain, m_xRayIndex != 0); },
                 Qt::QueuedConnection);
         }
+        qDebug() << "m_sensor1 sendExposureF6被调用 - isMain:" << isMain
+                 << ", useXRayIndex:" << m_xRayIndex;
 
         QThread::msleep(10);
 
@@ -945,6 +951,8 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
                 [this, isXmain]() { m_sensor2->sendExposureF6(!isXmain, m_xRayIndex != 0); },
                 Qt::QueuedConnection);
         }
+        qDebug() << "m_sensor2 sendExposureF6被调用 - isMain:" << !isMain
+                 << ", useXRayIndex:" << m_xRayIndex;
 
         // QThread::msleep(500); // 新增延迟
 

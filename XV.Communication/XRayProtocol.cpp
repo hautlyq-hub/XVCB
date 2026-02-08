@@ -37,7 +37,7 @@ XRayProtocol::XRayProtocol(QObject *parent)
     , m_serialPort(nullptr)
     , m_lastError(XRAY_SUCCESS)
     , m_coolingRemaining(0)
-    , m_expTimeMs(30000)
+    , m_expTimeMs(200)
     , m_respTimeout(1000)
 {
     m_exposureTimer = new QTimer(this);
@@ -120,7 +120,7 @@ bool XRayProtocol::isConnected() const
 
 bool XRayProtocol::startExposure()
 {
-    QMutexLocker locker(&m_serialMutex);
+    // QMutexLocker locker(&m_serialMutex);
 
     // 构建开始曝光数据
     m_exposureStartData.clear();
@@ -140,12 +140,12 @@ bool XRayProtocol::startExposure()
     // 记录开始时间
     m_over18SecSent = false;
     m_exposureStartTime = QDateTime::currentDateTime();
-
+    qDebug() << m_exposureStartTime.toString("yyyyMMdd_HHmmss.zzz");
     // 启动定时器
     if (m_exposureTimer) {
         m_exposureTimer->disconnect();
         connect(m_exposureTimer, &QTimer::timeout, this, &XRayProtocol::onExposureTimeout);
-        m_exposureTimer->start(100);
+        m_exposureTimer->start(50);
     }
 
     return true;
@@ -661,6 +661,8 @@ void XRayProtocol::onExposureTimeout()
     if (elapsed >= m_expTimeMs + 2000) {
         m_exposureTimer->stop();
         if (sendCommand(0x1B, m_exposureStopData)) {
+            qDebug() << "=========" << QString::number(elapsed);
+            qDebug() << "=========" << QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss.zzz");
             QByteArray resp = readResponse(m_respTimeout);
         }
         emit exposureStopped();
