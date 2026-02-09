@@ -256,6 +256,8 @@ void mvsystemsettings::onReconnecttoggled()
 
     onComboBoxChanged();
 
+    qApp->processEvents();
+
     if (mManager) {
         mManager->unInitSerialPort();
 
