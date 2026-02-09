@@ -9,24 +9,36 @@
 #include "XV.Tool/XDConfigFileManager.h"
 
 // 静态命令数据初始化（保持不变）
-QByteArray XSensorProtocol::Commands::F4_POWER_ON_3V3 = QByteArray::fromHex("F4F40400000000000000");
-QByteArray XSensorProtocol::Commands::F4_POWER_ON = QByteArray::fromHex("F4F40600000000000000");
-QByteArray XSensorProtocol::Commands::F4_POWER_OFF = QByteArray::fromHex("F4F40100000000000000");
-QByteArray XSensorProtocol::Commands::FA_FIND_DEVICE = QByteArray::fromHex("FAFA0200000000000000");
+QByteArray XSensorProtocol::Commands::F4_POWER_ON_3V3 = QByteArray::fromHex(
+    "F4F40400000000000000"); //dui
+QByteArray XSensorProtocol::Commands::F4_POWER_ON = QByteArray::fromHex(
+    "F4F40600000000000000"); //dui
+QByteArray XSensorProtocol::Commands::F4_POWER_OFF = QByteArray::fromHex(
+    "F4F40100000000000000"); //dui
+QByteArray XSensorProtocol::Commands::FA_FIND_DEVICE = QByteArray::fromHex(
+    "FAFA0200000000000000"); //dui
 QByteArray XSensorProtocol::Commands::F5_VOLTAGE_CONFIG = QByteArray::fromHex(
     "F5F50500000000000000");
+
 QByteArray XSensorProtocol::Commands::F5_CONFIG = QByteArray::fromHex(
     "F5F501050000000000267FFF000001020A101A1810E0181B194C067C115C11DC0E820F200D5417001500142016C016"
     "C4");
+QByteArray XSensorProtocol::Commands::F5_READ_CONFIG = QByteArray::fromHex(
+    "F5F50100000000000026FFFF800081028A109A1890E4981B994C867C915C91DC8E828F208D5497009500942096C096"
+    "C4");
+QByteArray XSensorProtocol::Commands::F5_EXTERNAL_BIAL = QByteArray::fromHex(
+    "F5F5050200000000000805DC057704B04E20");
+QByteArray XSensorProtocol::Commands::F5_READ_EXTERNAL_BIAL = QByteArray::fromHex(
+    "F5F50503000000000000");
 
 QByteArray XSensorProtocol::Commands::F6_ENABLE_EXPOSE = QByteArray::fromHex(
-    "F6F6010000000000000A0002000000C800007530"); //5
+    "F6F6010000001388000A0002000000642CB88028"); //5
 QByteArray XSensorProtocol::Commands::F6_ENABLE_EXPOSE_02 = QByteArray::fromHex(
     "F6F6010000000000000A000200DB0F4907500000"); //30
 QByteArray XSensorProtocol::Commands::F6_ENABLE_EXPOSE_CALI = QByteArray::fromHex(
-    "F6F6010000000000000A0002000000C800007530"); // 20.5
+    "F6F6010000001388000A0002000000642CB88028"); // 20.5
 QByteArray XSensorProtocol::Commands::F6_ENABLE_EXPOSE_1MIN = QByteArray::fromHex(
-    "F6F6010000000000000A0002091131B407500000"); //20.5
+    "F6F6010000000000000A0002000000C800007530"); //20.5
 
 QByteArray XSensorProtocol::Commands::F8_REQUEST_IMAGE = QByteArray::fromHex(
     "F8F80100000000000000");
@@ -41,8 +53,8 @@ XSensorProtocol::XSensorProtocol(QObject* parent)
     , m_poweredOn(false)
     , m_autoInitialized(false)
     , m_baudRate(2000000)
-    , m_readTimeout(100)
-    , m_writeTimeout(100)
+    , m_readTimeout(500)
+    , m_writeTimeout(500)
     , m_echoTimeout(500)
     , m_exposureTimeout(30000)
     , m_isBusy(false)
@@ -98,13 +110,6 @@ bool XSensorProtocol::echoSerialPort()
     m_serialPort->clear();
 
     QThread::msleep(200);
-
-    if (sendCommand(Commands::F4_POWER_OFF)) {
-        readResponse(m_readTimeout);
-    } else {
-        qDebug() << "F4_POWER_OFF";
-        return false;
-    }
 
     if (!powerOn()) {
         return false;
@@ -240,72 +245,111 @@ void XSensorProtocol::acquireImage()
         emit statusChanged(tr("Acquiring image..."));
 
         int cols = 352, rows = 425, bitsAllocated = 16;
-        int rawImgTotalBytes = cols * rows * bitsAllocated / 8;
-        int validBytesInAPkg = 500;
+        int rawImgTotalBytes = cols * rows * bitsAllocated / 8; // 299200 bytes
 
-        int callTimes = (int) ceil((double) rawImgTotalBytes / (double) validBytesInAPkg);
+        // 协议参数
+        int totalPackageSize = 512;                                         // 每包总大小
+        int headerSize = 10;                                                // 帧头大小
+        int crcSize = 2;                                                    // CRC校验大小
+        int validBytesPerPackage = totalPackageSize - headerSize - crcSize; // 500字节
 
-        QByteArray receivedDataBytes(callTimes * validBytesInAPkg, 0);
-        QByteArray validRawDataInByte(rawImgTotalBytes, 0);
+        int totalPackages = (rawImgTotalBytes + validBytesPerPackage - 1)
+                            / validBytesPerPackage; // 599包
+
+        // qDebug() << "[" << m_serialPort->portName() << "] Image size:" << rawImgTotalBytes
+        //          << "bytes";
+        // qDebug() << "[" << m_serialPort->portName() << "] Package structure:"
+        //          << "Header=" << headerSize << "bytes,"
+        //          << "Data=" << validBytesPerPackage << "bytes,"
+        //          << "CRC=" << crcSize << "bytes";
+        // qDebug() << "[" << m_serialPort->portName() << "] Total packages:" << totalPackages;
+
+        // 分配接收缓冲区
+        QByteArray receivedDataBytes(rawImgTotalBytes, 0);
         bool imgRetrieved = false;
         QString errorCode = "";
 
         try {
-            int tempIndex = 0;
             QElapsedTimer sw;
             sw.start();
 
             int realGetBags = 1;
+            int currentOffset = 0; // 当前写入偏移量
 
-            for (int i = 0; i < callTimes; i++) {
+            for (int i = 0; i < totalPackages; i++) {
                 QByteArray rd = retrieveImageByte(errorCode, realGetBags, i);
 
-                if (!rd.isEmpty()) {
-                    int bagNum = (static_cast<quint8>(rd[8]) << 8) | static_cast<quint8>(rd[9]);
+                if (!rd.isEmpty() && rd.size() >= totalPackageSize) {
+                    // 正确提取有效数据：去掉前10字节帧头，去掉最后2字节CRC，取中间的500字节
+                    // rd[10] 到 rd[509] 是有效数据（索引从0开始）
+                    int dataStartIndex = headerSize;               // 10
+                    int dataEndIndex = totalPackageSize - crcSize; // 510
+                    int dataSize = dataEndIndex - dataStartIndex;  // 500字节
 
-                    if (bagNum == realGetBags) {
-                        for (int index = 10; index < validBytesInAPkg + 10; index++) {
-                            if (tempIndex < receivedDataBytes.size()) {
-                                receivedDataBytes[tempIndex] = rd[index];
-                                ++tempIndex;
-                            }
-                        }
-                        realGetBags++;
+                    // 确保数据大小正确
+                    if (rd.size() >= dataEndIndex) {
+                        QByteArray validData = rd.mid(dataStartIndex, dataSize);
 
-                        if ((i + 1) % 10 == 0 || i == callTimes - 1) {
+                        // 计算实际可复制的数据大小（最后一包可能不足500字节）
+                        int copySize = qMin(validData.size(), rawImgTotalBytes - currentOffset);
+
+                        if (copySize > 0) {
+                            // 按顺序写入缓冲区
+                            memcpy(receivedDataBytes.data() + currentOffset,
+                                   validData.constData(),
+                                   copySize);
+
+                            currentOffset += copySize;
+                            realGetBags++;
+
+                            // 更新进度
+                            // int progress = ((i + 1) * 100) / totalPackages;
+                            // emit statusChanged(tr("Acquiring image... %1%").arg(progress));
                         }
                     } else {
+                        qWarning() << "[" << m_serialPort->portName() << "] Package" << (i + 1)
+                                   << "size too small:" << rd.size();
                         allGot = false;
                         break;
                     }
                 } else {
-                    allGot = false;
                     qWarning() << "[" << m_serialPort->portName() << tr("] Failed to get package")
                                << (i + 1) << ":" << errorCode;
+                    allGot = false;
                     break;
                 }
             }
 
-            if (allGot) {
-                validRawDataInByte = receivedDataBytes.left(
-                    qMin(receivedDataBytes.size(), rawImgTotalBytes));
-
+            if (allGot && currentOffset == rawImgTotalBytes) {
                 imgRetrieved = true;
+                qDebug() << "[" << m_serialPort->portName() << "] Image acquisition completed in"
+                         << sw.elapsed() << "ms"
+                         << "total bytes:" << currentOffset;
+
+                // 可选：验证CRC
+                // 如果要验证CRC，需要在接收时保存每个包的CRC值
+
             } else {
                 qWarning() << "[" << m_serialPort->portName()
-                           << tr("] Failed to retrieve image data:") << errorCode;
+                           << "] Image acquisition incomplete:" << currentOffset << "/"
+                           << rawImgTotalBytes << "bytes";
+                allGot = false;
             }
+
         } catch (const std::exception& ex) {
             qCritical() << "[" << m_serialPort->portName() << tr("] Image acquisition error:")
                         << ex.what();
             allGot = false;
         }
 
-        if (imgRetrieved && !validRawDataInByte.isEmpty()) {
-            QByteArray processedImage = processImageData(validRawDataInByte, cols, rows);
+        if (imgRetrieved && !receivedDataBytes.isEmpty()) {
+            QByteArray processedImage = processImageData(receivedDataBytes, cols, rows);
+
             if (!processedImage.isEmpty()) {
                 emit imageReady(processedImage);
                 emit statusChanged(tr("Image acquired successfully"));
+                qDebug() << "[" << m_serialPort->portName()
+                         << "] Image processing successful, output size:" << processedImage.size();
             } else {
                 allGot = false;
                 qWarning() << "[" << m_serialPort->portName() << tr("] Image processing failed");
@@ -326,6 +370,8 @@ void XSensorProtocol::acquireImage()
         if (m_serialPort && m_poweredOn) {
             powerOff();
         }
+    } else {
+        qDebug() << "[" << m_serialPort->portName() << "] Image acquisition successful";
     }
 
     m_isBusy = false;
@@ -339,14 +385,14 @@ QByteArray XSensorProtocol::retrieveImageByte(QString& errorCode, int& realGetBa
     QElapsedTimer timer;
     timer.start();
 
+    m_serialPort->clear(QSerialPort::Input);
+    QThread::msleep(10);
+
     if (!sendCommand(Commands::F8_REQUEST_IMAGE)) {
         errorCode = QString(tr("Failed to request package %1")).arg(packageIndex + 1);
         qWarning() << "[" << m_serialPort->portName() << "]" << errorCode;
         return QByteArray();
     }
-
-    m_serialPort->clear(QSerialPort::Input);
-    QThread::msleep(10);
 
     QByteArray package;
     const int maxPackageSize = 512;
@@ -359,6 +405,7 @@ QByteArray XSensorProtocol::retrieveImageByte(QString& errorCode, int& realGetBa
             if (data.isEmpty()) {
                 continue;
             }
+            qDebug() << "resp_raw:" << data.toHex(' ').toUpper();
 
             if (package.isEmpty() && data.size() >= 2) {
                 int startIndex = -1;
@@ -384,9 +431,9 @@ QByteArray XSensorProtocol::retrieveImageByte(QString& errorCode, int& realGetBa
                 }
             }
 
+            qDebug() << "resp_pro:" << data.toHex(' ').toUpper();
+
             package.append(data);
-            // qDebug() << "[" << m_serialPort->portName() << tr("] Read") << data.size()
-            //          << tr("bytes, total:") << package.size();
 
             if (package.size() >= maxPackageSize) {
                 break;
@@ -432,25 +479,41 @@ QByteArray XSensorProtocol::retrieveImageByte(QString& errorCode, int& realGetBa
 
 QByteArray XSensorProtocol::processImageData(const QByteArray& rawData, int cols, int rows)
 {
+    int expectedSize = cols * rows * 2;
+    if (rawData.size() < expectedSize) {
+        return QByteArray();
+    }
+
+    // 第一步：按照Python方式交换字节
+    QByteArray swappedData;
+    swappedData.reserve(expectedSize);
+
+    const quint8* src = reinterpret_cast<const quint8*>(rawData.constData());
+
+    for (int i = 0; i < expectedSize; i++) {
+        if (i % 2 == 0) {
+            swappedData.append(static_cast<char>(src[i + 1]));
+            swappedData.append(static_cast<char>(src[i]));
+        }
+    }
+
+    // 第二步：裁剪图像
     const int crop = 4;
     const int newW = cols - 2 * crop;
     const int newH = rows - 2 * crop;
 
-    if (rawData.size() < cols * rows * 2 || newW <= 0 || newH <= 0) {
+    if (newW <= 0 || newH <= 0) {
         return QByteArray();
     }
 
     QByteArray result(newW * newH * 2, 0);
-    const quint8* src = reinterpret_cast<const quint8*>(rawData.constData());
+    const quint8* swappedSrc = reinterpret_cast<const quint8*>(swappedData.constData());
     quint8* dst = reinterpret_cast<quint8*>(result.data());
 
     for (int y = crop; y < rows - crop; y++) {
-        const quint8* rowStart = src + y * cols * 2;
-        for (int x = crop; x < cols - crop; x++) {
-            const quint8* pixel = rowStart + x * 2;
-            *dst++ = pixel[1];
-            *dst++ = pixel[0];
-        }
+        const quint8* rowStart = swappedSrc + y * cols * 2;
+        int dstOffset = (y - crop) * newW * 2;
+        memcpy(dst + dstOffset, rowStart + crop * 2, newW * 2);
     }
 
     return result;
@@ -487,16 +550,17 @@ bool XSensorProtocol::getVersion()
     m_serialPort->clear();
     QThread::msleep(100);
 
-    if (!sendCommand(Commands::FA_FIND_DEVICE))
+    if (sendCommand(Commands::FA_FIND_DEVICE)) {
+        QByteArray response = readResponse(m_readTimeout);
+        if (response.isEmpty()) {
+            return false;
+        } else {
+            if (!parseDeviceInfo(response))
+                return false;
+        }
+    } else {
         return false;
-
-    QByteArray response = readResponse(1000);
-    if (response.size() < 16)
-        return false;
-
-    if (!parseDeviceInfo(response))
-        return false;
-
+    }
     return true;
 }
 
@@ -517,16 +581,33 @@ XSensorProtocol::DeviceInfo XSensorProtocol::getDeviceInfo()
 
 bool XSensorProtocol::powerOn()
 {
-    if (sendCommand(Commands::F4_POWER_ON_3V3)) {
-        QByteArray response = readResponse(1000);
+    if (sendCommand(Commands::F4_POWER_OFF)) {
+        QByteArray response = readResponse(m_readTimeout);
+        if (response.isEmpty()) {
+            return false;
+        }
     } else {
         return false;
     }
 
-    QThread::msleep(300);
+    QThread::msleep(500);
+
+    if (sendCommand(Commands::F4_POWER_ON_3V3)) {
+        QByteArray response = readResponse(m_readTimeout);
+        if (response.isEmpty()) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    QThread::msleep(500);
 
     if (sendCommand(Commands::F4_POWER_ON)) {
-        QByteArray response = readResponse(1000);
+        QByteArray response = readResponse(m_readTimeout);
+        if (response.isEmpty()) {
+            return false;
+        }
     } else {
         return false;
     }
@@ -539,16 +620,22 @@ bool XSensorProtocol::powerOff()
 {
     if (m_poweredOn) {
         if (sendCommand(Commands::F8_TO_LOWER_POWER)) {
-            readResponse(m_readTimeout);
+            QByteArray response = readResponse(m_readTimeout);
+            if (response.isEmpty()) {
+                return false;
+            }
         } else {
             return false;
         }
 
-        QThread::msleep(200);
+        QThread::msleep(500);
     }
 
     if (sendCommand(Commands::F4_POWER_OFF)) {
-        readResponse(m_readTimeout);
+        QByteArray response = readResponse(m_readTimeout);
+        if (response.isEmpty()) {
+            return false;
+        }
     } else {
         return false;
     }
@@ -583,12 +670,6 @@ bool XSensorProtocol::setupWorkMode(bool b)
             m_serialPort->readAll();
         }
 
-        if (m_poweredOn) {
-            qDebug() << tr("Device is already powered on, turning off first...");
-            powerOff();
-            QThread::msleep(1000);
-        }
-
         if (!powerOn()) {
             m_lastError = tr("Failed to power on device");
             qWarning() << m_lastError;
@@ -596,8 +677,6 @@ bool XSensorProtocol::setupWorkMode(bool b)
             m_exposing = false;
             return false;
         }
-
-        QThread::msleep(500);
 
         if (!sendF5Config()) {
             qWarning() << tr("F5 config failed");
@@ -637,11 +716,18 @@ bool XSensorProtocol::sendCommand(const QByteArray& cmd)
         m_lastError = tr("Failed to build command");
         return false;
     }
-
     QString hexStr = fullCommand.toHex(' ').toUpper();
+
+    static bool flag = true;
+
     if (Commands::F8_REQUEST_IMAGE != cmd)
         qDebug() << "req:" << hexStr << "to" << m_serialPort->portName();
-
+    else {
+        if (flag) {
+            flag = false;
+            qDebug() << "req:" << hexStr << "to" << m_serialPort->portName();
+        }
+    }
     m_serialPort->write(fullCommand);
 
     if (!m_serialPort->waitForBytesWritten(m_writeTimeout)) {
@@ -676,9 +762,12 @@ QByteArray XSensorProtocol::readResponse(int timeout)
         QCoreApplication::processEvents();
     }
 
-    // qDebug() << "resp:" << response.toHex(' ').toUpper();
+    if (!response.isEmpty() && validateCRC(response)) {
+        // qDebug() << "resp:" << packet.toHex(' ').toUpper();
+        return response;
+    }
 
-    return response;
+    return QByteArray();
 }
 
 void XSensorProtocol::cleanupAfterImageAcquisition(bool success)
@@ -707,67 +796,118 @@ void XSensorProtocol::cleanupAfterImageAcquisition(bool success)
 
 bool XSensorProtocol::sendF5Config()
 {
-    // 1. 主配置命令
-    if (!sendCommand(Commands::F5_CONFIG)) {
-        qWarning() << tr("Failed to send F5 config command");
-        return false;
-    }
-
-    QByteArray response = readResponse(m_readTimeout);
-    if (response.isEmpty()) {
-        qWarning() << tr("No response to F5 config");
-        return false;
-    }
-
-    // 2. 电压配置
-    if (true) {
-        int vset = (int) (0.75 * 2000);
-        int vth1 = (int) (0.70 * 2000);
-        int vth2 = (int) (0.60 * 2000);
-        int vref3 = (int) (3.0 * 2000);
-
-        QByteArray voltageCmd;
-        voltageCmd.append(static_cast<char>(0xF5));
-        voltageCmd.append(static_cast<char>(0xF5));
-        voltageCmd.append(static_cast<char>(0x05));
-        voltageCmd.append(static_cast<char>(0x02));
-        voltageCmd.append(static_cast<char>(0x00));
-        voltageCmd.append(static_cast<char>(0x00));
-        voltageCmd.append(static_cast<char>(0x00));
-        voltageCmd.append(static_cast<char>(0x00));
-        voltageCmd.append(static_cast<char>(0x00));
-        voltageCmd.append(static_cast<char>(0x08));
-
-        voltageCmd.append(static_cast<char>(vset & 0xFF));
-        voltageCmd.append(static_cast<char>((vset >> 8) & 0xFF));
-        voltageCmd.append(static_cast<char>(vth1 & 0xFF));
-        voltageCmd.append(static_cast<char>((vth1 >> 8) & 0xFF));
-        voltageCmd.append(static_cast<char>(vth2 & 0xFF));
-        voltageCmd.append(static_cast<char>((vth2 >> 8) & 0xFF));
-        voltageCmd.append(static_cast<char>(vref3 & 0xFF));
-        voltageCmd.append(static_cast<char>((vref3 >> 8) & 0xFF));
-
-        if (!sendCommand(voltageCmd)) {
-            qWarning() << tr("Failed to send voltage config command");
-            return false;
-        }
-
+    if (sendCommand(Commands::F5_CONFIG)) {
         QByteArray response = readResponse(m_readTimeout);
         if (response.isEmpty()) {
-            qWarning() << tr("No response to voltage config");
             return false;
+        } else {
+            if (response.size() >= 2 && static_cast<quint8>(response[0]) == 0xF5
+                && static_cast<quint8>(response[1]) == 0xF5) {
+                qDebug() << tr("F5 config successful!");
+                qDebug() << "resp" << response.toHex(' ');
+            } else {
+                qDebug() << "resp" << response.toHex(' ');
+                return false;
+            }
         }
-
-        QThread::msleep(500);
-    }
-
-    if (response.size() >= 2 && static_cast<quint8>(response[0]) == 0xF5
-        && static_cast<quint8>(response[1]) == 0xF5) {
-        qDebug() << tr("F5 config successful!");
     } else {
-        qDebug() << "resp" << response.toHex(' ');
         return false;
     }
+
+    if (sendCommand(Commands::F5_READ_CONFIG)) {
+        QByteArray response = readResponse(m_readTimeout);
+        if (response.isEmpty()) {
+            return false;
+        } else {
+            if (response.size() >= 2 && static_cast<quint8>(response[0]) == 0xF5
+                && static_cast<quint8>(response[1]) == 0xF5) {
+                qDebug() << tr("F5 config echo successful!");
+                qDebug() << "resp" << response.toHex(' ');
+            } else {
+                qDebug() << "resp" << response.toHex(' ');
+                return false;
+            }
+        }
+    } else {
+        return false;
+    }
+
+    if (sendCommand(Commands::F5_EXTERNAL_BIAL)) {
+        QByteArray response = readResponse(m_readTimeout);
+        if (response.isEmpty()) {
+            return false;
+        } else {
+            if (response.size() >= 2 && static_cast<quint8>(response[0]) == 0xF5
+                && static_cast<quint8>(response[1]) == 0xF5) {
+                qDebug() << tr("F5 exernal bial successful!");
+                qDebug() << "resp" << response.toHex(' ');
+            } else {
+                qDebug() << "resp" << response.toHex(' ');
+                return false;
+            }
+        }
+    } else {
+        return false;
+    }
+
+    if (sendCommand(Commands::F5_READ_EXTERNAL_BIAL)) {
+        QByteArray response = readResponse(m_readTimeout);
+        if (response.isEmpty()) {
+            return false;
+        } else {
+            if (response.size() >= 2 && static_cast<quint8>(response[0]) == 0xF5
+                && static_cast<quint8>(response[1]) == 0xF5) {
+                qDebug() << tr("F5 read exernal bial successful!");
+                qDebug() << "resp" << response.toHex(' ');
+            } else {
+                qDebug() << "resp" << response.toHex(' ');
+                return false;
+            }
+        }
+    } else {
+        return false;
+    }
+    // 2. 电压配置
+    // if (true) {
+    //     int vset = (int) (0.75 * 2000);
+    //     int vth1 = (int) (0.70 * 2000);
+    //     int vth2 = (int) (0.60 * 2000);
+    //     int vref3 = (int) (3.0 * 2000);
+
+    //     QByteArray voltageCmd;
+    //     voltageCmd.append(static_cast<char>(0xF5));
+    //     voltageCmd.append(static_cast<char>(0xF5));
+    //     voltageCmd.append(static_cast<char>(0x05));
+    //     voltageCmd.append(static_cast<char>(0x02));
+    //     voltageCmd.append(static_cast<char>(0x00));
+    //     voltageCmd.append(static_cast<char>(0x00));
+    //     voltageCmd.append(static_cast<char>(0x00));
+    //     voltageCmd.append(static_cast<char>(0x00));
+    //     voltageCmd.append(static_cast<char>(0x00));
+    //     voltageCmd.append(static_cast<char>(0x08));
+
+    //     voltageCmd.append(static_cast<char>(vset & 0xFF));
+    //     voltageCmd.append(static_cast<char>((vset >> 8) & 0xFF));
+    //     voltageCmd.append(static_cast<char>(vth1 & 0xFF));
+    //     voltageCmd.append(static_cast<char>((vth1 >> 8) & 0xFF));
+    //     voltageCmd.append(static_cast<char>(vth2 & 0xFF));
+    //     voltageCmd.append(static_cast<char>((vth2 >> 8) & 0xFF));
+    //     voltageCmd.append(static_cast<char>(vref3 & 0xFF));
+    //     voltageCmd.append(static_cast<char>((vref3 >> 8) & 0xFF));
+
+    //     if (!sendCommand(voltageCmd)) {
+    //         qWarning() << tr("Failed to send voltage config command");
+    //         return false;
+    //     }
+
+    //     QByteArray response = readResponse(m_readTimeout);
+    //     if (response.isEmpty()) {
+    //         qWarning() << tr("No response to voltage config");
+    //         return false;
+    //     }
+
+    //     QThread::msleep(500);
+    // }
 
     QThread::msleep(100);
 
@@ -790,8 +930,10 @@ bool XSensorProtocol::sendF8ImageRequest()
 {
     if (sendCommand(Commands::F8_REQUEST_IMAGE)) {
         QByteArray response = readResponse(m_readTimeout);
+        if (response.isEmpty()) {
+            return false;
+        }
     } else {
-        m_lastError = tr("Failed to send image request");
         return false;
     }
     return true;
@@ -823,6 +965,14 @@ bool XSensorProtocol::parseDeviceInfo(const QByteArray& data)
     if (data.size() >= 34) {
         m_deviceInfo.powerSN = bytesToHexString(data.mid(22, 12));
     }
+
+    // 打印设备信息
+    qDebug() << "=== Device Info ===";
+    qDebug() << "Version:" << m_deviceInfo.version;
+    qDebug() << "Power Version:" << m_deviceInfo.powerVersion;
+    qDebug() << "SN:" << m_deviceInfo.sn;
+    qDebug() << "Power SN:" << m_deviceInfo.powerSN;
+    qDebug() << "===================";
 
     return !m_deviceInfo.version.isEmpty() && m_deviceInfo.version != "0.0";
 }

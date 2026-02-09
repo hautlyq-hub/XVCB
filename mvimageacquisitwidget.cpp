@@ -345,98 +345,108 @@ void mvImageAcquisitWidget::onFinishedButton()
 
 void mvImageAcquisitWidget::onStartButton()
 {
-#ifdef QT_DEBUG
-    imagePathX = "/home/pi/XVBVThiness/build/config/model/1.raw";
-    imagePathY = "/home/pi/XVBVThiness/build/config/model/2.raw";
-    ui->mStateShowStackWidget->setCurrentIndex(1);
+    if (false) {
+        imagePathX = "/home/pi/XVBVThiness/build/config/model/1.raw";
+        imagePathY = "/home/pi/XVBVThiness/build/config/model/2.raw";
+        ui->mStateShowStackWidget->setCurrentIndex(1);
 
-    StatusCode status;
-    cv::Mat lr_profile, ud_profile, lr_img, ud_img;
-    MeasurementData measure_data;
+        StatusCode status;
+        cv::Mat lr_profile, ud_profile, lr_img, ud_img;
+        MeasurementData measure_data;
 
-    cv::Size raw_size(344, 417);
-    cv::Size crop_size(304, 137);
+        cv::Size raw_size(344, 417);
+        cv::Size crop_size(304, 137);
 
-    std::tie(status, lr_profile, ud_profile, lr_img, ud_img, measure_data) = detector->measure(
-        imagePathX.toStdString(), imagePathY.toStdString(), raw_size, "uint16", crop_size, true, 3);
+        std::tie(status, lr_profile, ud_profile, lr_img, ud_img, measure_data)
+            = detector->measure(imagePathX.toStdString(),
+                                imagePathY.toStdString(),
+                                raw_size,
+                                "uint16",
+                                crop_size,
+                                true,
+                                3);
 
-    // 打印状态（枚举转换为整数）
-    qDebug() << "=== Measurement Results ===";
-    qDebug() << "Status:" << static_cast<int>(status);
+        // 打印状态（枚举转换为整数）
+        qDebug() << "=== Measurement Results ===";
+        qDebug() << "Status:" << static_cast<int>(status);
 
-    // 打印LR profile信息（不直接遍历cv::Mat）
-    qDebug() << "LR Profile - rows:" << lr_profile.rows << "cols:" << lr_profile.cols
-             << "channels:" << lr_profile.channels();
-    qDebug() << "LR Profile type:" << lr_profile.type();
+        // 打印LR profile信息（不直接遍历cv::Mat）
+        qDebug() << "LR Profile - rows:" << lr_profile.rows << "cols:" << lr_profile.cols
+                 << "channels:" << lr_profile.channels();
+        qDebug() << "LR Profile type:" << lr_profile.type();
 
-    // 打印UD profile信息
-    qDebug() << "UD Profile - rows:" << ud_profile.rows << "cols:" << ud_profile.cols
-             << "channels:" << ud_profile.channels();
-    qDebug() << "UD Profile type:" << ud_profile.type();
+        // 打印UD profile信息
+        qDebug() << "UD Profile - rows:" << ud_profile.rows << "cols:" << ud_profile.cols
+                 << "channels:" << ud_profile.channels();
+        qDebug() << "UD Profile type:" << ud_profile.type();
 
-    // 打印图像信息
-    qDebug() << "LR Image - rows:" << lr_img.rows << "cols:" << lr_img.cols
-             << "channels:" << lr_img.channels();
-    qDebug() << "UD Image - rows:" << ud_img.rows << "cols:" << ud_img.cols
-             << "channels:" << ud_img.channels();
+        // 打印图像信息
+        qDebug() << "LR Image - rows:" << lr_img.rows << "cols:" << lr_img.cols
+                 << "channels:" << lr_img.channels();
+        qDebug() << "UD Image - rows:" << ud_img.rows << "cols:" << ud_img.cols
+                 << "channels:" << ud_img.channels();
 
-    int zoom = 1;
-    ui->mPreviewFrame->setAxisRange(measure_data.outer_ellipse.x_diameter
-                                            > measure_data.inner_ellipse.y_diameter
-                                        ? measure_data.outer_ellipse.x_diameter * zoom
-                                        : measure_data.inner_ellipse.y_diameter * zoom);
-    ui->mPreviewFrame->setInnerEllipseCenter(QPointF(measure_data.inner_ellipse.x_diameter * zoom,
-                                                     measure_data.inner_ellipse.y_diameter * zoom));
-    ui->mPreviewFrame->setInnerEllipseMinorRadius(measure_data.inner_ellipse.y_diameter / 2 * zoom);
-    ui->mPreviewFrame->setInnerEllipseMajorRadius(measure_data.inner_ellipse.x_diameter / 2 * zoom);
-    ui->mPreviewFrame->setOuterEllipseMinorRadius(measure_data.outer_ellipse.x_diameter / 2 * zoom);
-    ui->mPreviewFrame->setOuterEllipseMajorRadius(measure_data.outer_ellipse.y_diameter / 2 * zoom);
+        int zoom = 1;
+        ui->mPreviewFrame->setAxisRange(measure_data.outer_ellipse.x_diameter
+                                                > measure_data.inner_ellipse.y_diameter
+                                            ? measure_data.outer_ellipse.x_diameter * zoom
+                                            : measure_data.inner_ellipse.y_diameter * zoom);
+        ui->mPreviewFrame->setInnerEllipseCenter(
+            QPointF(measure_data.inner_ellipse.x_diameter * zoom,
+                    measure_data.inner_ellipse.y_diameter * zoom));
+        ui->mPreviewFrame->setInnerEllipseMinorRadius(measure_data.inner_ellipse.y_diameter / 2
+                                                      * zoom);
+        ui->mPreviewFrame->setInnerEllipseMajorRadius(measure_data.inner_ellipse.x_diameter / 2
+                                                      * zoom);
+        ui->mPreviewFrame->setOuterEllipseMinorRadius(measure_data.outer_ellipse.x_diameter / 2
+                                                      * zoom);
+        ui->mPreviewFrame->setOuterEllipseMajorRadius(measure_data.outer_ellipse.y_diameter / 2
+                                                      * zoom);
 
-    ui->mPreviewFrame->setAutoMeasurementAngles(measure_data.wall_thickness.min_angle);
+        ui->mPreviewFrame->setAutoMeasurementAngles(measure_data.wall_thickness.min_angle);
 
-    if (measure_data.wall_thickness.spec_thickness.size() >= 8) {
-        ui->mPreviewFrame->setMeasurementDisplayText(0,
-                                                     QString::number(measure_data.wall_thickness
-                                                                         .spec_thickness[0])
-                                                         + "mm");
-        ui->mPreviewFrame->setMeasurementDisplayText(45,
-                                                     QString::number(measure_data.wall_thickness
-                                                                         .spec_thickness[1])
-                                                         + "mm");
-        ui->mPreviewFrame->setMeasurementDisplayText(90,
-                                                     QString::number(measure_data.wall_thickness
-                                                                         .spec_thickness[2])
-                                                         + "mm");
-        ui->mPreviewFrame->setMeasurementDisplayText(135,
-                                                     QString::number(measure_data.wall_thickness
-                                                                         .spec_thickness[3])
-                                                         + "mm");
-        ui->mPreviewFrame->setMeasurementDisplayText(180,
-                                                     QString::number(measure_data.wall_thickness
-                                                                         .spec_thickness[4])
-                                                         + "mm");
-        ui->mPreviewFrame->setMeasurementDisplayText(225,
-                                                     QString::number(measure_data.wall_thickness
-                                                                         .spec_thickness[5])
-                                                         + "mm");
-        ui->mPreviewFrame->setMeasurementDisplayText(270,
-                                                     QString::number(measure_data.wall_thickness
-                                                                         .spec_thickness[6])
-                                                         + "mm");
-        ui->mPreviewFrame->setMeasurementDisplayText(315,
-                                                     QString::number(measure_data.wall_thickness
-                                                                         .spec_thickness[7])
-                                                         + "mm");
+        if (measure_data.wall_thickness.spec_thickness.size() >= 8) {
+            ui->mPreviewFrame->setMeasurementDisplayText(0,
+                                                         QString::number(measure_data.wall_thickness
+                                                                             .spec_thickness[0])
+                                                             + "mm");
+            ui->mPreviewFrame->setMeasurementDisplayText(45,
+                                                         QString::number(measure_data.wall_thickness
+                                                                             .spec_thickness[1])
+                                                             + "mm");
+            ui->mPreviewFrame->setMeasurementDisplayText(90,
+                                                         QString::number(measure_data.wall_thickness
+                                                                             .spec_thickness[2])
+                                                             + "mm");
+            ui->mPreviewFrame->setMeasurementDisplayText(135,
+                                                         QString::number(measure_data.wall_thickness
+                                                                             .spec_thickness[3])
+                                                             + "mm");
+            ui->mPreviewFrame->setMeasurementDisplayText(180,
+                                                         QString::number(measure_data.wall_thickness
+                                                                             .spec_thickness[4])
+                                                             + "mm");
+            ui->mPreviewFrame->setMeasurementDisplayText(225,
+                                                         QString::number(measure_data.wall_thickness
+                                                                             .spec_thickness[5])
+                                                             + "mm");
+            ui->mPreviewFrame->setMeasurementDisplayText(270,
+                                                         QString::number(measure_data.wall_thickness
+                                                                             .spec_thickness[6])
+                                                             + "mm");
+            ui->mPreviewFrame->setMeasurementDisplayText(315,
+                                                         QString::number(measure_data.wall_thickness
+                                                                             .spec_thickness[7])
+                                                             + "mm");
+        }
+
+        ui->mCurveFrame->addData(measure_data.inner_ellipse.diameter,
+                                 measure_data.outer_ellipse.diameter);
+
+    } else {
+        ui->mStateShowStackWidget->setCurrentIndex(0);
+        StartExposure();
     }
-
-    ui->mCurveFrame->addData(measure_data.inner_ellipse.diameter,
-                             measure_data.outer_ellipse.diameter);
-
-#else
-    ui->mStateShowStackWidget->setCurrentIndex(0);
-    StartExposure();
-
-#endif
 }
 
 void mvImageAcquisitWidget::autoSwitchNextPosition()
@@ -640,14 +650,14 @@ void mvImageAcquisitWidget::AlgSetCorrectionFile(int mOralMajor, QString mOralAd
                      .toStdString());
     auto algorithmic = XPectAlgorithmic::Instance();
 
-    QString filename = DataLocations::getRootConfigPath() + "/Cal/" + QString::number(mOralMajor)
+    QString fileinit = DataLocations::getRootConfigPath() + "/Cal/" + QString::number(mOralMajor)
                        + ".0/" + mOralAddr + "/Calibration.dat";
     ;
 
-    qDebug() << (QString("CorrectionFile:%1").arg(filename).toStdString());
+    qDebug() << (QString("CorrectionFile:%1").arg(fileinit).toStdString());
 
-    if (QFile::exists(filename)) {
-        algorithmic->SetCorrectionFilePath(filename);
+    if (QFile::exists(fileinit)) {
+        algorithmic->SetCorrectionFilePath(fileinit);
     } else {
         qDebug() << ("Correction file does not exist ");
         mcalibrationFileExists = false;
@@ -663,7 +673,6 @@ void mvImageAcquisitWidget::resetUI()
 
     updateInfoPanel("", Normal);
     updateDeviceState(ExposureState::Idle);
-    ui->mStateShowStackWidget->setCurrentIndex(0);
 }
 
 void mvImageAcquisitWidget::updateInfoPanel(const QString& message, int type)
@@ -806,8 +815,8 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
     updateDeviceState(ExposureState::Processing);
 
     bool zoomTwice = false;
-    QString fileName;
-    QString fileName1;
+    QString fileinit;
+    QString fileCorr;
 
     auto algorithmic = XPectAlgorithmic::Instance();
 
@@ -821,135 +830,132 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
         QString dateStr = QDateTime::currentDateTime().toString("yyyyMMdd");
 
         if (image.orientation % 2 == 0) {
-            fileName = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp + "/X/"
+            fileinit = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp + "/X/"
                                                 + QString("image_%1_init.raw").arg(timestamp));
-            fileName1 = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp + "/X/"
-                                                 + QString("image_%1_cal.raw").arg(timestamp));
+            fileCorr = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp + "/X/"
+                                                + QString("image_%1_cal.raw").arg(timestamp));
 
         } else {
-            fileName = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp + "/Y/"
+            fileinit = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp + "/Y/"
                                                 + QString("image_%1_init.raw").arg(timestamp));
-            fileName1 = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp + "/Y/"
-                                                 + QString("image_%1_cal.raw").arg(timestamp));
+            fileCorr = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp + "/Y/"
+                                                + QString("image_%1_cal.raw").arg(timestamp));
         }
 
-        QFileInfo fInfo(fileName);
-        if (!QDir().mkpath(fInfo.path())) {
-            qWarning() << tr("Failed to create directory:") << fInfo.path();
+        QFileInfo fInfoInit(fileinit);
+        if (!QDir().mkpath(fInfoInit.path())) {
+            qWarning() << tr("Failed to create directory:") << fInfoInit.path();
             return;
         }
 
-        QFileInfo fInfo1(fileName1);
-        if (!QDir().mkpath(fInfo1.path())) {
-            qWarning() << tr("Failed to create directory:") << fInfo1.path();
+        QFileInfo fInfoCorr(fileCorr);
+        if (!QDir().mkpath(fInfoCorr.path())) {
+            qWarning() << tr("Failed to create directory:") << fInfoCorr.path();
             return;
         }
 
         if (!image.imageData.isEmpty()) {
-            QFile file(fileName);
+            QFile file(fileinit);
             if (file.open(QIODevice::WriteOnly)) {
                 file.write(image.imageData);
                 file.close();
-                qDebug() << tr("Raw data saved to:") << fileName;
+                qDebug() << tr("Raw data saved to:") << fileinit;
             } else {
-                qWarning() << tr("Cannot write file:") << fileName;
-            }
-        }
-
-        if (!image.imageData.isEmpty()) {
-            QFile file(fileName1);
-            if (file.open(QIODevice::WriteOnly)) {
-                file.write(image.imageData);
-                file.close();
-                qDebug() << tr("Raw data saved to:") << fileName1;
-            } else {
-                qWarning() << tr("Cannot write file:") << fileName1;
+                qWarning() << tr("Cannot write file:") << fileinit;
             }
         }
 
         if (false) {
-            algorithmic->CalibrateArquireImage(image.width,
-                                               image.height,
-                                               image.bitDepth,
-                                               fileName1,
-                                               zoomTwice);
+            if (!image.imageData.isEmpty()) {
+                // 直接处理内存数据，返回处理后的 unsigned short 数组
+                auto processedRaw
+                    = algorithmic->CalibrateArquireImage(image.width,
+                                                         image.height,
+                                                         image.bitDepth,
+                                                         reinterpret_cast<const unsigned char*>(
+                                                             image.imageData.constData()),
+                                                         image.imageData.size(),
+                                                         zoomTwice);
 
-            int widthnew = zoomTwice ? image.width * 2 : image.width;
-            int heightnew = zoomTwice ? image.height * 2 : image.height;
+                if (!processedRaw) {
+                    qWarning() << "CalibrateArquireImage failed";
+                    continue;
+                }
 
-            qint64 filesize = 0;
-            std::unique_ptr<unsigned short[]> raw = algorithmic->ReadRawFileTo16(fileName1,
-                                                                                 &filesize);
-            std::unique_ptr<unsigned short[]> raw2image = std::make_unique<unsigned short[]>(
-                filesize * 2);
-            // pro image data
+                int widthnew = zoomTwice ? image.width * 2 : image.width;
+                int heightnew = zoomTwice ? image.height * 2 : image.height;
 
-            std::copy(raw.get(), raw.get() + filesize, raw2image.get() + filesize);
-            qInfo() << (QString("width:%1,height:%1, filesize:%3")
-                            .arg(widthnew)
-                            .arg(heightnew)
-                            .arg(filesize)
-                            .toStdString());
-            double windowCenterActual = 32768, windowWidthActual = 65536;
-            // 这里要么计算 windowCenter windowWidth 要么吧数据映射到 0-65535
-            algorithmic->CalculateWindowParams(raw.get(),
-                                               widthnew,
-                                               heightnew,
-                                               windowCenterActual,
-                                               windowWidthActual);
-            qInfo() << (QString("windowCenterActual:%1, windowWidthActual:%2")
-                            .arg(windowCenterActual)
-                            .arg(windowWidthActual)
-                            .toStdString());
+                // 直接使用返回的 processedRaw 数据，不需要再从文件读取
+                size_t expectedElements = static_cast<size_t>(widthnew)
+                                          * static_cast<size_t>(heightnew);
 
-            bool resprocess = algorithmic->ProcessImageData(widthnew,
-                                                            heightnew,
-                                                            image.bitDepth,
-                                                            raw);
-            qInfo() << (QString("acquisition ProcessImageData:%1 ").arg(resprocess).toStdString());
-            std::copy(raw.get(), raw.get() + filesize, raw2image.get());
-            QString imagePath;
-            if (image.orientation % 2 == 0) {
-                imagePath = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp
-                                                     + "/X/"
-                                                     + QString("image_%1.raw").arg(timestamp));
-                imagePathX = imagePath;
-            } else {
-                imagePath = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp
-                                                     + "/Y/"
-                                                     + QString("image_%1.raw").arg(timestamp));
-                imagePathY = imagePath;
-            }
-
-            if (raw && filesize > 0) {
-                QFile file(imagePath);
-                if (file.open(QIODevice::WriteOnly)) {
-                    // 直接写入 raw 数据
-                    qint64 bytesWritten = file.write(reinterpret_cast<const char*>(raw.get()),
-                                                     filesize);
-                    file.close();
-
-                    if (bytesWritten == filesize) {
-                        qDebug() << tr("Raw pro data saved to:") << imagePath;
-
-                        // 更新 image 对象的文件路径
-                        HWImageData& mutableData = const_cast<HWImageData&>(image);
-                        mutableData.filePath = imagePath;
-
-                        // 如果需要，也可以将数据保存到 imageData
-                        // image.imageData = QByteArray(reinterpret_cast<const char*>(raw.get()), filesize);
-                    } else {
-                        qWarning()
-                            << tr("Incomplete write:") << bytesWritten << tr("of") << filesize;
+                if (processedRaw) {
+                    QFile file(fileCorr);
+                    if (file.open(QIODevice::WriteOnly)) {
+                        file.write(reinterpret_cast<const char*>(processedRaw.get()),
+                                   expectedElements * sizeof(unsigned short));
+                        qDebug() << tr("Raw cal data saved to:") << fileCorr;
                     }
+                }
+                qDebug() << "Processed data size:" << expectedElements << "elements";
+
+                // 现在 processedRaw 就是校正后的16位数据，可以直接使用
+                // 后续所有操作都使用 processedRaw 而不是重新读取文件
+
+                // 计算窗口参数
+                double windowCenterActual = 32768, windowWidthActual = 65536;
+                algorithmic->CalculateWindowParams(processedRaw.get(),
+                                                   widthnew,
+                                                   heightnew,
+                                                   windowCenterActual,
+                                                   windowWidthActual);
+
+                qInfo() << QString("windowCenterActual:%1, windowWidthActual:%2")
+                               .arg(windowCenterActual)
+                               .arg(windowWidthActual);
+
+                // 处理图像数据（如果需要）
+                bool resprocess = algorithmic->ProcessImageData(widthnew,
+                                                                heightnew,
+                                                                image.bitDepth,
+                                                                processedRaw);
+
+                // 保存最终结果到文件
+                QString imagePath;
+                if (image.orientation % 2 == 0) {
+                    imagePath = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp
+                                                         + "/X/"
+                                                         + QString("image_%1.raw").arg(timestamp));
+                    imagePathX = imagePath;
                 } else {
-                    qWarning() << tr("Cannot write file:") << imagePath;
+                    imagePath = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp
+                                                         + "/Y/"
+                                                         + QString("image_%1.raw").arg(timestamp));
+                    imagePathY = imagePath;
+                }
+
+                // 保存处理后的数据
+                if (processedRaw && expectedElements > 0) {
+                    QFile file(imagePath);
+                    if (file.open(QIODevice::WriteOnly)) {
+                        qint64 bytesToWrite = expectedElements * sizeof(unsigned short);
+                        qint64 bytesWritten = file.write(reinterpret_cast<const char*>(
+                                                             processedRaw.get()),
+                                                         bytesToWrite);
+                        file.close();
+
+                        if (bytesWritten == bytesToWrite) {
+                            qDebug() << tr("Raw pro data saved to:") << imagePath;
+                            HWImageData& mutableData = const_cast<HWImageData&>(image);
+                            mutableData.filePath = imagePath;
+                        }
+                    }
                 }
             }
         }
     }
 
-    if (false) {
+    if (true) {
         StatusCode status;
         cv::Mat lr_profile, ud_profile, lr_img, ud_img;
         MeasurementData measure_data;
@@ -1024,6 +1030,7 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
     }
 
     resetUI();
+    ui->mStateShowStackWidget->setCurrentIndex(1);
 }
 
 void mvImageAcquisitWidget::onExposureProcess(ExposureState state)

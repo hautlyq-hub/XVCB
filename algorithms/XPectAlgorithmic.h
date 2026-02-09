@@ -26,6 +26,13 @@ public:
     // Crop int top, int left, int right, int bottom
     // bool ProcessArquireImage(int width, int height, int bit, QString filename, int top, int right, int bottom, int left);
 
+    std::unique_ptr<unsigned short[]> CalibrateArquireImage(int width,
+                                                            int height,
+                                                            int bit,
+                                                            const unsigned char* imageData,
+                                                            qint64 dataSize,
+                                                            bool& zoomTwice);
+
     bool CalibrateArquireImage(int width, int height, int bit, QString filename, bool& zoomTwice);
     // bool CalibrateArquireImage(int width, int height, int bit, QString filename, std::unique_ptr<unsigned char[]>& buffer);
 

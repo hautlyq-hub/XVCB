@@ -296,6 +296,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
         exitAsk->setObjectName("mvExitAppDialog");
         if (exitAsk->exec() == QDialog::Accepted)
         {
+            mManager = XProtocolManager::getInstance();
+            mManager->unInitSerialPort();
+
             qApp->exit(0);
         }
         else

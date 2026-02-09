@@ -18,7 +18,7 @@ const QByteArray XRayProtocol::CMD_ADC_VALUES = QByteArray::fromHex(
     "55AA12000D000000FFFFFFFF00000000D431");
 
 const QByteArray XRayProtocol::CMD_ERROR_QUERY = QByteArray::fromHex(
-    "55AA12001D000000FFFFFFFF0000000015CE");
+    "55AA12001D000000FFFFFFFF0000000015CE"); //DUI
 
 const QByteArray XRayProtocol::CMD_ERROR_CLEAR = QByteArray::fromHex(
     "55AA12001D000100FFFFFFFF00000000440B");
@@ -27,7 +27,7 @@ const QByteArray XRayProtocol::CMD_EXPOSURE_QUERY = QByteArray::fromHex(
     "55AA16001B000000FFFFFFFF0000000000000000A760");
 
 const QByteArray XRayProtocol::CMD_EXPOSURE_START = QByteArray::fromHex(
-    "55AA16001B000100FFFFFFFF0000000001000100A7CD");
+    "55AA16001B000100FFFFFFFF0000000001000100A7CD"); //DUI
 
 const QByteArray XRayProtocol::CMD_EXPOSURE_STOP = QByteArray::fromHex(
     "55AA16001B000100FFFFFFFF0000000001000000A65D");
@@ -156,6 +156,9 @@ bool XRayProtocol::stopExposure()
     QByteArray response;
     if (sendCommand(0x1B, QByteArray::fromHex("01000000"))) {
         response = readResponse(m_respTimeout);
+        if (response.isEmpty()) {
+            return false;
+        }
     }
 
     m_exposureTimer->stop();
@@ -175,10 +178,9 @@ bool XRayProtocol::checkExposureReady()
     QByteArray response;
     if (sendCommand(0x1B, QByteArray())) {
         response = readResponse(m_respTimeout);
-    }
-
-    if (response.isEmpty()) {
-        return false;
+        if (response.isEmpty()) {
+            return false;
+        }
     }
 
     // 解析状态数据

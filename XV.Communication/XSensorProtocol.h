@@ -81,6 +81,10 @@ private:
         static QByteArray F4_POWER_OFF;
         static QByteArray FA_FIND_DEVICE;
         static QByteArray F5_CONFIG;
+        static QByteArray F5_READ_CONFIG;
+        static QByteArray F5_EXTERNAL_BIAL;
+        static QByteArray F5_READ_EXTERNAL_BIAL;
+
         static QByteArray F5_VOLTAGE_CONFIG;
         static QByteArray F6_ENABLE_EXPOSE;
         static QByteArray F6_ENABLE_EXPOSE_02;

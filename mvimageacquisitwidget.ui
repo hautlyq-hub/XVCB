@@ -2006,7 +2006,7 @@ background-color: rgb(0, 0, 0);</string>
            <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
-             <height>265</height>
+             <height>40</height>
             </size>
            </property>
           </spacer>
@@ -2133,6 +2133,19 @@ background-color: rgb(0, 0, 0);</string>
             </item>
            </layout>
           </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>

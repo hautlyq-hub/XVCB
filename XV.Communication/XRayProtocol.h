@@ -52,7 +52,7 @@ struct ExposureParams
         kv_min = 0.01f;
         kv_max = 2.29f;
         kv_val = 1.6666f;
-        exp_time_ms = 160;
+        exp_time_ms = 400;
         waitXray = true;
     }
 };

@@ -58,31 +58,54 @@ bool XPectAlgorithmic::SetCorrectionFilePath(QString path)
 //     return res;
 // }
 
-bool XPectAlgorithmic::CalibrateArquireImage(
-    int width, int height, int bit, QString filename, bool &zoomTwice)
+std::unique_ptr<unsigned short[]> XPectAlgorithmic::CalibrateArquireImage(
+    int width, int height, int bit, const unsigned char *imageData, qint64 dataSize, bool &zoomTwice)
 {
-    qint64 rawSize = 0;
-    std::unique_ptr<unsigned char[]> raw = ReadRawFile(filename, &rawSize);
-    // zoom width * 2 , height * 2
+    if (!imageData || dataSize <= 0) {
+        qWarning() << "CalibrateArquireImage: invalid image data";
+        return nullptr;
+    }
+
+    // 检查数据大小是否匹配
+    qint64 expectedSize = static_cast<qint64>(width) * height * bit / 8;
+    if (dataSize < expectedSize) {
+        qWarning() << "CalibrateArquireImage: data size mismatch. Expected:" << expectedSize
+                   << "Got:" << dataSize;
+        return nullptr;
+    }
+
+    // 计算放大后的数据大小（字节数）
     uint rawSize2 = width * height * bit / 8 * 2 * 2;
+
+    // 分配缓冲区（unsigned char 类型用于 CorrectImageData）
     std::unique_ptr<unsigned char[]> buffer = std::make_unique<unsigned char[]>(rawSize2);
-    bool res = mImageProcess->CorrectImageData(raw.get(),
+
+    // 调用校正函数
+    bool res = mImageProcess->CorrectImageData(const_cast<unsigned char *>(imageData),
                                                width,
                                                height,
                                                bit,
                                                buffer.get(),
                                                width * 2,
                                                height * 2);
+
     if (res) {
-        std::string savefile = (filename).toStdString();
-        bool b = SaveToFile(savefile, buffer, rawSize2);
-        qDebug() << "DataCorrect Successfully generated. save: " << b;
-        zoomTwice = false;
-        return b;
+        zoomTwice = true;
+        qDebug() << "DataCorrect Successfully generated.";
+
+        // 将 unsigned char 数据转换为 unsigned short
+        // 注意：rawSize2 是字节数，需要除以2得到unsigned short的元素个数
+        size_t elementCount = rawSize2 / sizeof(unsigned short);
+        auto result = std::make_unique<unsigned short[]>(elementCount);
+
+        // 直接内存拷贝
+        memcpy(result.get(), buffer.get(), rawSize2);
+
+        return result;
     } else {
-        qWarning() << "DataCorrect failed. " << res;
+        qWarning() << "DataCorrect failed." << res;
         zoomTwice = false;
-        return false;
+        return nullptr;
     }
 }
 
@@ -220,32 +243,45 @@ bool XPectAlgorithmic::ProcessImageData(int width,
                                         int bit,
                                         std::unique_ptr<unsigned short[]> &raw)
 {
+    // 1. 检查 raw 是否为空
+    if (!raw) {
+        qWarning() << "ProcessImageData: raw is null";
+        return false;
+    }
+
+    // 2. 检查宽高是否有效
+    if (width <= 0 || height <= 0) {
+        qWarning() << "ProcessImageData: invalid dimensions" << width << "x" << height;
+        return false;
+    }
+
     if (mImageProcess && mImageProcess->m_pImageProConfig) {
         qDebug() << "ProcessImageData";
         size_t elementCount = static_cast<size_t>(width * height);
-        auto rawptr = std::make_unique<unsigned int[]>(elementCount);
-        for (size_t i = 0; i < elementCount; ++i) {
-            rawptr[i] = static_cast<unsigned int>(raw[i]);
-        }
 
-        std::unique_ptr<unsigned int[]> rawout = std::make_unique<unsigned int[]>(elementCount);
-        bool ret = mImageProcess->ProcessImageData(rawptr.get(),
+        // 【修改】不再转换成 unsigned int，直接使用 unsigned short
+        bool ret = mImageProcess->ProcessImageData(reinterpret_cast<unsigned int *>(
+                                                       raw.get()), // 直接转换指针类型，不分配新内存
                                                    width,
                                                    height,
                                                    bit,
-                                                   rawout.get(),
+                                                   reinterpret_cast<unsigned int *>(
+                                                       raw.get()), // 如果原地处理，输入输出可以相同
                                                    mImageProcess->m_pImageProConfig->m_pfPostTooth);
 
         qDebug() << "ProcessImageData: " << ret;
+
         if (ret) {
-            for (size_t i = 0; i < elementCount; ++i) {
-                raw[i] = static_cast<unsigned short>(rawout[i]);
-            }
+            // 数据已经在 raw 中被修改，不需要额外拷贝
+            qDebug() << "Image data processed successfully";
         }
-        // Invert pixel
+
+        // Invert pixel - 注意：如果 ProcessImageData 已经做了反转，这里可能会重复
+        // 根据实际情况决定是否需要
         for (int i = 0; i < width * height; i++) {
             raw[i] = 65535 - raw[i];
         }
+
         return ret;
     } else {
         qDebug() << "ProcessImageData: unexecuted ; ";

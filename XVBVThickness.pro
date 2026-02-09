@@ -13,9 +13,6 @@ TARGET = XVBVThickness
 TEMPLATE = app
 
 # ============ zlib 和 minizip 配置（树莓派专用）============
-message("Checking for zlib and minizip libraries...")
-
-# 添加 pkg-config 支持
 PKGCONFIG += zlib
 
 # 手动添加 minizip
@@ -47,14 +44,13 @@ DataProc_DIR = /home/pi/algorithm/DataProc-build
 INCLUDEPATH += /home/pi/algorithm/DataProc/include
 LIBS += -L$$DataProc_DIR -lDataProc
 
-
 # ---------------ONNXRuntime----------------
 ONNXRUNTIME_DIR = /home/pi/algorithm/onnxruntime-linux-aarch64-1.22.0
 INCLUDEPATH += $${ONNXRUNTIME_DIR}/include
 LIBS += -L$${ONNXRUNTIME_DIR}/lib -lonnxruntime
 
 # ============ OpenCV 配置 ============
-PKGCONFIG += opencv4   # 使用 pkg-config 自动处理链接
+PKGCONFIG += opencv4
 
 # ============ VTK 配置（如果使用）============
 # 根据你的安装路径调整

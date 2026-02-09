@@ -99,6 +99,7 @@ private:
     mvImageAcquisitWidget* mImageAcquisitWidget;
     mvsystemsettings* mvSystemSettingsWidget;
     mvAboutWidget* mAboutWidget;
+    XProtocolManager* mManager;
 
     QString mNew;
     QString mEdit;

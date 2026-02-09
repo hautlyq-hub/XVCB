@@ -925,10 +925,6 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
             if (portName == name) {
                 isX == setting.orientation == 0;
                 isMain = setting.description == "true" ? true : false;
-                qDebug() << "================";
-                qDebug() << name << isX;
-                qDebug() << name << setting.description;
-                qDebug() << "================";
                 break;
             }
         }
@@ -940,8 +936,6 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
                 [this, isXmain]() { m_sensor1->sendExposureF6(isXmain, m_xRayIndex != 0); },
                 Qt::QueuedConnection);
         }
-        qDebug() << "m_sensor1 sendExposureF6被调用 - isMain:" << isMain
-                 << ", useXRayIndex:" << m_xRayIndex;
 
         QThread::msleep(10);
 
@@ -951,10 +945,6 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
                 [this, isXmain]() { m_sensor2->sendExposureF6(!isXmain, m_xRayIndex != 0); },
                 Qt::QueuedConnection);
         }
-        qDebug() << "m_sensor2 sendExposureF6被调用 - isMain:" << !isMain
-                 << ", useXRayIndex:" << m_xRayIndex;
-
-        // QThread::msleep(500); // 新增延迟
 
         if (m_xRayIndex != 2 && m_xrayProtocol1) {
             QMetaObject::invokeMethod(
@@ -991,9 +981,7 @@ void XProtocolManager::onExposureF5Ready(const QString& portName)
 
 void XProtocolManager::onExposureF6Ready(const QString& portName)
 {
-    // 在线程池中执行图像采集
     QtConcurrent::run(m_threadPool, [this, portName]() {
-        // 查找对应的设备
         QString deviceKey;
         for (const auto& setting : m_portSettings) {
             if (setting.portName.contains(portName)) {
@@ -1007,13 +995,11 @@ void XProtocolManager::onExposureF6Ready(const QString& portName)
             return;
         }
 
-        // 在主线程更新状态
         QMetaObject::invokeMethod(this,
                                   [this]() { emit exposureProcess(ExposureState::Acquiring); });
 
         QCoreApplication::processEvents(QEventLoop::AllEvents);
 
-        // 根据设备键调用相应的传感器（在线程中）
         if (deviceKey == SENSOR1_KEY) {
             runSensor1Operation([](XSensorProtocol* sensor) { sensor->acquireImage(); });
         } else if (deviceKey == SENSOR2_KEY) {
@@ -1022,11 +1008,9 @@ void XProtocolManager::onExposureF6Ready(const QString& portName)
     });
 }
 
-// 修改现有的运行操作方法，确保在正确的线程执行
 void XProtocolManager::runSensor1Operation(std::function<void(XSensorProtocol*)> operation)
 {
     if (m_sensor1 && m_sensor1->isConnected()) {
-        // 确保在传感器1的线程中执行
         QMetaObject::invokeMethod(
             m_sensor1, [this, operation]() { operation(m_sensor1); }, Qt::QueuedConnection);
     }
@@ -1036,18 +1020,15 @@ void XProtocolManager::runSensor2Operation(std::function<void(XSensorProtocol*)>
 {
 #ifndef DEBUG_SINGLE_DEVICE
     if (m_sensor2 && m_sensor2->isConnected()) {
-        // 确保在传感器2的线程中执行
         QMetaObject::invokeMethod(
             m_sensor2, [this, operation]() { operation(m_sensor2); }, Qt::QueuedConnection);
     }
 #endif
 }
 
-// 类似地修改X光操作方法
 void XProtocolManager::runXray1Operation(std::function<void(XRayProtocol*)> operation)
 {
     if (m_xrayProtocol1 && m_xrayProtocol1->isConnected()) {
-        // 确保在X光1的线程中执行
         QMetaObject::invokeMethod(
             m_xrayProtocol1,
             [this, operation]() { operation(m_xrayProtocol1); },
@@ -1059,7 +1040,6 @@ void XProtocolManager::runXray2Operation(std::function<void(XRayProtocol*)> oper
 {
 #ifndef DEBUG_SINGLE_DEVICE
     if (m_xrayProtocol2 && m_xrayProtocol2->isConnected()) {
-        // 确保在X光2的线程中执行
         QMetaObject::invokeMethod(
             m_xrayProtocol2,
             [this, operation]() { operation(m_xrayProtocol2); },
@@ -1072,7 +1052,6 @@ void XProtocolManager::updateConnectionStatus()
 {
     DeviceStatus newStatus;
 
-    // 更新传感器状态
     if (m_sensor1) {
         newStatus.sensor1Connected = m_sensor1->isConnected();
     }
@@ -1083,7 +1062,6 @@ void XProtocolManager::updateConnectionStatus()
     }
 #endif
 
-    // 更新X光状态
     if (m_xrayProtocol1) {
         newStatus.xray1Connected = m_xrayProtocol1->isConnected();
     }
@@ -1093,7 +1071,7 @@ void XProtocolManager::updateConnectionStatus()
         newStatus.xray2Connected = m_xrayProtocol2->isConnected();
     }
 #endif
-    // 更新状态
+
     m_deviceStatus = newStatus;
 }
 

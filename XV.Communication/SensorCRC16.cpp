@@ -7,7 +7,7 @@ QByteArray SensorCRC16::calculate(const QByteArray& data)
         return QByteArray(2, 0);
     }
 
-    // 步骤1：计算所有字节的累加和（对应C#的pSrcBytes.ToList().ForEach）
+    // 计算累加和
     quint64 sum = 0;
     for (char byte : data) {
         sum += static_cast<quint8>(byte);
@@ -16,13 +16,14 @@ QByteArray SensorCRC16::calculate(const QByteArray& data)
     // 取低16位
     quint16 crcValue = static_cast<quint16>(sum & 0xFFFF);
 
-    // 步骤2：交换高低字节（对应C#的(crcValue << 8) & 0xFF00 | (crcValue >> 8) & 0x00FF）
-    quint16 swapped = ((crcValue << 8) & 0xFF00) | ((crcValue >> 8) & 0x00FF);
+    // 交换高低字节 - 单片机也是这么做的
+    //quint16 swapped = ((crcValue << 8) & 0xFF00) | ((crcValue >> 8) & 0x00FF);
 
-    // 步骤3：转换为大端序（对应C#的.Reverse().ToArray()）
-    QByteArray result(2, 0);
-    result[0] = static_cast<char>((swapped >> 8) & 0xFF); // 高位在前
-    result[1] = static_cast<char>(swapped & 0xFF);        // 低位在后
+    // ⚠️ 关键修改：直接返回内存表示，不要再转大端序
+    QByteArray result;
+
+    result.append(static_cast<char>(crcValue & 0xFF));        // 低字节在前
+    result.append(static_cast<char>((crcValue >> 8) & 0xFF)); // 高字节在后
 
     return result;
 }
