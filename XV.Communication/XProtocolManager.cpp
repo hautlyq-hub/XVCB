@@ -816,10 +816,10 @@ bool XProtocolManager::connectSensor(const QString& sensorKey)
                 break;
             }
         }
-        QMetaObject::invokeMethod(
-            this,
-            [this, sensorKey]() { emit info(QString(tr("Sensor %1 connected")).arg(sensorKey)); },
-            Qt::QueuedConnection);
+        // QMetaObject::invokeMethod(
+        //     this,
+        //     [this, sensorKey]() { emit info(QString(tr("Sensor %1 connected")).arg(sensorKey)); },
+        //     Qt::QueuedConnection);
     } else {
         qWarning() << tr("Sensor ") + sensorKey + tr(" connection failed");
     }
@@ -1204,25 +1204,21 @@ void XProtocolManager::cancelAllOperations()
 void XProtocolManager::onXrayDeviceConnected(int index)
 {
     QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
-    emit info(QString(tr("X-ray %1 connected")).arg(xrayKey));
 }
 
 void XProtocolManager::onXrayDeviceDisconnected(int index)
 {
     QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
-    emit warning(QString(tr("X-ray %1 disconnected")).arg(xrayKey));
 }
 
 void XProtocolManager::onXrayExposureStarted(int index)
 {
     QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
-    emit info(QString(tr("X-ray %1 started exposure")).arg(xrayKey));
 }
 
 void XProtocolManager::onXrayExposureStopped(int index)
 {
     QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
-    emit info(QString(tr("X-ray %1 stopped exposure")).arg(xrayKey));
 }
 
 void XProtocolManager::onXrayExposureError(XRayErrorCode error, int index)

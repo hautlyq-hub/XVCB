@@ -77,10 +77,16 @@ void customMessageHandler(QtMsgType type, const QMessageLogContext &context, con
 
 int main(int argc, char *argv[])
 {
-    qInstallMessageHandler(customMessageHandler);
+    //qInstallMessageHandler(customMessageHandler);
+
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    qDebug() << "=== 环境变量 ===";
+    qDebug() << "LD_LIBRARY_PATH:" << env.value("LD_LIBRARY_PATH");
+    qDebug() << "QT_PLUGIN_PATH:" << env.value("QT_PLUGIN_PATH");
+    qDebug() << "PATH:" << env.value("PATH");
 
     QApplication a(argc, argv);
-
+    a.setWindowIcon(QIcon(":/Res/Image/favicon.ico"));
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale : uiLanguages) {

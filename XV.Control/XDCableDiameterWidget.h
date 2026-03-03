@@ -21,6 +21,7 @@ public:
 
     // 坐标轴范围设置
     void setAxisRange(double range);
+    void setOptimalRange();
 
     // 缩放控制
     void setZoomFactor(double factor);
@@ -41,6 +42,18 @@ public:
 
 signals:
     void zoomFactorChanged(double factor);
+
+public:
+    // 添加设置像素/毫米比例的方法
+    void setPixelsPerMm(double pixelsPerMm);
+
+private:
+    // 添加毫米与像素转换的辅助函数
+    QPointF mmToPixels(const QPointF &mmPoint) const;
+    QPointF pixelsToMm(const QPointF &pixelPoint) const;
+
+private:
+    double m_pixelsPerMm; // 像素/毫米比例
 
 protected:
     void paintEvent(QPaintEvent *event) override;

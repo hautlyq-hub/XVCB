@@ -56,6 +56,24 @@ XRayProtocol::~XRayProtocol()
 
 bool XRayProtocol::initSerialPort(const QString &portName, int baudRate)
 {
+    // 1. 检查串口设备文件是否存在（Linux下串口设备文件）
+#ifdef Q_OS_LINUX
+    if (!QFile::exists(portName)) {
+        emit errorOccurred(XRAY_ERROR_HARDWARE_CHECK,
+                           tr("Serial port") + portName + tr("does not exist"));
+        return false;
+    }
+#endif
+
+    // 2. 检查是否有权限访问
+    QFile testFile(portName);
+    if (!testFile.open(QIODevice::ReadWrite)) {
+        emit errorOccurred(XRAY_ERROR_HARDWARE_CHECK,
+                           tr("Cannot access serial port") + portName + tr("Error:"));
+        return false;
+    }
+    testFile.close();
+
     m_serialPort = new QSerialPort();
 
     m_serialPort->setPortName(portName);
@@ -120,7 +138,6 @@ bool XRayProtocol::isConnected() const
 
 bool XRayProtocol::startExposure()
 {
-    // QMutexLocker locker(&m_serialMutex);
 
     // 构建开始曝光数据
     m_exposureStartData.clear();
@@ -663,8 +680,6 @@ void XRayProtocol::onExposureTimeout()
     if (elapsed >= m_expTimeMs + 2000) {
         m_exposureTimer->stop();
         if (sendCommand(0x1B, m_exposureStopData)) {
-            qDebug() << "=========" << QString::number(elapsed);
-            qDebug() << "=========" << QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss.zzz");
             QByteArray resp = readResponse(m_respTimeout);
         }
         emit exposureStopped();

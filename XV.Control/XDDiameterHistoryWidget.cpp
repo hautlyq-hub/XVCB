@@ -14,11 +14,12 @@ DiameterHistoryWidget::DiameterHistoryWidget(QWidget *parent)
     , m_yMax(10.0)
     , m_showGrid(true)
     , m_lineWidth(2.0)
-    , m_innerLineColor(QColor(0, 200, 255))    // 蓝色
-    , m_outerLineColor(QColor(255, 100, 0))    // 橙色
-    , m_gridColor(QColor(100, 100, 100))       // 浅灰色网格
-    , m_backgroundColor(Qt::transparent)       // 透明背景
-    , m_textColor(Qt::white)                   // 白色文字
+    , m_startIndex(0)
+    , m_innerLineColor(QColor(0, 200, 255)) // 蓝色
+    , m_outerLineColor(QColor(255, 100, 0)) // 橙色
+    , m_gridColor(QColor(100, 100, 100))    // 浅灰色网格
+    , m_backgroundColor(Qt::transparent)    // 透明背景
+    , m_textColor(Qt::white)                // 白色文字
 {
     // 设置最小尺寸
     setMinimumSize(500, 120);
@@ -163,6 +164,9 @@ void DiameterHistoryWidget::reset()
     m_innerDiameters.clear();
     m_outerDiameters.clear();
 
+    // 重置起始索引
+    m_startIndex = 0;
+
     // 重置Y轴范围为默认值
     if (m_autoYScale) {
         m_yMin = 0.0;
@@ -211,10 +215,10 @@ double DiameterHistoryWidget::calculateOptimalYMin() const
 void DiameterHistoryWidget::updateScaling()
 {
     // 减小左边距，从60改为40
-    int leftMargin = 40;     // Y轴刻度需要空间
-    int rightMargin = 15;    // 右侧留少量空间
-    int topMargin = 15;      // 顶部标题
-    int bottomMargin = 35;   // X轴标签和刻度
+    int leftMargin = 40;   // Y轴刻度需要空间
+    int rightMargin = 15;  // 右侧留少量空间
+    int topMargin = 15;    // 顶部标题
+    int bottomMargin = 35; // X轴标签和刻度
 
     // 确保绘图区域有效
     int availableWidth = width() - leftMargin - rightMargin;
@@ -225,25 +229,19 @@ void DiameterHistoryWidget::updateScaling()
         availableWidth = 200;
         leftMargin = (width() - availableWidth) / 2;
     }
-    if (availableHeight < 60) {  // 最小绘图高度
+    if (availableHeight < 60) {
         availableHeight = 60;
         topMargin = (height() - availableHeight) / 2;
     }
 
-    m_plotArea = QRectF(leftMargin, topMargin,
-                       availableWidth, availableHeight);
+    m_plotArea = QRectF(leftMargin, topMargin, availableWidth, availableHeight);
 
     if (m_plotArea.width() <= 0 || m_plotArea.height() <= 0) {
         return;
     }
 
-    // 计算X轴缩放因子
-    int dataCount = m_innerDiameters.size();
-    if (dataCount <= 1) {
-        m_xScale = m_plotArea.width();
-    } else {
-        m_xScale = m_plotArea.width() / qMax(1, dataCount - 1);
-    }
+    // 修改X轴缩放计算 - 始终使用最大数据点数来计算间距
+    m_xScale = m_plotArea.width() / qMax(1, m_maxDataPoints - 1);
 
     // 计算Y轴缩放因子
     double yRange = m_yMax - m_yMin;
@@ -322,8 +320,8 @@ void DiameterHistoryWidget::drawCoordinateSystem(QPainter &painter)
     painter.setPen(axisPen);
 
     // 绘制X轴和Y轴
-    painter.drawLine(m_plotArea.bottomLeft(), m_plotArea.bottomRight());  // X轴
-    painter.drawLine(m_plotArea.bottomLeft(), m_plotArea.topLeft());      // Y轴
+    painter.drawLine(m_plotArea.bottomLeft(), m_plotArea.bottomRight()); // X轴
+    painter.drawLine(m_plotArea.bottomLeft(), m_plotArea.topLeft());     // Y轴
 
     // 设置字体
     QFont font = painter.font();
@@ -333,32 +331,39 @@ void DiameterHistoryWidget::drawCoordinateSystem(QPainter &painter)
 
     int dataCount = m_innerDiameters.size();
 
-    // 绘制X轴刻度（跳着标记）
-    int maxTicks = qMin(8, dataCount);
-    if (dataCount > 1 && maxTicks > 1) {
-        double tickInterval = (dataCount - 1.0) / (maxTicks - 1.0);
+    // 绘制X轴刻度（基于最大数据点数，但只显示有数据的部分）
+    int maxTicks = qMin(8, m_maxDataPoints);
+    if (maxTicks > 1) {
+        double tickInterval = (m_maxDataPoints - 1.0) / (maxTicks - 1.0);
 
         for (int i = 0; i < maxTicks; ++i) {
             int tickIndex = i * tickInterval;
-            double xPos = m_plotArea.left() + tickIndex * m_xScale;
 
-            // 绘制刻度线
-            painter.drawLine(QPointF(xPos, m_plotArea.bottom()),
-                            QPointF(xPos, m_plotArea.bottom() + 5));
+            // 只显示有数据的刻度（tickIndex < dataCount）
+            if (tickIndex < dataCount) {
+                double xPos = m_plotArea.left() + tickIndex * m_xScale;
 
-            // 每隔一个刻度显示标签
-            if (i % 2 == 0) {
-                QString label = QString::number(tickIndex + 1);
-                QRectF labelRect = QFontMetrics(font).boundingRect(label);
+                // 确保xPos在绘图区域内
+                if (xPos <= m_plotArea.right()) {
+                    // 绘制刻度线
+                    painter.drawLine(QPointF(xPos, m_plotArea.bottom()),
+                                     QPointF(xPos, m_plotArea.bottom() + 5));
 
-                painter.drawText(xPos - labelRect.width()/2,
-                               m_plotArea.bottom() + labelRect.height() + 8,
-                               label);
+                    // 显示标签 - 直接绘制文本，没有背景
+                    if (i % 2 == 0) {
+                        QString label = QString::number(tickIndex + 1);
+                        QRectF labelRect = QFontMetrics(font).boundingRect(label);
+
+                        painter.drawText(xPos - labelRect.width() / 2,
+                                         m_plotArea.bottom() + labelRect.height() + 8,
+                                         label);
+                    }
+                }
             }
         }
     }
 
-    // 绘制Y轴刻度（跳着标记）
+    // 绘制Y轴刻度
     int yTicks = 6;
     double yTickInterval = (m_yMax - m_yMin) / yTicks;
 
@@ -367,16 +372,15 @@ void DiameterHistoryWidget::drawCoordinateSystem(QPainter &painter)
         double yPos = m_plotArea.bottom() - (yValue - m_yMin) * m_yScale;
 
         // 绘制刻度线
-        painter.drawLine(QPointF(m_plotArea.left() - 5, yPos),
-                        QPointF(m_plotArea.left(), yPos));
+        painter.drawLine(QPointF(m_plotArea.left() - 5, yPos), QPointF(m_plotArea.left(), yPos));
 
         // 每隔一个刻度显示标签
         if (i % 2 == 0) {
             QString label = QString::number(yValue, 'f', 1);
             QRectF labelRect = QFontMetrics(font).boundingRect(label);
             painter.drawText(m_plotArea.left() - labelRect.width() - 8,
-                           yPos + labelRect.height()/3,
-                           label);
+                             yPos + labelRect.height() / 3,
+                             label);
         }
     }
 
@@ -392,23 +396,30 @@ void DiameterHistoryWidget::drawGrid(QPainter &painter)
     gridPen.setWidthF(0.5);
     painter.setPen(gridPen);
 
-    // 绘制垂直网格线
+    // 绘制垂直网格线 - 只绘制有数据的位置
     int dataCount = m_innerDiameters.size();
-    int maxTicks = qMin(8, dataCount);
+    int maxTicks = qMin(8, m_maxDataPoints);
 
-    if (dataCount > 1 && maxTicks > 1) {
-        double tickInterval = (dataCount - 1.0) / (maxTicks - 1.0);
+    if (maxTicks > 1 && dataCount > 0) {
+        double tickInterval = (m_maxDataPoints - 1.0) / (maxTicks - 1.0);
 
         for (int i = 1; i < maxTicks - 1; ++i) {
             int tickIndex = i * tickInterval;
-            double xPos = m_plotArea.left() + tickIndex * m_xScale;
 
-            painter.drawLine(QPointF(xPos, m_plotArea.top()),
-                            QPointF(xPos, m_plotArea.bottom()));
+            // 只绘制有数据的网格线
+            if (tickIndex < dataCount) {
+                double xPos = m_plotArea.left() + tickIndex * m_xScale;
+
+                // 确保xPos在绘图区域内
+                if (xPos <= m_plotArea.right()) {
+                    painter.drawLine(QPointF(xPos, m_plotArea.top()),
+                                     QPointF(xPos, m_plotArea.bottom()));
+                }
+            }
         }
     }
 
-    // 绘制水平网格线
+    // 绘制水平网格线（保持不变）
     int yTicks = 6;
     double yTickInterval = (m_yMax - m_yMin) / yTicks;
 
@@ -416,8 +427,7 @@ void DiameterHistoryWidget::drawGrid(QPainter &painter)
         double yValue = m_yMin + i * yTickInterval;
         double yPos = m_plotArea.bottom() - (yValue - m_yMin) * m_yScale;
 
-        painter.drawLine(QPointF(m_plotArea.left(), yPos),
-                        QPointF(m_plotArea.right(), yPos));
+        painter.drawLine(QPointF(m_plotArea.left(), yPos), QPointF(m_plotArea.right(), yPos));
     }
 
     painter.restore();
@@ -436,13 +446,17 @@ void DiameterHistoryWidget::drawCurves(QPainter &painter)
             QPainterPath innerPath;
 
             for (int i = 0; i < dataCount; ++i) {
+                // 数据从左侧开始，i就是索引
                 double x = m_plotArea.left() + i * m_xScale;
                 double y = m_plotArea.bottom() - (m_innerDiameters[i] - m_yMin) * m_yScale;
 
-                if (i == 0) {
-                    innerPath.moveTo(x, y);
-                } else {
-                    innerPath.lineTo(x, y);
+                // 确保点在绘图区域内
+                if (x <= m_plotArea.right()) {
+                    if (i == 0) {
+                        innerPath.moveTo(x, y);
+                    } else {
+                        innerPath.lineTo(x, y);
+                    }
                 }
             }
 
@@ -457,13 +471,17 @@ void DiameterHistoryWidget::drawCurves(QPainter &painter)
             QPainterPath outerPath;
 
             for (int i = 0; i < dataCount; ++i) {
+                // 数据从左侧开始，i就是索引
                 double x = m_plotArea.left() + i * m_xScale;
                 double y = m_plotArea.bottom() - (m_outerDiameters[i] - m_yMin) * m_yScale;
 
-                if (i == 0) {
-                    outerPath.moveTo(x, y);
-                } else {
-                    outerPath.lineTo(x, y);
+                // 确保点在绘图区域内
+                if (x <= m_plotArea.right()) {
+                    if (i == 0) {
+                        outerPath.moveTo(x, y);
+                    } else {
+                        outerPath.lineTo(x, y);
+                    }
                 }
             }
 
@@ -477,18 +495,22 @@ void DiameterHistoryWidget::drawCurves(QPainter &painter)
         if (dataCount <= 20) {
             for (int i = 0; i < dataCount; ++i) {
                 double x = m_plotArea.left() + i * m_xScale;
-                double yInner = m_plotArea.bottom() - (m_innerDiameters[i] - m_yMin) * m_yScale;
-                double yOuter = m_plotArea.bottom() - (m_outerDiameters[i] - m_yMin) * m_yScale;
 
-                // 绘制内径点
-                painter.setPen(m_innerLineColor);
-                painter.setBrush(m_innerLineColor);
-                painter.drawEllipse(QPointF(x, yInner), 2, 2);
+                // 确保点在绘图区域内
+                if (x <= m_plotArea.right()) {
+                    double yInner = m_plotArea.bottom() - (m_innerDiameters[i] - m_yMin) * m_yScale;
+                    double yOuter = m_plotArea.bottom() - (m_outerDiameters[i] - m_yMin) * m_yScale;
 
-                // 绘制外径点
-                painter.setPen(m_outerLineColor);
-                painter.setBrush(m_outerLineColor);
-                painter.drawEllipse(QPointF(x, yOuter), 2, 2);
+                    // 绘制内径点
+                    painter.setPen(m_innerLineColor);
+                    painter.setBrush(m_innerLineColor);
+                    painter.drawEllipse(QPointF(x, yInner), 2, 2);
+
+                    // 绘制外径点
+                    painter.setPen(m_outerLineColor);
+                    painter.setBrush(m_outerLineColor);
+                    painter.drawEllipse(QPointF(x, yOuter), 2, 2);
+                }
             }
         }
     } else {

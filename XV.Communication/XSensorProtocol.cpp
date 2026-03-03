@@ -68,7 +68,25 @@ XSensorProtocol::~XSensorProtocol()
 
 bool XSensorProtocol::initSerialPort(const QString& portName)
 {
-    QMutexLocker locker(&m_mutex);
+    // 1. 检查串口设备文件是否存在（Linux下串口设备文件）
+#ifdef Q_OS_LINUX
+    if (!QFile::exists(portName)) {
+        m_lastError = tr("Serial port") + portName + tr("does not exist");
+        emit errorOccurred(m_lastError);
+        return false;
+    }
+#endif
+
+    // 2. 检查是否有权限访问
+    QFile testFile(portName);
+    if (!testFile.open(QIODevice::ReadWrite)) {
+        m_lastError = tr("Cannot access serial port") + portName + tr("Error:")
+                      + testFile.errorString();
+        emit errorOccurred(m_lastError);
+        return false;
+    }
+    testFile.close();
+
     resetDeviceState();
 
     m_serialPort = new QSerialPort();

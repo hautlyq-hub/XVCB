@@ -64,6 +64,7 @@ private:
     QRectF m_plotArea;
     double m_xScale;
     double m_yScale;
+    int m_startIndex;
 
     // 内部方法
     void updateScaling();

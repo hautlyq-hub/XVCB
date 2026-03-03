@@ -308,6 +308,7 @@ bool CImageProcess::ProcessImageData(unsigned int* pusSrc,
     //背景分割标记，传一个全为0的数组即可，用不到
     unsigned int* maskout = new unsigned int[(size_t)iSrcHeight * iSrcWidth]();
     //进行图像增强处理
+    qDebug() << "==========================";
     int iRet = Alg_ImagePreProcess(pusSrc,
                                    iSrcWidth,
                                    iSrcHeight,
@@ -324,6 +325,7 @@ bool CImageProcess::ProcessImageData(unsigned int* pusSrc,
                                    m_piaHistDataOut,
                                    m_pfaCurvePara);
 
+    qDebug() << "==========================";
     if (maskout != nullptr)
     {
         delete[] maskout;

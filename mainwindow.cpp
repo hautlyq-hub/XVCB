@@ -398,9 +398,9 @@ void MainWindow::LoginWidget()
     {
         mBtnExitLogin->setText("  " + SessionHelper::getInstance()->getCurrentUserDisplayName());
         mLoginStackWidget->setCurrentIndex(1);
-        // #ifdef QT_NO_DEBUG // Release模式
-        //         this->showFullScreen();
-        // #endif
+#ifdef QT_NO_DEBUG // Release模式
+        this->showFullScreen();
+#endif
     }
     else
     {

@@ -134,7 +134,7 @@ void mvImageAcquisitWidget::initializePreviewFrame()
     ui->mPreviewFrame->setOuterEllipseMajorRadius(29);
 
     // 设置坐标系范围但不显示
-    ui->mPreviewFrame->setAxisRange(15.0);
+    ui->mPreviewFrame->setAxisRange(5.0);
 
     // 重置为不显示
     ui->mPreviewFrame->setWidgetVisible(false);
@@ -345,7 +345,7 @@ void mvImageAcquisitWidget::onFinishedButton()
 
 void mvImageAcquisitWidget::onStartButton()
 {
-    if (false) {
+    if (true) {
         imagePathX = "/home/pi/XVBVThiness/build/config/model/1.raw";
         imagePathY = "/home/pi/XVBVThiness/build/config/model/2.raw";
         ui->mStateShowStackWidget->setCurrentIndex(1);
@@ -366,25 +366,48 @@ void mvImageAcquisitWidget::onStartButton()
                                 true,
                                 3);
 
-        // 打印状态（枚举转换为整数）
-        qDebug() << "=== Measurement Results ===";
-        qDebug() << "Status:" << static_cast<int>(status);
+        qDebug() << "========== Measurement Data ==========";
 
-        // 打印LR profile信息（不直接遍历cv::Mat）
-        qDebug() << "LR Profile - rows:" << lr_profile.rows << "cols:" << lr_profile.cols
-                 << "channels:" << lr_profile.channels();
-        qDebug() << "LR Profile type:" << lr_profile.type();
+        // 打印内椭圆
+        qDebug() << "Inner Ellipse:";
+        qDebug() << "  Center: (" << measure_data.inner_ellipse.center.x << ", "
+                 << measure_data.inner_ellipse.center.y << ")";
+        qDebug() << "  X Diameter:" << measure_data.inner_ellipse.x_diameter;
+        qDebug() << "  Y Diameter:" << measure_data.inner_ellipse.y_diameter;
+        qDebug() << "  Diameter:" << measure_data.inner_ellipse.diameter;
 
-        // 打印UD profile信息
-        qDebug() << "UD Profile - rows:" << ud_profile.rows << "cols:" << ud_profile.cols
-                 << "channels:" << ud_profile.channels();
-        qDebug() << "UD Profile type:" << ud_profile.type();
+        // 打印外椭圆
+        qDebug() << "Outer Ellipse:";
+        qDebug() << "  Center: (" << measure_data.outer_ellipse.center.x << ", "
+                 << measure_data.outer_ellipse.center.y << ")";
+        qDebug() << "  X Diameter:" << measure_data.outer_ellipse.x_diameter;
+        qDebug() << "  Y Diameter:" << measure_data.outer_ellipse.y_diameter;
+        qDebug() << "  Diameter:" << measure_data.outer_ellipse.diameter;
 
-        // 打印图像信息
-        qDebug() << "LR Image - rows:" << lr_img.rows << "cols:" << lr_img.cols
-                 << "channels:" << lr_img.channels();
-        qDebug() << "UD Image - rows:" << ud_img.rows << "cols:" << ud_img.cols
-                 << "channels:" << ud_img.channels();
+        // 打印壁厚数据
+        qDebug() << "Wall Thickness:";
+        qDebug() << "  Thickness:" << measure_data.wall_thickness.thickness;
+        qDebug() << "  Min Thickness:" << measure_data.wall_thickness.min_thickness;
+        qDebug() << "  Min Angle:" << measure_data.wall_thickness.min_angle;
+
+        qDebug() << "  Spec Thickness:";
+        QString specStr;
+        for (size_t i = 0; i < measure_data.wall_thickness.spec_thickness.size(); ++i) {
+            specStr += QString::number(measure_data.wall_thickness.spec_thickness[i]);
+            if (i < measure_data.wall_thickness.spec_thickness.size() - 1) {
+                specStr += ", ";
+            }
+        }
+        qDebug() << "    [" << specStr << "]";
+
+        // 打印相关数据
+        qDebug() << "Related Data:";
+        qDebug() << "  Eccentricity:" << measure_data.related.eccentricity;
+        qDebug() << "  Ovality:" << measure_data.related.ovality;
+        qDebug() << "  X Ratio:" << measure_data.related.x_ratio;
+        qDebug() << "  Y Ratio:" << measure_data.related.y_ratio;
+
+        qDebug() << "======================================";
 
         int zoom = 1;
         ui->mPreviewFrame->setAxisRange(measure_data.outer_ellipse.x_diameter
@@ -392,8 +415,8 @@ void mvImageAcquisitWidget::onStartButton()
                                             ? measure_data.outer_ellipse.x_diameter * zoom
                                             : measure_data.inner_ellipse.y_diameter * zoom);
         ui->mPreviewFrame->setInnerEllipseCenter(
-            QPointF(measure_data.inner_ellipse.x_diameter * zoom,
-                    measure_data.inner_ellipse.y_diameter * zoom));
+            QPointF(measure_data.inner_ellipse.center.x * zoom,
+                    measure_data.inner_ellipse.center.y * zoom));
         ui->mPreviewFrame->setInnerEllipseMinorRadius(measure_data.inner_ellipse.y_diameter / 2
                                                       * zoom);
         ui->mPreviewFrame->setInnerEllipseMajorRadius(measure_data.inner_ellipse.x_diameter / 2
@@ -867,7 +890,6 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
 
         if (false) {
             if (!image.imageData.isEmpty()) {
-                // 直接处理内存数据，返回处理后的 unsigned short 数组
                 auto processedRaw
                     = algorithmic->CalibrateArquireImage(image.width,
                                                          image.height,
@@ -919,37 +941,41 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
                                                                 heightnew,
                                                                 image.bitDepth,
                                                                 processedRaw);
+                if (resprocess) {
+                    // 保存最终结果到文件
+                    QString imagePath;
+                    if (image.orientation % 2 == 0) {
+                        imagePath = QDir::toNativeSeparators(
+                            directory + "/" + dateStr + "/" + timestamp + "/X/"
+                            + QString("image_%1.raw").arg(timestamp));
+                        imagePathX = imagePath;
+                    } else {
+                        imagePath = QDir::toNativeSeparators(
+                            directory + "/" + dateStr + "/" + timestamp + "/Y/"
+                            + QString("image_%1.raw").arg(timestamp));
+                        imagePathY = imagePath;
+                    }
 
-                // 保存最终结果到文件
-                QString imagePath;
-                if (image.orientation % 2 == 0) {
-                    imagePath = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp
-                                                         + "/X/"
-                                                         + QString("image_%1.raw").arg(timestamp));
-                    imagePathX = imagePath;
-                } else {
-                    imagePath = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp
-                                                         + "/Y/"
-                                                         + QString("image_%1.raw").arg(timestamp));
-                    imagePathY = imagePath;
-                }
+                    // 保存处理后的数据
+                    if (processedRaw && expectedElements > 0) {
+                        QFile file(imagePath);
+                        if (file.open(QIODevice::WriteOnly)) {
+                            qint64 bytesToWrite = expectedElements * sizeof(unsigned short);
+                            qint64 bytesWritten = file.write(reinterpret_cast<const char*>(
+                                                                 processedRaw.get()),
+                                                             bytesToWrite);
+                            file.close();
 
-                // 保存处理后的数据
-                if (processedRaw && expectedElements > 0) {
-                    QFile file(imagePath);
-                    if (file.open(QIODevice::WriteOnly)) {
-                        qint64 bytesToWrite = expectedElements * sizeof(unsigned short);
-                        qint64 bytesWritten = file.write(reinterpret_cast<const char*>(
-                                                             processedRaw.get()),
-                                                         bytesToWrite);
-                        file.close();
-
-                        if (bytesWritten == bytesToWrite) {
-                            qDebug() << tr("Raw pro data saved to:") << imagePath;
-                            HWImageData& mutableData = const_cast<HWImageData&>(image);
-                            mutableData.filePath = imagePath;
+                            if (bytesWritten == bytesToWrite) {
+                                qDebug() << ("Raw pro data saved to:") << imagePath;
+                                HWImageData& mutableData = const_cast<HWImageData&>(image);
+                                mutableData.filePath = imagePath;
+                            }
                         }
                     }
+
+                } else {
+                    qDebug() << "Raw pro data fail";
                 }
             }
         }
@@ -977,8 +1003,8 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
                                             ? measure_data.outer_ellipse.x_diameter * zoom
                                             : measure_data.inner_ellipse.y_diameter * zoom);
         ui->mPreviewFrame->setInnerEllipseCenter(
-            QPointF(measure_data.inner_ellipse.x_diameter * zoom,
-                    measure_data.inner_ellipse.y_diameter * zoom));
+            QPointF(measure_data.inner_ellipse.center.x * zoom,
+                    measure_data.inner_ellipse.center.y * zoom));
         ui->mPreviewFrame->setInnerEllipseMinorRadius(measure_data.inner_ellipse.y_diameter / 2
                                                       * zoom);
         ui->mPreviewFrame->setInnerEllipseMajorRadius(measure_data.inner_ellipse.x_diameter / 2
