@@ -501,8 +501,8 @@ void MainWindow::onImageAcquisitSwitchPage(int)
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
 {
     Q_UNUSED(event);
-    //this->isMaximized() ? this->showNormal() : this->showMaximized();
-    //event->accept();
+    this->isFullScreen() ? this->showFullScreen() : this->showMaximized();
+    event->accept();
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)

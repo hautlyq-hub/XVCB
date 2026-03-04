@@ -202,11 +202,9 @@ void CableDiameterWidget::setAxisRange(double range)
         m_originalXAxisRange = range;
         m_originalYAxisRange = range;
 
-        // 计算合适的缩放倍数
         calculateOptimalZoom(range);
         updateCoordinateRect();
 
-        // 设置可见
         m_isVisible = true;
         update();
     }
@@ -214,6 +212,7 @@ void CableDiameterWidget::setAxisRange(double range)
 
 void CableDiameterWidget::calculateOptimalZoom(double axisRange)
 {
+    // 计算所有元素的最大尺寸（椭圆半轴 + 中心偏移）
     double maxEllipseSize = qMax(qMax(m_outerEllipseMajorRadius, m_outerEllipseMinorRadius),
                                  qMax(m_innerEllipseMajorRadius, m_innerEllipseMinorRadius));
 
@@ -221,11 +220,22 @@ void CableDiameterWidget::calculateOptimalZoom(double axisRange)
 
     double totalMaxSize = maxEllipseSize + maxCenterOffset;
 
-    if (totalMaxSize > 0) {
-        double targetRange = totalMaxSize * 1.1;
-        double optimalZoom = axisRange / targetRange;
-        optimalZoom = qBound(1.6, optimalZoom, 5.0);
+    if (totalMaxSize > 0 && axisRange > 0) {
+        // 期望的图形占据量程的比例
+        double desiredFillRatio = 1.0;
+
+        // 计算合适的缩放因子
+        // 例如：axisRange=200mm, totalMaxSize=50mm, desiredFillRatio=0.8
+        // 则 optimalZoom = (200 * 0.8) / 50 = 3.2
+        // 表示需要放大3.2倍，让50mm的物体在200mm的量程中占据80%（160mm）
+        double optimalZoom = (axisRange * desiredFillRatio) / totalMaxSize;
+
+        // 限制缩放范围
+        optimalZoom = qBound(0.5, optimalZoom, 5.0);
+
         m_zoomFactor = optimalZoom;
+
+        setZoomFactor(optimalZoom);
     }
 }
 

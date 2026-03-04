@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>500</height>
+    <height>487</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>800</width>
-    <height>500</height>
+    <height>400</height>
    </size>
   </property>
   <property name="font">
@@ -531,10 +531,16 @@ spacing:0px;</string>
          <item>
           <widget class="QStackedWidget" name="mStateShowStackWidget">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
            </property>
            <property name="maximumSize">
             <size>
@@ -935,7 +941,7 @@ spacing:0px;</string>
         </property>
         <property name="maximumSize">
          <size>
-          <width>200</width>
+          <width>300</width>
           <height>16777215</height>
          </size>
         </property>
@@ -1063,13 +1069,13 @@ background-color: rgb(0, 0, 0);</string>
                <widget class="QLabel" name="label_2">
                 <property name="minimumSize">
                  <size>
-                  <width>50</width>
+                  <width>30</width>
                   <height>25</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>50</width>
+                  <width>30</width>
                   <height>30</height>
                  </size>
                 </property>
@@ -1094,13 +1100,13 @@ background-color: rgb(0, 0, 0);</string>
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>40</width>
+                  <width>30</width>
                   <height>25</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>40</width>
+                  <width>30</width>
                   <height>30</height>
                  </size>
                 </property>
@@ -1119,19 +1125,6 @@ background-color: rgb(0, 0, 0);</string>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_2">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
                <widget class="QLabel" name="labelInnerDiameterTolerance">
                 <property name="minimumSize">
                  <size>
@@ -1148,7 +1141,7 @@ background-color: rgb(0, 0, 0);</string>
                 <property name="font">
                  <font>
                   <family>微软雅黑</family>
-                  <pointsize>10</pointsize>
+                  <pointsize>8</pointsize>
                  </font>
                 </property>
                 <property name="text">
@@ -1173,17 +1166,18 @@ background-color: rgb(0, 0, 0);</string>
                </spacer>
               </item>
               <item>
-               <widget class="QLabel" name="label_5">
+               <widget class="QLabel" name="labelInnerDiameterValue">
                 <property name="minimumSize">
                  <size>
-                  <width>30</width>
+                  <width>70</width>
                   <height>25</height>
                  </size>
                 </property>
                 <property name="font">
                  <font>
                   <family>微软雅黑</family>
-                  <pointsize>10</pointsize>
+                  <pointsize>15</pointsize>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
@@ -1323,13 +1317,13 @@ background-color: rgb(0, 0, 0);</string>
                <widget class="QLabel" name="label_9">
                 <property name="minimumSize">
                  <size>
-                  <width>50</width>
+                  <width>30</width>
                   <height>25</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>50</width>
+                  <width>30</width>
                   <height>30</height>
                  </size>
                 </property>
@@ -1354,13 +1348,13 @@ background-color: rgb(0, 0, 0);</string>
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>40</width>
+                  <width>30</width>
                   <height>25</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>40</width>
+                  <width>30</width>
                   <height>30</height>
                  </size>
                 </property>
@@ -1379,19 +1373,6 @@ background-color: rgb(0, 0, 0);</string>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_7">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
                <widget class="QLabel" name="labelEccentricTolerance">
                 <property name="minimumSize">
                  <size>
@@ -1408,7 +1389,7 @@ background-color: rgb(0, 0, 0);</string>
                 <property name="font">
                  <font>
                   <family>微软雅黑</family>
-                  <pointsize>10</pointsize>
+                  <pointsize>8</pointsize>
                  </font>
                 </property>
                 <property name="text">
@@ -1433,21 +1414,22 @@ background-color: rgb(0, 0, 0);</string>
                </spacer>
               </item>
               <item>
-               <widget class="QLabel" name="label_12">
+               <widget class="QLabel" name="labelEccentricValue">
                 <property name="minimumSize">
                  <size>
-                  <width>30</width>
+                  <width>70</width>
                   <height>25</height>
                  </size>
                 </property>
                 <property name="font">
                  <font>
                   <family>微软雅黑</family>
-                  <pointsize>10</pointsize>
+                  <pointsize>15</pointsize>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
-                 <string>0</string>
+                 <string>1.2345</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -1469,7 +1451,7 @@ background-color: rgb(0, 0, 0);</string>
                  </font>
                 </property>
                 <property name="text">
-                 <string>mm</string>
+                 <string>%</string>
                 </property>
                </widget>
               </item>
@@ -1583,13 +1565,13 @@ background-color: rgb(0, 0, 0);</string>
                <widget class="QLabel" name="label_15">
                 <property name="minimumSize">
                  <size>
-                  <width>50</width>
+                  <width>30</width>
                   <height>25</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>50</width>
+                  <width>30</width>
                   <height>30</height>
                  </size>
                 </property>
@@ -1614,13 +1596,13 @@ background-color: rgb(0, 0, 0);</string>
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>40</width>
+                  <width>30</width>
                   <height>25</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>40</width>
+                  <width>30</width>
                   <height>30</height>
                  </size>
                 </property>
@@ -1639,19 +1621,6 @@ background-color: rgb(0, 0, 0);</string>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_10">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
                <widget class="QLabel" name="labelHotOuterDiameterTolerance">
                 <property name="minimumSize">
                  <size>
@@ -1668,7 +1637,7 @@ background-color: rgb(0, 0, 0);</string>
                 <property name="font">
                  <font>
                   <family>微软雅黑</family>
-                  <pointsize>10</pointsize>
+                  <pointsize>8</pointsize>
                  </font>
                 </property>
                 <property name="text">
@@ -1693,17 +1662,18 @@ background-color: rgb(0, 0, 0);</string>
                </spacer>
               </item>
               <item>
-               <widget class="QLabel" name="label_18">
+               <widget class="QLabel" name="labelHotOuterDiameterValue">
                 <property name="minimumSize">
                  <size>
-                  <width>30</width>
+                  <width>70</width>
                   <height>25</height>
                  </size>
                 </property>
                 <property name="font">
                  <font>
                   <family>微软雅黑</family>
-                  <pointsize>10</pointsize>
+                  <pointsize>15</pointsize>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
@@ -1843,13 +1813,13 @@ background-color: rgb(0, 0, 0);</string>
                <widget class="QLabel" name="label_21">
                 <property name="minimumSize">
                  <size>
-                  <width>50</width>
+                  <width>30</width>
                   <height>25</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>50</width>
+                  <width>30</width>
                   <height>30</height>
                  </size>
                 </property>
@@ -1874,13 +1844,13 @@ background-color: rgb(0, 0, 0);</string>
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>40</width>
+                  <width>30</width>
                   <height>25</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>40</width>
+                  <width>30</width>
                   <height>30</height>
                  </size>
                 </property>
@@ -1899,19 +1869,6 @@ background-color: rgb(0, 0, 0);</string>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_12">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
                <widget class="QLabel" name="labelWallThicknessTolerance">
                 <property name="minimumSize">
                  <size>
@@ -1928,7 +1885,7 @@ background-color: rgb(0, 0, 0);</string>
                 <property name="font">
                  <font>
                   <family>微软雅黑</family>
-                  <pointsize>10</pointsize>
+                  <pointsize>8</pointsize>
                  </font>
                 </property>
                 <property name="text">
@@ -1953,17 +1910,18 @@ background-color: rgb(0, 0, 0);</string>
                </spacer>
               </item>
               <item>
-               <widget class="QLabel" name="label_24">
+               <widget class="QLabel" name="labelWallThicknessValue">
                 <property name="minimumSize">
                  <size>
-                  <width>30</width>
+                  <width>70</width>
                   <height>25</height>
                  </size>
                 </property>
                 <property name="font">
                  <font>
                   <family>微软雅黑</family>
-                  <pointsize>10</pointsize>
+                  <pointsize>15</pointsize>
+                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="text">
@@ -2016,7 +1974,7 @@ background-color: rgb(0, 0, 0);</string>
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>55</height>
+             <height>80</height>
             </size>
            </property>
            <property name="whatsThis">
@@ -2033,16 +1991,16 @@ background-color: rgb(0, 0, 0);</string>
              <number>3</number>
             </property>
             <property name="leftMargin">
-             <number>10</number>
+             <number>20</number>
             </property>
             <property name="topMargin">
-             <number>10</number>
+             <number>20</number>
             </property>
             <property name="rightMargin">
-             <number>10</number>
+             <number>20</number>
             </property>
             <property name="bottomMargin">
-             <number>10</number>
+             <number>20</number>
             </property>
             <item>
              <widget class="QPushButton" name="pushButtonStart">
@@ -2054,8 +2012,8 @@ background-color: rgb(0, 0, 0);</string>
               </property>
               <property name="minimumSize">
                <size>
-                <width>70</width>
-                <height>40</height>
+                <width>100</width>
+                <height>60</height>
                </size>
               </property>
               <property name="maximumSize">
@@ -2067,7 +2025,7 @@ background-color: rgb(0, 0, 0);</string>
               <property name="font">
                <font>
                 <family>微软雅黑</family>
-                <pointsize>10</pointsize>
+                <pointsize>12</pointsize>
                 <bold>false</bold>
                </font>
               </property>
@@ -2099,8 +2057,8 @@ background-color: rgb(0, 0, 0);</string>
              <widget class="QPushButton" name="pushButtonFinished">
               <property name="minimumSize">
                <size>
-                <width>70</width>
-                <height>40</height>
+                <width>100</width>
+                <height>60</height>
                </size>
               </property>
               <property name="maximumSize">
@@ -2112,7 +2070,7 @@ background-color: rgb(0, 0, 0);</string>
               <property name="font">
                <font>
                 <family>微软雅黑</family>
-                <pointsize>10</pointsize>
+                <pointsize>12</pointsize>
                 <bold>false</bold>
                </font>
               </property>

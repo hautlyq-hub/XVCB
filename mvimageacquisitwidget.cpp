@@ -345,9 +345,113 @@ void mvImageAcquisitWidget::onFinishedButton()
 
 void mvImageAcquisitWidget::onStartButton()
 {
-    if (true) {
-        imagePathX = "/home/pi/XVBVThiness/build/config/model/1.raw";
-        imagePathY = "/home/pi/XVBVThiness/build/config/model/2.raw";
+    if (false) {
+        {
+            QString directory = DataLocations::getDicomPath();
+            QString dateStr = QDateTime::currentDateTime().toString("yyyyMMdd");
+            QString timestamp = QDateTime::currentDateTime().toString("hhmmsszzz");
+            QString fileCorr = QDir::toNativeSeparators(
+                directory + "/" + dateStr + "/" + timestamp + "/test/"
+                + QString("image_%1_cal.raw").arg(timestamp));
+            ;
+
+            imagePathX = "/home/pi/XVBVThiness/build/config/model/3.raw";
+            imagePathY = "/home/pi/XVBVThiness/build/config/model/3.raw";
+
+            QFile file(imagePathX);
+            if (!file.open(QIODevice::ReadOnly)) {
+                qDebug() << "无法打开文件:" << imagePathX;
+                return;
+            }
+
+            // 读取 RAW 数据
+            QByteArray rawData = file.readAll();
+            file.close();
+
+            bool zoomTwice = false;
+            {
+                auto algorithmic = XPectAlgorithmic::Instance();
+
+                auto processedRaw
+                    = algorithmic->CalibrateArquireImage(344,
+                                                         417,
+                                                         16,
+                                                         reinterpret_cast<const unsigned char*>(
+                                                             rawData.constData()),
+                                                         344 * 417 * 2,
+                                                         zoomTwice);
+
+                if (!processedRaw) {
+                    qWarning() << "CalibrateArquireImage failed";
+                }
+
+                int widthnew = zoomTwice ? 344 * 2 : 344;
+                int heightnew = zoomTwice ? 417 * 2 : 417;
+
+                // 直接使用返回的 processedRaw 数据，不需要再从文件读取
+                size_t expectedElements = static_cast<size_t>(widthnew)
+                                          * static_cast<size_t>(heightnew);
+
+                if (processedRaw) {
+                    QFile file(fileCorr);
+                    if (file.open(QIODevice::WriteOnly)) {
+                        file.write(reinterpret_cast<const char*>(processedRaw.get()),
+                                   expectedElements * sizeof(unsigned short));
+                        qDebug() << tr("Raw cal data saved to:") << fileCorr;
+                    }
+                }
+                qDebug() << "Processed data size:" << expectedElements << "elements";
+
+                // 计算窗口参数
+                double windowCenterActual = 32768, windowWidthActual = 65536;
+                algorithmic->CalculateWindowParams(processedRaw.get(),
+                                                   widthnew,
+                                                   heightnew,
+                                                   windowCenterActual,
+                                                   windowWidthActual);
+
+                qInfo() << QString("windowCenterActual:%1, windowWidthActual:%2")
+                               .arg(windowCenterActual)
+                               .arg(windowWidthActual);
+
+                // 处理图像数据（如果需要）
+                bool resprocess = algorithmic->ProcessImageData(widthnew,
+                                                                heightnew,
+                                                                16,
+                                                                processedRaw);
+                if (resprocess) {
+                    // 保存最终结果到文件
+                    QString imagePath;
+                    if (1) {
+                        imagePath = QDir::toNativeSeparators(
+                            directory + "/" + dateStr + "/" + timestamp + "/X/"
+                            + QString("image_%1.raw").arg(timestamp));
+                        imagePathX = imagePath;
+                    } else {
+                        imagePath = QDir::toNativeSeparators(
+                            directory + "/" + dateStr + "/" + timestamp + "/Y/"
+                            + QString("image_%1.raw").arg(timestamp));
+                        imagePathY = imagePath;
+                    }
+
+                    // 保存处理后的数据
+                    if (processedRaw && expectedElements > 0) {
+                        QFile file(imagePath);
+                        if (file.open(QIODevice::WriteOnly)) {
+                            qint64 bytesToWrite = expectedElements * sizeof(unsigned short);
+                            qint64 bytesWritten = file.write(reinterpret_cast<const char*>(
+                                                                 processedRaw.get()),
+                                                             bytesToWrite);
+                            file.close();
+                        }
+                    }
+
+                } else {
+                    qDebug() << "Raw pro data fail";
+                }
+            }
+        }
+
         ui->mStateShowStackWidget->setCurrentIndex(1);
 
         StatusCode status;
@@ -495,18 +599,31 @@ void mvImageAcquisitWidget::setCurrentPatient()
     ui->mPreviewFrame->reset();
     ui->mCurveFrame->reset();
 
-    mCurrentStudyRecord = SessionHelper::getInstance()->getCurrentStudy();
-    ui->labelInnerDiameter->setText(mCurrentStudyRecord.patientBirth);
-    ui->labelHotOuterDiameter->setText(mCurrentStudyRecord.age);
-    ui->labelEccentric->setText(mCurrentStudyRecord.perPhysician);
-    ui->labelWallThickness->setText(mCurrentStudyRecord.reqPhysician);
-    ui->labelInnerDiameterTolerance->setText(mCurrentStudyRecord.procId);
-    ui->labelHotOuterDiameterTolerance->setText(mCurrentStudyRecord.protocalCode);
-    ui->labelEccentricTolerance->setText(mCurrentStudyRecord.modality);
-    ui->labelWallThicknessTolerance->setText(mCurrentStudyRecord.protocalMeaning);
-
     currentPatientName = SessionHelper::getInstance()->getCurrentPatientName();
     currentStudyUID = SessionHelper::getInstance()->getCurrentStudyUID();
+    if (currentStudyUID.isEmpty()) {
+        qDebug() << "11111111111";
+        ui->labelInnerDiameter->setText("2.2");
+        ui->labelHotOuterDiameter->setText("2");
+        ui->labelEccentric->setText("0");
+        ui->labelWallThickness->setText("0.5");
+        ui->labelInnerDiameterTolerance->setText("±0.2");
+        ui->labelHotOuterDiameterTolerance->setText("±0.2");
+        ui->labelEccentricTolerance->setText("±10");
+        ui->labelWallThicknessTolerance->setText("±0.1");
+
+    } else {
+        qDebug() << "22222222222";
+        mCurrentStudyRecord = SessionHelper::getInstance()->getCurrentStudy();
+        ui->labelInnerDiameter->setText(mCurrentStudyRecord.patientBirth);
+        ui->labelHotOuterDiameter->setText(mCurrentStudyRecord.age);
+        ui->labelEccentric->setText(mCurrentStudyRecord.perPhysician);
+        ui->labelWallThickness->setText(mCurrentStudyRecord.reqPhysician);
+        ui->labelInnerDiameterTolerance->setText("±" + mCurrentStudyRecord.procId);
+        ui->labelHotOuterDiameterTolerance->setText("±" + mCurrentStudyRecord.protocalCode);
+        ui->labelEccentricTolerance->setText("±" + mCurrentStudyRecord.modality);
+        ui->labelWallThicknessTolerance->setText("±" + mCurrentStudyRecord.protocalMeaning);
+    }
 
     qDeleteAll(examList);
     examList.clear();
@@ -524,7 +641,7 @@ void mvImageAcquisitWidget::setCurrentPatient()
         if (!serial.isEmpty()) {
             mOralAddr = serial;
         } else {
-            mOralAddr = tr("Unknown"); // 默认值
+            mOralAddr = QString::number(i); // 默认值
         }
 
         if (!mOralAddr.isEmpty()) {
@@ -857,12 +974,14 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
                                                 + QString("image_%1_init.raw").arg(timestamp));
             fileCorr = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp + "/X/"
                                                 + QString("image_%1_cal.raw").arg(timestamp));
+            imagePathX = fileCorr;
 
         } else {
             fileinit = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp + "/Y/"
                                                 + QString("image_%1_init.raw").arg(timestamp));
             fileCorr = QDir::toNativeSeparators(directory + "/" + dateStr + "/" + timestamp + "/Y/"
                                                 + QString("image_%1_cal.raw").arg(timestamp));
+            imagePathY = fileCorr;
         }
 
         QFileInfo fInfoInit(fileinit);
@@ -888,7 +1007,7 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
             }
         }
 
-        if (false) {
+        if (true) {
             if (!image.imageData.isEmpty()) {
                 auto processedRaw
                     = algorithmic->CalibrateArquireImage(image.width,
@@ -921,9 +1040,6 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
                 }
                 qDebug() << "Processed data size:" << expectedElements << "elements";
 
-                // 现在 processedRaw 就是校正后的16位数据，可以直接使用
-                // 后续所有操作都使用 processedRaw 而不是重新读取文件
-
                 // 计算窗口参数
                 double windowCenterActual = 32768, windowWidthActual = 65536;
                 algorithmic->CalculateWindowParams(processedRaw.get(),
@@ -948,12 +1064,12 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
                         imagePath = QDir::toNativeSeparators(
                             directory + "/" + dateStr + "/" + timestamp + "/X/"
                             + QString("image_%1.raw").arg(timestamp));
-                        imagePathX = imagePath;
+                        // imagePathX = imagePath;
                     } else {
                         imagePath = QDir::toNativeSeparators(
                             directory + "/" + dateStr + "/" + timestamp + "/Y/"
                             + QString("image_%1.raw").arg(timestamp));
-                        imagePathY = imagePath;
+                        // imagePathY = imagePath;
                     }
 
                     // 保存处理后的数据
@@ -989,6 +1105,8 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
         cv::Size raw_size(344, 417);
         cv::Size crop_size(304, 137);
 
+        qDebug() << "imagePathX : " + imagePathX;
+        qDebug() << "imagePathY : " + imagePathY;
         std::tie(status, lr_profile, ud_profile, lr_img, ud_img, measure_data)
             = detector->measure(imagePathX.toStdString(),
                                 imagePathY.toStdString(),
@@ -997,6 +1115,64 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
                                 crop_size,
                                 true,
                                 ui->labelInnerDiameter->text().toFloat());
+
+        qDebug() << "========== Measurement Data ==========";
+
+        std::ofstream file("/home/pi/lr_img.raw", std::ios::binary | std::ios::out);
+        if (file.is_open()) {
+            size_t dataSize = crop_size.width * crop_size.height * ud_img.elemSize();
+            file.write(reinterpret_cast<const char*>(lr_img.data), dataSize);
+            file.close();
+        }
+
+        std::ofstream file1("/home/pi/ud_img.raw", std::ios::binary | std::ios::out);
+        if (file1.is_open()) {
+            size_t dataSize = crop_size.width * crop_size.height * ud_img.elemSize();
+            file1.write(reinterpret_cast<const char*>(ud_img.data), dataSize);
+            file1.close();
+        }
+
+        // 打印内椭圆
+        qDebug() << "Inner Ellipse:";
+        qDebug() << "  Center: (" << measure_data.inner_ellipse.center.x << ", "
+                 << measure_data.inner_ellipse.center.y << ")";
+        qDebug() << "  X Diameter:" << measure_data.inner_ellipse.x_diameter;
+        qDebug() << "  Y Diameter:" << measure_data.inner_ellipse.y_diameter;
+        qDebug() << "  Diameter:" << measure_data.inner_ellipse.diameter;
+
+        // 打印外椭圆
+        qDebug() << "Outer Ellipse:";
+        qDebug() << "  Center: (" << measure_data.outer_ellipse.center.x << ", "
+                 << measure_data.outer_ellipse.center.y << ")";
+        qDebug() << "  X Diameter:" << measure_data.outer_ellipse.x_diameter;
+        qDebug() << "  Y Diameter:" << measure_data.outer_ellipse.y_diameter;
+        qDebug() << "  Diameter:" << measure_data.outer_ellipse.diameter;
+
+        // 打印壁厚数据
+        qDebug() << "Wall Thickness:";
+        qDebug() << "  Thickness:" << measure_data.wall_thickness.thickness;
+        qDebug() << "  Min Thickness:" << measure_data.wall_thickness.min_thickness;
+        qDebug() << "  Min Angle:" << measure_data.wall_thickness.min_angle;
+
+        qDebug() << "  Spec Thickness:";
+        QString specStr;
+        for (size_t i = 0; i < measure_data.wall_thickness.spec_thickness.size(); ++i) {
+            specStr += QString::number(measure_data.wall_thickness.spec_thickness[i]);
+            if (i < measure_data.wall_thickness.spec_thickness.size() - 1) {
+                specStr += ", ";
+            }
+        }
+        qDebug() << "    [" << specStr << "]";
+
+        // 打印相关数据
+        qDebug() << "Related Data:";
+        qDebug() << "  Eccentricity:" << measure_data.related.eccentricity;
+        qDebug() << "  Ovality:" << measure_data.related.ovality;
+        qDebug() << "  X Ratio:" << measure_data.related.x_ratio;
+        qDebug() << "  Y Ratio:" << measure_data.related.y_ratio;
+
+        qDebug() << "======================================";
+
         int zoom = 1;
         ui->mPreviewFrame->setAxisRange(measure_data.outer_ellipse.x_diameter
                                                 > measure_data.inner_ellipse.y_diameter
@@ -1049,6 +1225,15 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
                                                          QString::number(measure_data.wall_thickness
                                                                              .spec_thickness[7])
                                                              + "mm");
+
+            ui->labelInnerDiameterValue->setText(
+                QString::number(measure_data.inner_ellipse.diameter));
+            ui->labelEccentricValue->setText(
+                QString::number(measure_data.related.eccentricity * 100));
+            ui->labelHotOuterDiameterValue->setText(
+                QString::number(measure_data.outer_ellipse.diameter));
+            ui->labelWallThicknessValue->setText(
+                QString::number(measure_data.wall_thickness.thickness));
 
             ui->mCurveFrame->addData(measure_data.inner_ellipse.diameter,
                                      measure_data.outer_ellipse.diameter);

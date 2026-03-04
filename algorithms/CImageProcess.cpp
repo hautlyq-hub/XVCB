@@ -4,7 +4,11 @@
 #include <QDir>
 #include <QFile>
 #include "GlobalDef.h"
+#include <cstdint>
 #include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <vector>
 // #include <new>
 
 #include "DataProc.h"
@@ -263,17 +267,12 @@ bool CImageProcess::CorrectImageData(unsigned char* pusSrc, int iSrcWidth, int i
     }
 
     bool bOutputTwice = iDstWidth / iSrcWidth == 2 && iDstHeight / iSrcHeight == 2 ? true : false;
-    //bool bOutputTwice = false;
 
-    // 打印 pfPara 数组内容
-    int paraLength = 10; // 根据实际情况调整
-    QString paraValues;
-    for (int i = 0; i < paraLength; i++) {
-        paraValues += QString("para[%1]=%2 ")
-                          .arg(i)
-                          .arg(m_pImageProConfig->m_pfDoCorrectPara[i], 0, 'f', 6);
-    }
-
+    // std::ofstream file("/home/pi/pusSrc.raw", std::ios::binary | std::ios::out);
+    // if (file.is_open()) {
+    //     file.write(reinterpret_cast<const char*>(pusSrc), iSrcWidth * iSrcHeight * 2);
+    //     file.close();
+    // }
     int iRet = DataCorrect(pusSrc,
                            iSrcWidth,
                            iSrcHeight,
@@ -285,6 +284,11 @@ bool CImageProcess::CorrectImageData(unsigned char* pusSrc, int iSrcWidth, int i
                            m_pImageProConfig->m_pfDoCorrectPara,
                            pusDst,
                            bOutputTwice);
+    // std::ofstream file1("/home/pi/pusDst.raw", std::ios::binary | std::ios::out);
+    // if (file1.is_open()) {
+    //     file1.write(reinterpret_cast<const char*>(pusDst), iSrcWidth * iSrcHeight * 4 * 2);
+    //     file1.close();
+    // }
     if (PROC_SUCCESS == iRet)
     {
         qDebug()<<"Successfully corrected image.";
@@ -306,9 +310,8 @@ bool CImageProcess::ProcessImageData(unsigned int* pusSrc,
 
 {
     //背景分割标记，传一个全为0的数组即可，用不到
-    unsigned int* maskout = new unsigned int[(size_t)iSrcHeight * iSrcWidth]();
+    unsigned int* maskout = new unsigned int[(size_t) iSrcHeight * iSrcWidth]();
     //进行图像增强处理
-    qDebug() << "==========================";
     int iRet = Alg_ImagePreProcess(pusSrc,
                                    iSrcWidth,
                                    iSrcHeight,
@@ -325,9 +328,7 @@ bool CImageProcess::ProcessImageData(unsigned int* pusSrc,
                                    m_piaHistDataOut,
                                    m_pfaCurvePara);
 
-    qDebug() << "==========================";
-    if (maskout != nullptr)
-    {
+    if (maskout != nullptr) {
         delete[] maskout;
         maskout = nullptr;
     }

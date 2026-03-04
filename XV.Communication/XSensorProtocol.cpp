@@ -366,8 +366,8 @@ void XSensorProtocol::acquireImage()
             if (!processedImage.isEmpty()) {
                 emit imageReady(processedImage);
                 emit statusChanged(tr("Image acquired successfully"));
-                qDebug() << "[" << m_serialPort->portName()
-                         << "] Image processing successful, output size:" << processedImage.size();
+                // qDebug() << "[" << m_serialPort->portName()
+                //          << "] Image processing successful, output size:" << processedImage.size();
             } else {
                 allGot = false;
                 qWarning() << "[" << m_serialPort->portName() << tr("] Image processing failed");
@@ -423,7 +423,7 @@ QByteArray XSensorProtocol::retrieveImageByte(QString& errorCode, int& realGetBa
             if (data.isEmpty()) {
                 continue;
             }
-            qDebug() << "resp_raw:" << data.toHex(' ').toUpper();
+            // qDebug() << "resp_raw:" << data.toHex(' ').toUpper();
 
             if (package.isEmpty() && data.size() >= 2) {
                 int startIndex = -1;
@@ -449,7 +449,7 @@ QByteArray XSensorProtocol::retrieveImageByte(QString& errorCode, int& realGetBa
                 }
             }
 
-            qDebug() << "resp_pro:" << data.toHex(' ').toUpper();
+            // qDebug() << "resp_pro:" << data.toHex(' ').toUpper();
 
             package.append(data);
 
@@ -510,8 +510,8 @@ QByteArray XSensorProtocol::processImageData(const QByteArray& rawData, int cols
 
     for (int i = 0; i < expectedSize; i++) {
         if (i % 2 == 0) {
-            swappedData.append(static_cast<char>(src[i + 1]));
             swappedData.append(static_cast<char>(src[i]));
+            swappedData.append(static_cast<char>(src[i + 1]));
         }
     }
 

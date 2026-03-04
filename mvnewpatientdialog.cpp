@@ -36,8 +36,7 @@ namespace mv
 
     void mvNewPatientDialog::initView()
     {
-
-        ui->lineEditInnerDiameter->setValidator(new QIntValidator(0, 150, this));
+        // ui->lineEditInnerDiameter->setValidator(new QIntValidator(0, 150, this));
         QCalendarWidget *pCalendarWidget = ui->StudyDateEdit->calendarWidget();
         QTextCharFormat f = pCalendarWidget->weekdayTextFormat(Qt::Monday);//获取周一字体格式
         f.setForeground(QBrush(QColor("#00FA9A")));
@@ -55,8 +54,8 @@ namespace mv
         ui->projectIdEdit->setAttribute(Qt::WA_InputMethodEnabled, false);
         validator(ui->projectIdEdit, QString("^[A-Za-z\\d]{1,20}$"));
 
-        QRegularExpression regExp("[0-9]{1,3}");
-        ui->lineEditInnerDiameter->setValidator(new QRegularExpressionValidator(regExp, this));
+        // QRegularExpression regExp("[0-9]{1,3}");
+        // ui->lineEditInnerDiameter->setValidator(new QRegularExpressionValidator(regExp, this));
         ui->StudyDateEdit->setCalendarPopup(true);  // 日历弹出
 
         ui->StudyDateEdit->setDate(QDate::currentDate());

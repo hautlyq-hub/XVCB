@@ -1,4 +1,4 @@
-// scp /home/pi/XVBVThiness/build/release/XVBVThickness pi@192.168.2.158:/home/pi/XVBVThickness/release/
+// scp /home/pi/XVBVThiness/build/release/CableThickness pi@192.168.2.158:/home/pi/XVBVThickness/release/
 // scp /home/pi/XVBVThiness/build/config/model/DNUNetRes_NB_Nature_tiny.onnx pi@192.168.2.158:/home/pi/XVBVThickness/config/model
 
 #include "mvsystemsettings.h"
@@ -714,14 +714,19 @@ void mvsystemsettings::GenerateCalibrationFiles(int num)
             return;
         }
 
-        QString version = mManager->getSensorVersion(QString::number(i));
+        int sensor = -1;
+        if (_file.contains("QC_X"))
+            sensor = 0;
+        else if (_file.contains("QC_Y"))
+            sensor = 1;
+        QString version = mManager->getSensorVersion(QString::number(sensor));
         if (!version.isEmpty()) {
             mOralMajor = version.left(1).toInt();
         } else {
             mOralMajor = 0; // 默认值
         }
 
-        QString serial = mManager->getSensorSerialNumber(QString::number(i));
+        QString serial = mManager->getSensorSerialNumber(QString::number(sensor));
         if (!serial.isEmpty()) {
             mOralAddr = serial;
         } else {
@@ -751,7 +756,7 @@ void mvsystemsettings::GenerateCalibrationFiles(int num)
                                  .arg(mImageWidth)
                                  .arg(mImageHeight))
                          .toStdString());
-        int res = algorithmic->GenerateCorrectionFile(mPreCalFolder + "/" + _file,
+        int res = algorithmic->GenerateCorrectionFile(_file,
                                                       targetFile,
                                                       mImageWidth,
                                                       mImageHeight,

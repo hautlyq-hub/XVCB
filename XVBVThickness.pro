@@ -9,7 +9,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 # ============ 项目配置 ============
 CONFIG += c++17 link_pkgconfig
-TARGET = XVBVThickness
+TARGET = CableThickness
 TEMPLATE = app
 
 # ============ zlib 和 minizip 配置（树莓派专用）============
