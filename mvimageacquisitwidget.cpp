@@ -77,14 +77,6 @@ void mvImageAcquisitWidget::initConnect()
             &XProtocolManager::errorOccurred,
             this,
             &mvImageAcquisitWidget::onErrorReceived);
-    connect(mManager,
-            &XProtocolManager::notification,
-            this,
-            &mvImageAcquisitWidget::onNotificationReceived);
-    connect(mManager,
-            &XProtocolManager::exposureError,
-            this,
-            &mvImageAcquisitWidget::onExposureError);
 
     // 连接图像接收信号
     connect(mManager, &XProtocolManager::imagesReady, this, &mvImageAcquisitWidget::onImagesReady);
@@ -926,23 +918,14 @@ void mvImageAcquisitWidget::onErrorReceived(const QString& message)
     updateInfoPanel(tr("Error: ") + message, Error);
     updateDeviceState(ExposureState::Fault);
 }
-void mvImageAcquisitWidget::onNotificationReceived(const QString& message)
+
+void mvImageAcquisitWidget::onExposureProcess(ExposureState state)
 {
     if (!this->isVisible()) {
         return;
     }
-
-    updateInfoPanel(tr("Notification: ") + message, Normal);
-}
-
-void mvImageAcquisitWidget::onExposureError(const QString& error)
-{
-    if (!this->isVisible()) {
-        return;
-    }
-
-    updateInfoPanel(tr("Exposure error: ") + error, Error);
-    updateDeviceState(ExposureState::Fault);
+    updateInfoPanel("", Normal);
+    updateDeviceState(state);
 }
 
 void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
@@ -1225,15 +1208,14 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
                                                          QString::number(measure_data.wall_thickness
                                                                              .spec_thickness[7])
                                                              + "mm");
-
             ui->labelInnerDiameterValue->setText(
-                QString::number(measure_data.inner_ellipse.diameter));
+                QString::number(measure_data.inner_ellipse.diameter, 'f', 3));
             ui->labelEccentricValue->setText(
-                QString::number(measure_data.related.eccentricity * 100));
+                QString::number(measure_data.related.eccentricity * 100, 'f', 3));
             ui->labelHotOuterDiameterValue->setText(
-                QString::number(measure_data.outer_ellipse.diameter));
+                QString::number(measure_data.outer_ellipse.diameter, 'f', 3));
             ui->labelWallThicknessValue->setText(
-                QString::number(measure_data.wall_thickness.thickness));
+                QString::number(measure_data.wall_thickness.thickness, 'f', 3));
 
             ui->mCurveFrame->addData(measure_data.inner_ellipse.diameter,
                                      measure_data.outer_ellipse.diameter);
@@ -1244,12 +1226,4 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
     ui->mStateShowStackWidget->setCurrentIndex(1);
 }
 
-void mvImageAcquisitWidget::onExposureProcess(ExposureState state)
-{
-    if (!this->isVisible()) {
-        return;
-    }
-    updateInfoPanel("", Normal);
-    updateDeviceState(state);
-}
 } // namespace mv

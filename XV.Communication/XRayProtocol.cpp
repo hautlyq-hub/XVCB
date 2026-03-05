@@ -598,7 +598,7 @@ void XRayProtocol::handleExposureResponse(const QByteArray &response)
 
     if (exp_step == 9) {
         m_lastError = XRAY_ERROR_EXPOSURE_TIMEOUT;
-        emit exposureError(XRAY_ERROR_EXPOSURE_TIMEOUT);
+        emit errorOccurred(XRAY_ERROR_EXPOSURE_TIMEOUT, "Exposure timeout");
     }
 
 }

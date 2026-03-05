@@ -555,8 +555,8 @@ void CableDiameterWidget::drawEllipses(QPainter &painter)
     painter.drawEllipse(innerCenter, innerMajorRadiusPixels, innerMinorRadiusPixels);
 
     // ==================== 文本显示区域 ====================
-    int margin = 20;  // 统一的边距
-    int padding = 15; // 背景内边距
+    int margin = 10; // 统一的边距
+    // int padding = 10; // 背景内边距
 
     // 1. 左下角信息区 - 内圆中心 + 偏离信息
     painter.save();
@@ -590,19 +590,19 @@ void CableDiameterWidget::drawEllipses(QPainter &painter)
 
     // 左下角位置
     int leftBottomX = margin;
-    int leftBottomY = height() - margin - 10;
+    int leftBottomY = height() - margin;
 
     // 背景框位置和大小
-    int leftBottomBgX = leftBottomX - padding;
-    int leftBottomBgY = leftBottomY - leftBottomTotalHeight - padding;
-    int leftBottomBgWidth = leftBottomMaxWidth + padding * 2;
-    int leftBottomBgHeight = leftBottomTotalHeight + padding * 2;
+    // int leftBottomBgX = leftBottomX - padding;
+    // int leftBottomBgY = leftBottomY - leftBottomTotalHeight - padding;
+    // int leftBottomBgWidth = leftBottomMaxWidth + padding * 2;
+    // int leftBottomBgHeight = leftBottomTotalHeight + padding * 2;
 
     // 添加半透明背景
-    painter.setBrush(QColor(0, 0, 0, 180));
-    painter.setPen(Qt::NoPen);
-    painter
-        .drawRoundedRect(leftBottomBgX, leftBottomBgY, leftBottomBgWidth, leftBottomBgHeight, 8, 8);
+    // painter.setBrush(QColor(0, 0, 0, 180));
+    // painter.setPen(Qt::NoPen);
+    // painter
+    //     .drawRoundedRect(leftBottomBgX, leftBottomBgY, leftBottomBgWidth, leftBottomBgHeight, 8, 8);
 
     // 绘制文本
     painter.setPen(Qt::green);
@@ -644,18 +644,18 @@ void CableDiameterWidget::drawEllipses(QPainter &painter)
 
     // 左上角位置
     int topLeftX = margin;
-    int topLeftY = margin + topLeftTotalHeight + 20;
+    int topLeftY = margin + topLeftTotalHeight;
 
     // 背景框位置和大小
-    int topLeftBgX = topLeftX - padding;
-    int topLeftBgY = topLeftY - topLeftTotalHeight - padding;
-    int topLeftBgWidth = topLeftMaxWidth + padding * 2;
-    int topLeftBgHeight = topLeftTotalHeight + padding * 2;
+    // int topLeftBgX = topLeftX - padding;
+    // int topLeftBgY = topLeftY - topLeftTotalHeight - padding;
+    // int topLeftBgWidth = topLeftMaxWidth + padding * 2;
+    // int topLeftBgHeight = topLeftTotalHeight + padding * 2;
 
     // 添加半透明背景
-    painter.setBrush(QColor(0, 0, 0, 180));
-    painter.setPen(Qt::NoPen);
-    painter.drawRoundedRect(topLeftBgX, topLeftBgY, topLeftBgWidth, topLeftBgHeight, 8, 8);
+    // painter.setBrush(QColor(0, 0, 0, 180));
+    // painter.setPen(Qt::NoPen);
+    // painter.drawRoundedRect(topLeftBgX, topLeftBgY, topLeftBgWidth, topLeftBgHeight, 8, 8);
 
     // 绘制文本
     painter.setPen(QColor(255, 150, 50)); // 橙色
@@ -685,18 +685,18 @@ void CableDiameterWidget::drawEllipses(QPainter &painter)
 
     // 右上角位置
     int topRightX = width() - topRightRect.width() - margin;
-    int topRightY = margin + topRightRect.height() + 20;
+    int topRightY = margin + topRightRect.height();
 
     // 背景框位置和大小
-    int topRightBgX = topRightX - padding;
-    int topRightBgY = topRightY - topRightRect.height() - padding;
-    int topRightBgWidth = topRightRect.width() + padding * 2;
-    int topRightBgHeight = topRightRect.height() + padding * 2;
+    // int topRightBgX = topRightX - padding;
+    // int topRightBgY = topRightY - topRightRect.height() - padding;
+    // int topRightBgWidth = topRightRect.width() + padding * 2;
+    // int topRightBgHeight = topRightRect.height() + padding * 2;
 
     // 添加半透明背景
-    painter.setBrush(QColor(0, 0, 0, 180));
-    painter.setPen(Qt::NoPen);
-    painter.drawRoundedRect(topRightBgX, topRightBgY, topRightBgWidth, topRightBgHeight, 8, 8);
+    // painter.setBrush(QColor(0, 0, 0, 180));
+    // painter.setPen(Qt::NoPen);
+    // painter.drawRoundedRect(topRightBgX, topRightBgY, topRightBgWidth, topRightBgHeight, 8, 8);
 
     // 绘制文本
     painter.setPen(QColor(100, 200, 255)); // 浅蓝色
@@ -744,18 +744,18 @@ void CableDiameterWidget::drawEllipses(QPainter &painter)
 
     // 右下角位置
     int legendX = width() - legendMaxWidth - margin - 20;
-    int legendY = height() - margin - 20;
+    int legendY = height() - margin;
 
     // 背景框位置和大小
-    int legendBgX = legendX - padding;
-    int legendBgY = legendY - legendTotalHeight - padding;
-    int legendBgWidth = legendMaxWidth + padding * 2 + 10;
-    int legendBgHeight = legendTotalHeight + padding * 2;
+    // int legendBgX = legendX - padding;
+    // int legendBgY = legendY - legendTotalHeight - padding;
+    // int legendBgWidth = legendMaxWidth + padding * 2 + 10;
+    // int legendBgHeight = legendTotalHeight + padding * 2;
 
     // 添加半透明背景
-    painter.setBrush(QColor(0, 0, 0, 180));
-    painter.setPen(Qt::NoPen);
-    painter.drawRoundedRect(legendBgX, legendBgY, legendBgWidth, legendBgHeight, 8, 8);
+    // painter.setBrush(QColor(0, 0, 0, 180));
+    // painter.setPen(Qt::NoPen);
+    // painter.drawRoundedRect(legendBgX, legendBgY, legendBgWidth, legendBgHeight, 8, 8);
 
     // 绘制标题
     painter.setPen(Qt::white);

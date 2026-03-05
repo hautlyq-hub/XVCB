@@ -192,7 +192,6 @@ private slots:
     void onXrayDeviceDisconnected(int index);
     void onXrayExposureStarted(int index);
     void onXrayExposureStopped(int index);
-    void onXrayExposureError(XRayErrorCode error, int index);
     void onXrayErrorOccurred(XRayErrorCode error, const QString& description, int index);
     void onXrayCoolingRemaining(int seconds, int index);
     void onXrayTemperatureUpdated(float deviceTemp, float mcuTemp, int index);

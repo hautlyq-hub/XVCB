@@ -112,8 +112,6 @@ namespace mv
         void onInfoReceived(const QString& message);
         void onWarningReceived(const QString& message);
         void onErrorReceived(const QString& message);
-        void onNotificationReceived(const QString& message);
-        void onExposureError(const QString& error);
         void onImagesReady(const QVector<HWImageData>& images);
         void onExposureProcess(ExposureState state);
 

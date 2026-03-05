@@ -442,12 +442,7 @@ void XProtocolManager::initializeXray()
         this,
         [this]() { onXrayExposureStopped(0); },
         Qt::QueuedConnection);
-    connect(
-        m_xrayProtocol1,
-        &XRayProtocol::exposureError,
-        this,
-        [this](XRayErrorCode error) { onXrayExposureError(error, 0); },
-        Qt::QueuedConnection);
+
     connect(m_xrayProtocol1,
             &XRayProtocol::errorOccurred,
             this,
@@ -485,12 +480,7 @@ void XProtocolManager::initializeXray()
     connect(m_xrayProtocol2, &XRayProtocol::exposureStopped, this, [this]() {
         onXrayExposureStopped(1);
     });
-    connect(
-        m_xrayProtocol2,
-        &XRayProtocol::exposureError,
-        this,
-        [this](XRayErrorCode error) { onXrayExposureError(error, 1); },
-        Qt::QueuedConnection);
+
     connect(
         m_xrayProtocol2,
         &XRayProtocol::errorOccurred,
@@ -1219,20 +1209,6 @@ void XProtocolManager::onXrayExposureStarted(int index)
 void XProtocolManager::onXrayExposureStopped(int index)
 {
     QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
-}
-
-void XProtocolManager::onXrayExposureError(XRayErrorCode error, int index)
-{
-    XRayProtocol* xray = nullptr;
-    if (index == 0) {
-        xray = m_xrayProtocol1;
-    } else {
-        xray = m_xrayProtocol2;
-    }
-
-    QString errorStr = xray ? xray->getErrorString(error) : tr("Unknown error");
-    QString xrayKey = (index == 0) ? XRAY1_KEY : XRAY2_KEY;
-    emit errorOccurred(QString(tr("X-ray %1 exposure error: %2")).arg(xrayKey).arg(errorStr));
 }
 
 void XProtocolManager::onXrayErrorOccurred(XRayErrorCode error,
