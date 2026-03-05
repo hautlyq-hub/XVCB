@@ -92,6 +92,10 @@ namespace mv
         void resetUI();
 
         void AlgSetCorrectionFile(int mOralMajor, QString mOralAddr);
+        void setLabelWithTolerance(QLabel* label,
+                                   double value,
+                                   double tolerance,
+                                   const QString& suffix = "");
 
     signals:
         void sigReturnMainPage(int index = 0);

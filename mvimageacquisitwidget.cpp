@@ -77,8 +77,6 @@ void mvImageAcquisitWidget::initConnect()
             &XProtocolManager::errorOccurred,
             this,
             &mvImageAcquisitWidget::onErrorReceived);
-
-    // 连接图像接收信号
     connect(mManager, &XProtocolManager::imagesReady, this, &mvImageAcquisitWidget::onImagesReady);
     connect(mManager,
             &XProtocolManager::exposureProcess,
@@ -899,7 +897,7 @@ void mvImageAcquisitWidget::onInfoReceived(const QString& message)
         return;
     }
 
-    updateInfoPanel(message, Normal);
+    //updateInfoPanel(message, Normal);
 }
 void mvImageAcquisitWidget::onWarningReceived(const QString& message)
 {
@@ -924,7 +922,6 @@ void mvImageAcquisitWidget::onExposureProcess(ExposureState state)
     if (!this->isVisible()) {
         return;
     }
-    updateInfoPanel("", Normal);
     updateDeviceState(state);
 }
 
@@ -1020,61 +1017,63 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
                                    expectedElements * sizeof(unsigned short));
                         qDebug() << tr("Raw cal data saved to:") << fileCorr;
                     }
+                } else {
+                    qDebug() << "Raw pro data fail";
                 }
-                qDebug() << "Processed data size:" << expectedElements << "elements";
 
-                // 计算窗口参数
-                double windowCenterActual = 32768, windowWidthActual = 65536;
-                algorithmic->CalculateWindowParams(processedRaw.get(),
-                                                   widthnew,
-                                                   heightnew,
-                                                   windowCenterActual,
-                                                   windowWidthActual);
+                updateDeviceState(ExposureState::Calculating);
 
-                qInfo() << QString("windowCenterActual:%1, windowWidthActual:%2")
-                               .arg(windowCenterActual)
-                               .arg(windowWidthActual);
+                if (false) {
+                    // 计算窗口参数
+                    double windowCenterActual = 32768, windowWidthActual = 65536;
+                    algorithmic->CalculateWindowParams(processedRaw.get(),
+                                                       widthnew,
+                                                       heightnew,
+                                                       windowCenterActual,
+                                                       windowWidthActual);
 
-                // 处理图像数据（如果需要）
-                bool resprocess = algorithmic->ProcessImageData(widthnew,
-                                                                heightnew,
-                                                                image.bitDepth,
-                                                                processedRaw);
-                if (resprocess) {
-                    // 保存最终结果到文件
-                    QString imagePath;
-                    if (image.orientation % 2 == 0) {
-                        imagePath = QDir::toNativeSeparators(
-                            directory + "/" + dateStr + "/" + timestamp + "/X/"
-                            + QString("image_%1.raw").arg(timestamp));
-                        // imagePathX = imagePath;
-                    } else {
-                        imagePath = QDir::toNativeSeparators(
-                            directory + "/" + dateStr + "/" + timestamp + "/Y/"
-                            + QString("image_%1.raw").arg(timestamp));
-                        // imagePathY = imagePath;
-                    }
+                    qInfo() << QString("windowCenterActual:%1, windowWidthActual:%2")
+                                   .arg(windowCenterActual)
+                                   .arg(windowWidthActual);
 
-                    // 保存处理后的数据
-                    if (processedRaw && expectedElements > 0) {
-                        QFile file(imagePath);
-                        if (file.open(QIODevice::WriteOnly)) {
-                            qint64 bytesToWrite = expectedElements * sizeof(unsigned short);
-                            qint64 bytesWritten = file.write(reinterpret_cast<const char*>(
-                                                                 processedRaw.get()),
-                                                             bytesToWrite);
-                            file.close();
+                    // 处理图像数据（如果需要）
+                    bool resprocess = algorithmic->ProcessImageData(widthnew,
+                                                                    heightnew,
+                                                                    image.bitDepth,
+                                                                    processedRaw);
+                    if (resprocess) {
+                        // 保存最终结果到文件
+                        QString imagePath;
+                        if (image.orientation % 2 == 0) {
+                            imagePath = QDir::toNativeSeparators(
+                                directory + "/" + dateStr + "/" + timestamp + "/X/"
+                                + QString("image_%1.raw").arg(timestamp));
+                            // imagePathX = imagePath;
+                        } else {
+                            imagePath = QDir::toNativeSeparators(
+                                directory + "/" + dateStr + "/" + timestamp + "/Y/"
+                                + QString("image_%1.raw").arg(timestamp));
+                            // imagePathY = imagePath;
+                        }
 
-                            if (bytesWritten == bytesToWrite) {
-                                qDebug() << ("Raw pro data saved to:") << imagePath;
-                                HWImageData& mutableData = const_cast<HWImageData&>(image);
-                                mutableData.filePath = imagePath;
+                        // 保存处理后的数据
+                        if (processedRaw && expectedElements > 0) {
+                            QFile file(imagePath);
+                            if (file.open(QIODevice::WriteOnly)) {
+                                qint64 bytesToWrite = expectedElements * sizeof(unsigned short);
+                                qint64 bytesWritten = file.write(reinterpret_cast<const char*>(
+                                                                     processedRaw.get()),
+                                                                 bytesToWrite);
+                                file.close();
+
+                                if (bytesWritten == bytesToWrite) {
+                                    qDebug() << ("Raw pro data saved to:") << imagePath;
+                                    HWImageData& mutableData = const_cast<HWImageData&>(image);
+                                    mutableData.filePath = imagePath;
+                                }
                             }
                         }
                     }
-
-                } else {
-                    qDebug() << "Raw pro data fail";
                 }
             }
         }
@@ -1208,22 +1207,58 @@ void mvImageAcquisitWidget::onImagesReady(const QVector<HWImageData>& images)
                                                          QString::number(measure_data.wall_thickness
                                                                              .spec_thickness[7])
                                                              + "mm");
-            ui->labelInnerDiameterValue->setText(
-                QString::number(measure_data.inner_ellipse.diameter, 'f', 3));
-            ui->labelEccentricValue->setText(
-                QString::number(measure_data.related.eccentricity * 100, 'f', 3));
-            ui->labelHotOuterDiameterValue->setText(
-                QString::number(measure_data.outer_ellipse.diameter, 'f', 3));
-            ui->labelWallThicknessValue->setText(
-                QString::number(measure_data.wall_thickness.thickness, 'f', 3));
+
+            double innerDiameterTolerance = mCurrentStudyRecord.procId.toDouble();
+            double outerDiameterTolerance = mCurrentStudyRecord.protocalCode.toDouble();
+            double eccentricTolerance = mCurrentStudyRecord.modality.toDouble();
+            double wallThicknessTolerance = mCurrentStudyRecord.protocalMeaning.toDouble();
+
+            setLabelWithTolerance(ui->labelInnerDiameterValue,
+                                  measure_data.inner_ellipse.diameter,
+                                  innerDiameterTolerance,
+                                  "mm");
+            setLabelWithTolerance(ui->labelEccentricValue,
+                                  measure_data.related.eccentricity * 100,
+                                  eccentricTolerance,
+                                  "%");
+            setLabelWithTolerance(ui->labelHotOuterDiameterValue,
+                                  measure_data.outer_ellipse.diameter,
+                                  outerDiameterTolerance,
+                                  "mm");
+            setLabelWithTolerance(ui->labelWallThicknessValue,
+                                  measure_data.wall_thickness.thickness,
+                                  wallThicknessTolerance,
+                                  "mm");
 
             ui->mCurveFrame->addData(measure_data.inner_ellipse.diameter,
                                      measure_data.outer_ellipse.diameter);
         }
     }
 
-    resetUI();
-    ui->mStateShowStackWidget->setCurrentIndex(1);
+    updateDeviceState(ExposureState::Completed);
+
+    QTimer::singleShot(500, this, [this]() {
+        resetUI();
+        ui->mStateShowStackWidget->setCurrentIndex(1);
+    });
+}
+
+void mvImageAcquisitWidget::setLabelWithTolerance(QLabel* label,
+                                                  double value,
+                                                  double tolerance,
+                                                  const QString& suffix)
+{
+    QString text = QString::number(value, 'f', 3);
+    if (!suffix.isEmpty()) {
+        text += " " + suffix;
+    }
+    label->setText(text);
+
+    if (qAbs(value) <= tolerance) {
+        label->setStyleSheet("color: green;");
+    } else {
+        label->setStyleSheet("color: red;");
+    }
 }
 
 } // namespace mv

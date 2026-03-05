@@ -58,12 +58,13 @@ struct ExposureParams
 };
 
 enum class ExposureState {
-    Idle = 0,   // 空闲
-    SettingUp,  // 设置中
-    Exposing,   // 曝光中
-    Acquiring,  // 采集中
-    Processing, // 处理中
-    Completed,  // 完成
+    Idle = 0,    // 空闲
+    SettingUp,   // 设置中
+    Exposing,    // 曝光中
+    Acquiring,   // 采集中
+    Processing,  // 处理中
+    Calculating, // 计算中
+    Completed,   // 完成
     Fault,
     Timeout
 };

@@ -1254,6 +1254,7 @@ build/release/.rcc/qrc_mvResources.cpp: mvResources.qrc \
 		QSS/specimen_image.qss \
 		QSS/specimen_mainwidget.qss \
 		QSS/specimen_setting.qss \
+		Image/Cable.png \
 		Image/favicon.ico \
 		Image/logo1.png \
 		Image/Layer.png \

@@ -250,5 +250,6 @@
         <file>Image/common/common_warningBlue.png</file>
         <file>Image/common/common_warningYellow.png</file>
         <file>Image/Layer.png</file>
+        <file>Image/Cable.png</file>
     </qresource>
 </RCC>

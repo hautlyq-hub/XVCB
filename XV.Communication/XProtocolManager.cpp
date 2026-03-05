@@ -1077,9 +1077,8 @@ void XProtocolManager::onSetupTimeout()
 
 void XProtocolManager::onSensorImageAvailable(HWImageData& image, const QString& portName)
 {
-    QMutexLocker locker(&m_imageMutex);
+    emit exposureProcess(ExposureState::Processing);
 
-    // 查找对应的传感器键
     QString sensorKey;
     for (const auto& setting : m_portSettings) {
         if (setting.portName.contains(portName)
@@ -1095,10 +1094,8 @@ void XProtocolManager::onSensorImageAvailable(HWImageData& image, const QString&
         return;
     }
 
-    // 存储图像
     m_imageBuffer[sensorKey] = image;
 
-    // 检查是否收到所有图像
     checkAllImagesReceived();
 }
 
@@ -1113,6 +1110,8 @@ void XProtocolManager::checkAllImagesReceived()
 #endif
 
     qDebug() << "requiredImages : " + QString::number(requiredImages);
+
+    emit exposureProcess(ExposureState::Processing);
 
     if (m_imageBuffer.size() >= requiredImages) {
         // 收到所有图像，准备发送

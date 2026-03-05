@@ -253,6 +253,8 @@ void mvsystemsettings::Init()
 void mvsystemsettings::onReconnecttoggled()
 {
     ui->pushButtonConnect->setEnabled(false);
+    ui->mBtnEnableExp->setEnabled(false);
+    ui->mBtnGenerate->setEnabled(false);
 
     onComboBoxChanged();
 
@@ -261,7 +263,7 @@ void mvsystemsettings::onReconnecttoggled()
     if (mManager) {
         mManager->unInitSerialPort();
 
-        QThread::msleep(2000);
+        qApp->processEvents();
 
         QTimer::singleShot(100, this, [this]() {
             bool ret = mManager->initSerialPort();
@@ -271,7 +273,11 @@ void mvsystemsettings::onReconnecttoggled()
                 updateInfoPanel(tr("Serial port initialization failed"), Error);
                 updateDeviceState(ExposureState::Fault);
             }
-            QTimer::singleShot(2000, this, [this]() { ui->pushButtonConnect->setEnabled(true); });
+
+            ui->pushButtonConnect->setEnabled(true);
+            ui->mBtnEnableExp->setEnabled(true);
+            ui->mBtnGenerate->setEnabled(true);
+            
         });
     }
 }
