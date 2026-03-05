@@ -29,7 +29,6 @@ std::mutex XProtocolManager::m_mutex;
 
 XProtocolManager* XProtocolManager::getInstance()
 {
-    // 双重检查锁
     if (m_instance == nullptr) {
         std::lock_guard<std::mutex> lock(m_mutex);
         if (m_instance == nullptr) {
@@ -59,27 +58,11 @@ XProtocolManager::XProtocolManager(QObject* parent)
     , m_setupTimeoutMs(15000)
     , m_exposureTimeoutMs(35000)
 {
-    // 设置线程池
     m_threadPool->setMaxThreadCount(4);
 
-    // 初始化定时器
-    m_comCheckTimer = new QTimer(this);
-    m_comCheckTimer->setInterval(3000);
-
-    m_exposureTimer = new QTimer(this);
-    m_exposureTimer->setSingleShot(true);
-
-    m_setupTimer = new QTimer(this);
-    m_setupTimer->setSingleShot(true);
-
-    m_xrayCheckTimer = new QTimer(this);
-    m_xrayCheckTimer->setInterval(3000);
-
-    // 连接信号槽
-    connect(m_comCheckTimer, &QTimer::timeout, this, &XProtocolManager::onCheckComPorts);
-    connect(m_exposureTimer, &QTimer::timeout, this, &XProtocolManager::onExposureTimeout);
-    connect(m_setupTimer, &QTimer::timeout, this, &XProtocolManager::onSetupTimeout);
-    connect(m_xrayCheckTimer, &QTimer::timeout, this, &XProtocolManager::updateConnectionStatus);
+    m_serialPortTimer = new QTimer(this);
+    m_serialPortTimer->setInterval(3000);
+    connect(m_serialPortTimer, &QTimer::timeout, this, &XProtocolManager::onSerialPortsCheck);
 
     // 初始化默认参数
     // m_exposureParams.kv_val = 50.0f;
@@ -179,11 +162,10 @@ bool XProtocolManager::initSerialPort()
         }
     }
 
-    updateConnectionStatus();
+    updateSerialPortStatus();
 
     // 启动定期检查
-    // m_comCheckTimer->start();
-    // m_xrayCheckTimer->start();
+    m_serialPortTimer->start();
 
     return allConnected;
 }
@@ -196,10 +178,7 @@ void XProtocolManager::unInitSerialPort()
     m_isSettingUp = 0;
 
     // 停止所有定时器
-    m_comCheckTimer->stop();
-    m_exposureTimer->stop();
-    m_setupTimer->stop();
-    m_xrayCheckTimer->stop();
+    m_serialPortTimer->stop();
 
     // 清空图像缓存
     m_imageBuffer.clear();
@@ -249,6 +228,71 @@ void XProtocolManager::unInitSerialPort()
         m_xray2Thread->wait(1000);
     }
 #endif
+}
+
+void XProtocolManager::onSerialPortsCheck()
+{
+    // 限制检查频率
+    static QElapsedTimer timer;
+    if (timer.isValid() && timer.elapsed() < 2000) {
+        return;
+    }
+    timer.restart();
+
+    // 获取可用串口
+    QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
+
+    // 快速处理
+    for (auto& setting : m_portSettings) {
+        QString portName = setting.portName;
+
+        if (portName.isEmpty())
+            continue;
+
+        bool portExists = false;
+        for (const auto& port : availablePorts) {
+            if (port.portName() == portName) {
+                portExists = true;
+                break;
+            }
+        }
+
+        if (portExists && !setting.connected) {
+            // 快速尝试连接
+            if (setting.deviceKey == SENSOR1_KEY || setting.deviceKey == SENSOR2_KEY) {
+                connectSensor(setting.deviceKey);
+            } else if (setting.deviceKey == XRAY1_KEY || setting.deviceKey == XRAY2_KEY) {
+                connectXray(setting.deviceKey);
+            }
+        }
+    }
+}
+
+void XProtocolManager::updateSerialPortStatus()
+{
+    DeviceStatus newStatus;
+
+    if (m_sensor1) {
+        newStatus.sensor1Connected = m_sensor1->isConnected();
+    }
+
+#ifndef DEBUG_SINGLE_DEVICE
+    if (m_sensor2) {
+        newStatus.sensor2Connected = m_sensor2->isConnected();
+    }
+#endif
+
+    if (m_xrayProtocol1) {
+        newStatus.xray1Connected = m_xrayProtocol1->isConnected();
+    }
+
+#ifndef DEBUG_SINGLE_DEVICE
+    if (m_xrayProtocol2) {
+        newStatus.xray2Connected = m_xrayProtocol2->isConnected();
+    }
+#endif
+
+    m_deviceStatus = newStatus;
 }
 
 void XProtocolManager::loadConfig()
@@ -568,10 +612,6 @@ void XProtocolManager::stopWorkMode()
     }
 #endif
 
-    // 停止定时器
-    m_exposureTimer->stop();
-    m_setupTimer->stop();
-
     // 重置状态
     m_isExposing = 0;
     m_isSettingUp = 0;
@@ -727,46 +767,6 @@ bool XProtocolManager::executeCalibrationBefore()
     return success1 && success2;
 }
 
-void XProtocolManager::onCheckComPorts()
-{
-    // 限制检查频率
-    static QElapsedTimer timer;
-    if (timer.isValid() && timer.elapsed() < 2000) {
-        return;
-    }
-    timer.restart();
-
-    // 获取可用串口
-    QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
-
-    // 快速处理
-    for (auto& setting : m_portSettings) {
-        QString portName = setting.portName;
-
-        if (portName.isEmpty())
-            continue;
-
-        bool portExists = false;
-        for (const auto& port : availablePorts) {
-            if (port.portName() == portName) {
-                portExists = true;
-                break;
-            }
-        }
-
-        if (portExists && !setting.connected) {
-            // 快速尝试连接
-            if (setting.deviceKey == SENSOR1_KEY || setting.deviceKey == SENSOR2_KEY) {
-                connectSensor(setting.deviceKey);
-            } else if (setting.deviceKey == XRAY1_KEY || setting.deviceKey == XRAY2_KEY) {
-                connectXray(setting.deviceKey);
-            }
-        }
-    }
-
-    updateConnectionStatus();
-}
-
 bool XProtocolManager::connectSensor(const QString& sensorKey)
 {
     // 查找端口配置
@@ -799,17 +799,12 @@ bool XProtocolManager::connectSensor(const QString& sensorKey)
         Qt::BlockingQueuedConnection);
 
     if (success) {
-        // 更新状态
         for (auto& setting : m_portSettings) {
             if (setting.deviceKey == sensorKey) {
                 setting.connected = true;
                 break;
             }
         }
-        // QMetaObject::invokeMethod(
-        //     this,
-        //     [this, sensorKey]() { emit info(QString(tr("Sensor %1 connected")).arg(sensorKey)); },
-        //     Qt::QueuedConnection);
     } else {
         qWarning() << tr("Sensor ") + sensorKey + tr(" connection failed");
     }
@@ -819,7 +814,6 @@ bool XProtocolManager::connectSensor(const QString& sensorKey)
 
 bool XProtocolManager::connectXray(const QString& xrayKey)
 {
-    // 查找端口设置
     QString portName;
     for (const auto& setting : m_portSettings) {
         if (setting.deviceKey == xrayKey) {
@@ -1038,43 +1032,6 @@ void XProtocolManager::runXray2Operation(std::function<void(XRayProtocol*)> oper
 #endif
 }
 
-void XProtocolManager::updateConnectionStatus()
-{
-    DeviceStatus newStatus;
-
-    if (m_sensor1) {
-        newStatus.sensor1Connected = m_sensor1->isConnected();
-    }
-
-#ifndef DEBUG_SINGLE_DEVICE
-    if (m_sensor2) {
-        newStatus.sensor2Connected = m_sensor2->isConnected();
-    }
-#endif
-
-    if (m_xrayProtocol1) {
-        newStatus.xray1Connected = m_xrayProtocol1->isConnected();
-    }
-
-#ifndef DEBUG_SINGLE_DEVICE
-    if (m_xrayProtocol2) {
-        newStatus.xray2Connected = m_xrayProtocol2->isConnected();
-    }
-#endif
-
-    m_deviceStatus = newStatus;
-}
-
-void XProtocolManager::onExposureTimeout()
-{
-    stopExposure();
-}
-
-void XProtocolManager::onSetupTimeout()
-{
-    stopWorkMode();
-}
-
 void XProtocolManager::onSensorImageAvailable(HWImageData& image, const QString& portName)
 {
     emit exposureProcess(ExposureState::Processing);
@@ -1246,11 +1203,10 @@ void XProtocolManager::onXrayTemperatureUpdated(float deviceTemp, float mcuTemp,
 }
 
 // 传感器信号处理
-
 void XProtocolManager::onSensorDeviceDisconnected()
 {
     emit warning(tr("Sensor disconnected"));
-    updateConnectionStatus();
+    updateSerialPortStatus();
 }
 
 void XProtocolManager::onSensorStatusChanged(const QString& status)

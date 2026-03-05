@@ -728,7 +728,6 @@ void mvImageAcquisitWidget::StartExposure()
     ui->pushButtonStart->setEnabled(false);
     ui->mStateShowStackWidget->setCurrentIndex(0);
 
-    updateInfoPanel(tr("Setting up work mode..."), Normal);
     updateDeviceState(ExposureState::SettingUp);
 
     qApp->processEvents();

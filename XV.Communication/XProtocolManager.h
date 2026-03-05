@@ -158,7 +158,7 @@ public:
     bool checkSensorCalibrateFile();
     int checkSensorCalibrateFileCount();
 
-    void onExposureCompleted();
+    void updateSerialPortStatus();
 
 signals:
 
@@ -176,10 +176,7 @@ signals:
 
 private slots:
     // 定时器槽函数
-    void onCheckComPorts();
-    void onExposureTimeout();
-    void onSetupTimeout();
-    void updateConnectionStatus();
+    void onSerialPortsCheck();
     void onExposureF5Ready(const QString& portName);
     void onExposureF6Ready(const QString& portName);
 
@@ -228,10 +225,7 @@ private:
     QFutureWatcher<void>* m_exposureWatcher = nullptr;
 
     // 定时器
-    QTimer* m_comCheckTimer = nullptr;
-    QTimer* m_exposureTimer = nullptr;
-    QTimer* m_setupTimer = nullptr;
-    QTimer* m_xrayCheckTimer = nullptr;
+    QTimer* m_serialPortTimer = nullptr;
 
     // 状态变量
     DeviceStatus m_deviceStatus;

@@ -277,7 +277,6 @@ void mvsystemsettings::onReconnecttoggled()
             ui->pushButtonConnect->setEnabled(true);
             ui->mBtnEnableExp->setEnabled(true);
             ui->mBtnGenerate->setEnabled(true);
-            
         });
     }
 }
@@ -436,7 +435,6 @@ void mvsystemsettings::StartExposure()
     ui->mBtnEnableExp->setText(tr("Stop"));
     ui->mBtnEnableExp->repaint();
 
-    updateInfoPanel(tr("Setting up work mode..."), Normal);
     updateDeviceState(ExposureState::SettingUp);
 
     qApp->processEvents();
