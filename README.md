@@ -1,3 +1,1 @@
-# XVBVThiness
- 
 # CableThickness
